@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.25)
 project(ARKANOID3000 LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -10,6 +10,12 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
+set(BUILD_TESTS ON CACHE BOOL "Includes tests to build process")
+
 add_subdirectory(src)
+
+if(BUILD_TESTS)
+    add_subdirectory(unit_tests)
+endif()
 
 install(TARGETS ARKANOID3000)
