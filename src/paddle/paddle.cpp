@@ -17,12 +17,20 @@ paddle::~paddle() {}
 void paddle::move_paddle_left()
 {
     position_x -= 10;
+    if (position_x < 0)
+    {
+        position_x = 0;
+    }
     this->player_s_paddle->setPosition(position_x, position_y);
 }
 
 void paddle::move_paddle_right()
 {
     position_x += 10;
+    if (position_x > 800.0f - 120.f)
+    {
+        position_x = 800.0f - 120.f;
+    }
     this->player_s_paddle->setPosition(position_x, position_y);
 }
 
