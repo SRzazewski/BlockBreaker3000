@@ -1,6 +1,7 @@
 #include "paddle.hpp"
 #include "ball.hpp"
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 int main()
 {
@@ -32,6 +33,10 @@ int main()
 
     paddle paddle_obj = paddle();
     ball ball_obj = ball();
+    sf::Clock clock_obj = sf::Clock();
+    sf::Time time_obj = sf::Time();
+    sf::Vector2f position_of_ball;
+    sf::Vector2f velocity_of_ball;
 
     while (window.isOpen())
     {
@@ -61,11 +66,45 @@ int main()
             }
         }
 
+        time_obj = clock_obj.getElapsedTime();
+        position_of_ball = ball_obj.get_position();
+        velocity_of_ball = ball_obj.get_velocity_vector();
+        position_of_ball.x = position_of_ball.x + (velocity_of_ball.x * time_obj.asSeconds());
+        position_of_ball.y = position_of_ball.y + (velocity_of_ball.y * time_obj.asSeconds());
         
+        if (position_of_ball.x < 0)
+        {
+            position_of_ball.x *= -1.0;
+            velocity_of_ball.x *= -1.0;
+        }
+        else if(position_of_ball.x > (800.0f - 30.0f))
+        {
+            position_of_ball.x = 2 * (800.0f - 30.0f) - position_of_ball.x;
+            velocity_of_ball.x *= -1.0;
+        }
+
+        if (position_of_ball.y < 0)
+        {
+            position_of_ball.y *= -1.0;
+            velocity_of_ball.y *= -1.0;
+        }
+        else if(position_of_ball.y > (600.0f - 30.0f))
+        {
+            position_of_ball.y = 2 * (600.0f - 30.0f) - position_of_ball.y;
+            velocity_of_ball.y *= -1.0;
+        }
+
+        // std::cout << "Ball position x , y:" << position_of_ball.x << " ," << position_of_ball.y << "\n";
+        // std::cout << "Ball velocity x , y:" << velocity_of_ball.x << " ," << velocity_of_ball.y << "\n";
+
+        ball_obj.set_velocity_vector(velocity_of_ball);
+        ball_obj.set_position(position_of_ball);
+
+        clock_obj.restart();
 
         window.clear(sf::Color::Black);
         // inside the main loop, between window.clear() and window.display()
-        window.draw(text);
+        // window.draw(text);
         window.draw(*paddle_obj.get_paddle());
         window.draw(*ball_obj.get_ball());
         window.display();
