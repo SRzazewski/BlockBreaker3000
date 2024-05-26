@@ -8,35 +8,14 @@ int main()
     auto window = sf::RenderWindow{ { 800u, 600u }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
-    sf::Text text;
-
-    sf::Font font;
-    if (!font.loadFromFile("arial.ttf"))
-    {
-        window.close();
-    }
-
-    // select the font
-    text.setFont(font); // font is a sf::Font
-
-    // set the string to display
-    text.setString("Hello world in BlockBreaker3000");
-
-    // set the character size
-    text.setCharacterSize(24); // in pixels, not points!
-
-    // set the color
-    text.setFillColor(sf::Color::Red);
-
-    // set the text style
-    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
     paddle paddle_obj = paddle();
     ball ball_obj = ball();
     sf::Clock clock_obj = sf::Clock();
     sf::Time time_obj = sf::Time();
     sf::Vector2f position_of_ball;
     sf::Vector2f velocity_of_ball;
+    float delta_x = 0;
+    float delta_y = 0;
 
     while (window.isOpen())
     {
@@ -69,9 +48,22 @@ int main()
         time_obj = clock_obj.getElapsedTime();
         position_of_ball = ball_obj.get_position();
         velocity_of_ball = ball_obj.get_velocity_vector();
+        delta_x = velocity_of_ball.x * time_obj.asSeconds();
+        delta_y = velocity_of_ball.y * time_obj.asSeconds();
+        
         position_of_ball.x = position_of_ball.x + (velocity_of_ball.x * time_obj.asSeconds());
         position_of_ball.y = position_of_ball.y + (velocity_of_ball.y * time_obj.asSeconds());
         
+        if (velocity_of_ball.y > 0 && paddle_obj.get_position().y < (position_of_ball.y + 30.0f))
+        {
+            if((position_of_ball.x + 15.0f) > paddle_obj.get_position().x 
+                && (position_of_ball.x + 15.0f) < (paddle_obj.get_position().x + 120.f))
+            {
+                position_of_ball.y = 2 * (paddle_obj.get_position().y - 30.0f) - position_of_ball.y;
+                velocity_of_ball.y *= -1.0;
+            }
+        }
+
         if (position_of_ball.x < 0)
         {
             position_of_ball.x *= -1.0;
@@ -103,8 +95,6 @@ int main()
         clock_obj.restart();
 
         window.clear(sf::Color::Black);
-        // inside the main loop, between window.clear() and window.display()
-        // window.draw(text);
         window.draw(*paddle_obj.get_paddle());
         window.draw(*ball_obj.get_ball());
         window.display();
