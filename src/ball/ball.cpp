@@ -21,12 +21,12 @@ void ball::set_position(sf::Vector2f new_position)
     this->ball_shape->setPosition(position.x, position.y);
 }
 
-sf::Vector2f ball::get_position()
+sf::Vector2f ball::get_position() const
 {
     return position;
 }
 
-std::shared_ptr<sf::CircleShape> ball::get_ball()
+std::shared_ptr<sf::CircleShape> ball::get_ball() const
 {
     return this->ball_shape;
 }
@@ -36,7 +36,7 @@ void ball::set_velocity_vector(sf::Vector2f vector)
     velocity_vector = vector;
 }
 
-sf::Vector2f ball::get_velocity_vector()
+sf::Vector2f ball::get_velocity_vector() const
 {
     return velocity_vector;
 }
