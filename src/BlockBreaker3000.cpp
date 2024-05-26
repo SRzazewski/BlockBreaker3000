@@ -5,10 +5,12 @@
 
 int main()
 {
-    auto window = sf::RenderWindow{ { 800u, 600u }, "BlockBreaker3000" };
+    float window_size_x = 800.0f;
+    float window_size_y = 600.0f;
+    auto window = sf::RenderWindow{ { static_cast<unsigned int>(window_size_x), static_cast<unsigned int>(window_size_y) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
-    paddle paddle_obj = paddle();
+    paddle paddle_obj = paddle(window_size_x);
     ball ball_obj = ball();
     sf::Clock clock_obj = sf::Clock();
     sf::Time time_obj = sf::Time();
@@ -54,12 +56,12 @@ int main()
         position_of_ball.x = position_of_ball.x + (velocity_of_ball.x * time_obj.asSeconds());
         position_of_ball.y = position_of_ball.y + (velocity_of_ball.y * time_obj.asSeconds());
         
-        if (velocity_of_ball.y > 0 && paddle_obj.get_position().y < (position_of_ball.y + 30.0f))
+        if (velocity_of_ball.y > 0 && paddle_obj.get_position().y < (position_of_ball.y + 2.0f * ball_obj.get_ball()->getRadius()))
         {
-            if((position_of_ball.x + 15.0f) > paddle_obj.get_position().x 
-                && (position_of_ball.x + 15.0f) < (paddle_obj.get_position().x + 120.f))
+            if((position_of_ball.x + ball_obj.get_ball()->getRadius()) > paddle_obj.get_position().x 
+                && (position_of_ball.x + ball_obj.get_ball()->getRadius()) < (paddle_obj.get_position().x + paddle_obj.get_paddle()->getSize().x))
             {
-                position_of_ball.y = 2 * (paddle_obj.get_position().y - 30.0f) - position_of_ball.y;
+                position_of_ball.y = 2 * (paddle_obj.get_position().y - 2.0f * ball_obj.get_ball()->getRadius()) - position_of_ball.y;
                 velocity_of_ball.y *= -1.0;
             }
         }
@@ -69,9 +71,9 @@ int main()
             position_of_ball.x *= -1.0;
             velocity_of_ball.x *= -1.0;
         }
-        else if(position_of_ball.x > (800.0f - 30.0f))
+        else if(position_of_ball.x > (window_size_x - 2.0f * ball_obj.get_ball()->getRadius()))
         {
-            position_of_ball.x = 2 * (800.0f - 30.0f) - position_of_ball.x;
+            position_of_ball.x = 2 * (window_size_x - 2.0f * ball_obj.get_ball()->getRadius()) - position_of_ball.x;
             velocity_of_ball.x *= -1.0;
         }
 
@@ -80,9 +82,9 @@ int main()
             position_of_ball.y *= -1.0;
             velocity_of_ball.y *= -1.0;
         }
-        else if(position_of_ball.y > (600.0f - 30.0f))
+        else if(position_of_ball.y > (window_size_y - 2.0f * ball_obj.get_ball()->getRadius()))
         {
-            position_of_ball.y = 2 * (600.0f - 30.0f) - position_of_ball.y;
+            position_of_ball.y = 2 * (window_size_y - 2.0f * ball_obj.get_ball()->getRadius()) - position_of_ball.y;
             velocity_of_ball.y *= -1.0;
         }
 

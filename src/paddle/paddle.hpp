@@ -7,7 +7,7 @@
 class paddle
 {
 public:
-    paddle();
+    paddle(float game_area);
     ~paddle();
     void move_paddle_left();
     void move_paddle_right();
@@ -16,6 +16,7 @@ public:
 
 
 private:
+    float paddle_area;
     std::shared_ptr<sf::RectangleShape> player_s_paddle;
     sf::Vector2f position;
 };
