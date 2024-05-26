@@ -1,3 +1,4 @@
+#include "paddle.hpp"
 #include <SFML/Graphics.hpp>
 
 int main()
@@ -28,11 +29,7 @@ int main()
     // set the text style
     text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
-    sf::RectangleShape racket(sf::Vector2f(120.f, 20.f));
-    racket.setFillColor(sf::Color(100, 250, 50));
-    float position_x = 340;
-    float position_y = 550;
-    racket.setPosition(position_x, position_y);
+    paddle paddle_obj = paddle();
 
     while (window.isOpen())
     {
@@ -46,13 +43,11 @@ int main()
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::Left)
                 {
-                    position_x -= 10;
-                    racket.setPosition(position_x, position_y);
+                    paddle_obj.move_paddle_left();
                 }
                 else if (event.key.code == sf::Keyboard::Right)
                 {
-                    position_x += 10;
-                    racket.setPosition(position_x, position_y);
+                    paddle_obj.move_paddle_right();
                 }
                 break;
             default:
@@ -69,7 +64,7 @@ int main()
         window.clear(sf::Color::Black);
         // inside the main loop, between window.clear() and window.display()
         window.draw(text);
-        window.draw(racket);
+        window.draw(*paddle_obj.get_paddle());
         window.display();
     }
 }
