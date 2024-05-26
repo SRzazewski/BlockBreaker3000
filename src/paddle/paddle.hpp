@@ -2,6 +2,7 @@
 #define PADDLE_HPP
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 class paddle
 {
@@ -10,11 +11,11 @@ public:
     ~paddle();
     void move_paddle_left();
     void move_paddle_right();
-    sf::RectangleShape *get_paddle();
+    std::shared_ptr<sf::RectangleShape> get_paddle();
 
 
 private:
-    sf::RectangleShape *player_s_paddle;
+    std::shared_ptr<sf::RectangleShape> player_s_paddle;
     float position_x;
     float position_y;
 };
