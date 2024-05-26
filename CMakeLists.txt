@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(ARKANOID3000 LANGUAGES CXX)
+project(BlockBreaker3000 LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
@@ -18,4 +18,4 @@ if(BUILD_TESTS)
     add_subdirectory(unit_tests)
 endif()
 
-install(TARGETS ARKANOID3000)
+install(TARGETS BlockBreaker3000)

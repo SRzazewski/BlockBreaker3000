@@ -2,7 +2,7 @@
 
 int main()
 {
-    auto window = sf::RenderWindow{ { 800u, 600u }, "Arkanoid3000" };
+    auto window = sf::RenderWindow{ { 800u, 600u }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
     sf::Text text;
@@ -17,7 +17,7 @@ int main()
     text.setFont(font); // font is a sf::Font
 
     // set the string to display
-    text.setString("Hello world in Arkanoid3000");
+    text.setString("Hello world in BlockBreaker3000");
 
     // set the character size
     text.setCharacterSize(24); // in pixels, not points!
