@@ -1,4 +1,5 @@
 #include "paddle.hpp"
+#include "ball.hpp"
 #include <SFML/Graphics.hpp>
 
 int main()
@@ -30,6 +31,7 @@ int main()
     text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
     paddle paddle_obj = paddle();
+    ball ball_obj = ball();
 
     while (window.isOpen())
     {
@@ -65,6 +67,7 @@ int main()
         // inside the main loop, between window.clear() and window.display()
         window.draw(text);
         window.draw(*paddle_obj.get_paddle());
+        window.draw(*ball_obj.get_ball());
         window.display();
     }
 }

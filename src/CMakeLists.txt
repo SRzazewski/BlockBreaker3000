@@ -7,7 +7,8 @@ add_executable(BlockBreaker3000
 target_link_libraries(BlockBreaker3000 
     PRIVATE 
         sfml-graphics
-        Paddle)
+        Paddle
+        Ball)
         
 target_compile_features(BlockBreaker3000 PRIVATE cxx_std_20)
 
@@ -20,3 +21,4 @@ if(WIN32)
 endif()
 
 add_subdirectory(paddle)
+add_subdirectory(ball)
