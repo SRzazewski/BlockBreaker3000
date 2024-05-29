@@ -16,8 +16,6 @@ int main()
     sf::Time time_obj = sf::Time();
     sf::Vector2f position_of_ball;
     sf::Vector2f velocity_of_ball;
-    float delta_x = 0;
-    float delta_y = 0;
 
     while (window.isOpen())
     {
@@ -48,43 +46,43 @@ int main()
         }
 
         time_obj = clock_obj.getElapsedTime();
+        clock_obj.restart();
         position_of_ball = ball_obj.get_position();
         velocity_of_ball = ball_obj.get_velocity_vector();
-        delta_x = velocity_of_ball.x * time_obj.asSeconds();
-        delta_y = velocity_of_ball.y * time_obj.asSeconds();
         
         position_of_ball.x = position_of_ball.x + (velocity_of_ball.x * time_obj.asSeconds());
         position_of_ball.y = position_of_ball.y + (velocity_of_ball.y * time_obj.asSeconds());
         
-        if (velocity_of_ball.y > 0 && paddle_obj.get_position().y < (position_of_ball.y + 2.0f * ball_obj.get_ball()->getRadius()))
+        if (velocity_of_ball.y > 0 
+            && (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) < position_of_ball.y)
         {
-            if((position_of_ball.x + ball_obj.get_ball()->getRadius()) > paddle_obj.get_position().x 
-                && (position_of_ball.x + ball_obj.get_ball()->getRadius()) < (paddle_obj.get_position().x + paddle_obj.get_paddle()->getSize().x))
+            if((position_of_ball.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
+                && (position_of_ball.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
             {
-                position_of_ball.y = 2 * (paddle_obj.get_position().y - 2.0f * ball_obj.get_ball()->getRadius()) - position_of_ball.y;
+                position_of_ball.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - position_of_ball.y;
                 velocity_of_ball.y *= -1.0;
             }
         }
 
-        if (position_of_ball.x < 0)
+        if (position_of_ball.x < ball_obj.get_ball().getRadius())
         {
-            position_of_ball.x *= -1.0;
+            position_of_ball.x = 2 * (ball_obj.get_ball().getRadius()) - position_of_ball.x;
             velocity_of_ball.x *= -1.0;
         }
-        else if(position_of_ball.x > (window_size_x - 2.0f * ball_obj.get_ball()->getRadius()))
+        else if(position_of_ball.x > (window_size_x - ball_obj.get_ball().getRadius()))
         {
-            position_of_ball.x = 2 * (window_size_x - 2.0f * ball_obj.get_ball()->getRadius()) - position_of_ball.x;
+            position_of_ball.x = 2 * (window_size_x - ball_obj.get_ball().getRadius()) - position_of_ball.x;
             velocity_of_ball.x *= -1.0;
         }
 
-        if (position_of_ball.y < 0)
+        if (position_of_ball.y < ball_obj.get_ball().getRadius())
         {
-            position_of_ball.y *= -1.0;
+            position_of_ball.y = 2 * (ball_obj.get_ball().getRadius()) - position_of_ball.y;
             velocity_of_ball.y *= -1.0;
         }
-        else if(position_of_ball.y > (window_size_y - 2.0f * ball_obj.get_ball()->getRadius()))
+        else if(position_of_ball.y > (window_size_y - ball_obj.get_ball().getRadius()))
         {
-            position_of_ball.y = 2 * (window_size_y - 2.0f * ball_obj.get_ball()->getRadius()) - position_of_ball.y;
+            position_of_ball.y = 2 * (window_size_y - ball_obj.get_ball().getRadius()) - position_of_ball.y;
             velocity_of_ball.y *= -1.0;
         }
 
@@ -94,11 +92,9 @@ int main()
         ball_obj.set_velocity_vector(velocity_of_ball);
         ball_obj.set_position(position_of_ball);
 
-        clock_obj.restart();
-
         window.clear(sf::Color::Black);
-        window.draw(*paddle_obj.get_paddle());
-        window.draw(*ball_obj.get_ball());
+        window.draw(paddle_obj.get_paddle());
+        window.draw(ball_obj.get_ball());
         window.display();
     }
 }
