@@ -1,32 +1,34 @@
 #include "ball.hpp"
 #include <SFML/Graphics.hpp>
+#include <memory>
 
-ball::ball()
+ball::ball(std::shared_ptr<sf::RenderWindow> app_window, std::shared_ptr<sf::Clock> app_clock):
+    window(app_window),
+    clock(app_clock)
 {
-    this->ball_shape = std::make_shared<sf::CircleShape>();
-    this->ball_shape->setRadius(15.0);
-    this->ball_shape->setFillColor(sf::Color(255, 0, 0));
-    position.x = 385;
-    position.y = 500;
-    velocity_vector.x = 100.0f;
-    velocity_vector.y = 100.0f;
-    this->ball_shape->setPosition(position.x, position.y);
+    float radius = 15.0f;
+    ball_shape = sf::CircleShape();
+    ball_shape.setRadius(radius);
+    ball_shape.setOrigin(radius/2.0f, radius/2.0f);
+    ball_shape.setFillColor(sf::Color(255, 0, 0));
+    velocity_vector.x = 50.0f;
+    velocity_vector.y = 50.0f;
+    ball_shape.setPosition(sf::Vector2f(385.0f, 500.0f));
 }
 
 ball::~ball() {}
 
 void ball::set_position(sf::Vector2f new_position)
 {
-    position = new_position;
-    this->ball_shape->setPosition(position.x, position.y);
+    ball_shape.setPosition(new_position);
 }
 
 sf::Vector2f ball::get_position() const
 {
-    return position;
+    return ball_shape.getPosition();
 }
 
-std::shared_ptr<sf::CircleShape> ball::get_ball() const
+sf::CircleShape ball::get_ball() const
 {
     return this->ball_shape;
 }
