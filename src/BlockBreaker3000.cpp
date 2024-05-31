@@ -13,7 +13,7 @@ int main()
 
     sf::Clock clock_obj = sf::Clock();
     sf::Time time_obj = sf::Time();
-    paddle paddle_obj = paddle(window_size_x);
+    paddle paddle_obj = paddle(&window, &clock_obj, window_size_x);
     ball ball_obj = ball(&window, &clock_obj);
     sf::Vector2f position_of_ball;
     sf::Vector2f velocity_of_ball;
@@ -94,7 +94,8 @@ int main()
         ball_obj.set_position(position_of_ball);
 
         window.clear(sf::Color::Black);
-        window.draw(paddle_obj.get_paddle());
+        // window.draw(paddle_obj.get_paddle());
+        paddle_obj.display_paddle();
         // window.draw(ball_obj.get_ball());
         ball_obj.display_ball();
         window.display();

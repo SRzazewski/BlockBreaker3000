@@ -2,7 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-paddle::paddle(float game_area):
+paddle::paddle(sf::RenderWindow *const app_window, sf::Clock *const app_clock, float game_area):
+    window(app_window),
+    clock(app_clock),
     paddle_area(game_area)
 {
     float size_x = 120.f;
@@ -46,4 +48,9 @@ sf::RectangleShape paddle::get_paddle() const
 sf::Vector2f paddle::get_position() const
 {
     return player_s_paddle.getPosition();
+}
+
+void paddle::display_paddle()
+{
+    window->draw(player_s_paddle);
 }
