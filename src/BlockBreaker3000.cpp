@@ -20,8 +20,6 @@ int main()
     ball ball_obj = ball(std::make_shared<sf::RenderWindow>(window), std::make_shared<sf::Clock>(clock_obj));
     sf::Vector2f position_of_ball;
     sf::Vector2f velocity_of_ball;
-    float delta_x = 0;
-    float delta_y = 0;
 
     while (window.isOpen())
     {

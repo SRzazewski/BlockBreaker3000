@@ -5,42 +5,45 @@
 paddle::paddle(float game_area):
     paddle_area(game_area)
 {
-    this->player_s_paddle = std::make_shared<sf::RectangleShape>();
-    this->player_s_paddle->setSize(sf::Vector2f(120.f, 20.f));
-    this->player_s_paddle->setFillColor(sf::Color(100, 250, 50));
-    position.x = 340;
-    position.y = 550;
-    this->player_s_paddle->setPosition(position);
+    float size_x = 120.f;
+    float size_y = 20.f;
+    player_s_paddle = sf::RectangleShape();
+    player_s_paddle.setSize(sf::Vector2f(size_x, size_y));
+    player_s_paddle.setOrigin(size_x/2.0f, size_y/2.0f);
+    player_s_paddle.setFillColor(sf::Color(100, 250, 50));
+    player_s_paddle.setPosition(sf::Vector2f(400.0f, 560.0f));
 }
-
-paddle::~paddle() {}
 
 void paddle::move_paddle_left()
 {
-    position.x -= 10;
-    if (position.x < 0)
+    if (player_s_paddle.getPosition().x - 10 < (player_s_paddle.getSize().x/2.0f))
     {
-        position.x = 0;
+        player_s_paddle.setPosition(sf::Vector2f((player_s_paddle.getSize().x/2.0f), player_s_paddle.getPosition().y));
     }
-    this->player_s_paddle->setPosition(position);
+    else
+    {
+        player_s_paddle.setPosition(sf::Vector2f(player_s_paddle.getPosition().x - 10, player_s_paddle.getPosition().y));
+    }
 }
 
 void paddle::move_paddle_right()
 {
-    position.x += 10;
-    if (position.x > paddle_area - player_s_paddle->getSize().x)
+    if ((player_s_paddle.getPosition().x + 10) > (paddle_area - player_s_paddle.getSize().x/2.0f))
     {
-        position.x = paddle_area - player_s_paddle->getSize().x;
+        player_s_paddle.setPosition(sf::Vector2f(paddle_area - player_s_paddle.getSize().x/2.0f, player_s_paddle.getPosition().y));
     }
-    this->player_s_paddle->setPosition(position);
+    else
+    {
+        player_s_paddle.setPosition(sf::Vector2f(player_s_paddle.getPosition().x + 10, player_s_paddle.getPosition().y));
+    }
 }
 
-std::shared_ptr<sf::RectangleShape> paddle::get_paddle() const
+sf::RectangleShape paddle::get_paddle() const
 {
-    return this->player_s_paddle;
+    return player_s_paddle;
 }
 
 sf::Vector2f paddle::get_position() const
 {
-    return position;
+    return player_s_paddle.getPosition();
 }
