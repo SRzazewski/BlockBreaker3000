@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-paddle::paddle()
+paddle::paddle(float game_area):
+    paddle_area(game_area)
 {
     this->player_s_paddle = std::make_shared<sf::RectangleShape>();
     this->player_s_paddle->setSize(sf::Vector2f(120.f, 20.f));
@@ -27,9 +28,9 @@ void paddle::move_paddle_left()
 void paddle::move_paddle_right()
 {
     position.x += 10;
-    if (position.x > 800.0f - 120.f)
+    if (position.x > paddle_area - player_s_paddle->getSize().x)
     {
-        position.x = 800.0f - 120.f;
+        position.x = paddle_area - player_s_paddle->getSize().x;
     }
     this->player_s_paddle->setPosition(position);
 }

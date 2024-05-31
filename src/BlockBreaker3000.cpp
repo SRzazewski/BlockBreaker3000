@@ -9,6 +9,9 @@ int main()
     float window_size_x = 800.0f;
     float window_size_y = 600.0f;
     auto window = sf::RenderWindow{ { static_cast<unsigned int>(window_size_x), static_cast<unsigned int>(window_size_y) }, "BlockBreaker3000" };
+    float window_size_x = 800.0f;
+    float window_size_y = 600.0f;
+    auto window = sf::RenderWindow{ { static_cast<unsigned int>(window_size_x), static_cast<unsigned int>(window_size_y) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
     sf::Clock clock_obj = sf::Clock();
@@ -17,6 +20,8 @@ int main()
     ball ball_obj = ball(std::make_shared<sf::RenderWindow>(window), std::make_shared<sf::Clock>(clock_obj));
     sf::Vector2f position_of_ball;
     sf::Vector2f velocity_of_ball;
+    float delta_x = 0;
+    float delta_y = 0;
 
     while (window.isOpen())
     {
