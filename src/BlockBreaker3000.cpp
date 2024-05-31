@@ -9,15 +9,12 @@ int main()
     float window_size_x = 800.0f;
     float window_size_y = 600.0f;
     auto window = sf::RenderWindow{ { static_cast<unsigned int>(window_size_x), static_cast<unsigned int>(window_size_y) }, "BlockBreaker3000" };
-    float window_size_x = 800.0f;
-    float window_size_y = 600.0f;
-    auto window = sf::RenderWindow{ { static_cast<unsigned int>(window_size_x), static_cast<unsigned int>(window_size_y) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
     sf::Clock clock_obj = sf::Clock();
     sf::Time time_obj = sf::Time();
     paddle paddle_obj = paddle(window_size_x);
-    ball ball_obj = ball(std::make_shared<sf::RenderWindow>(window), std::make_shared<sf::Clock>(clock_obj));
+    ball ball_obj = ball(&window, &clock_obj);
     sf::Vector2f position_of_ball;
     sf::Vector2f velocity_of_ball;
 
@@ -98,7 +95,8 @@ int main()
 
         window.clear(sf::Color::Black);
         window.draw(paddle_obj.get_paddle());
-        window.draw(ball_obj.get_ball());
+        // window.draw(ball_obj.get_ball());
+        ball_obj.display_ball();
         window.display();
     }
 }
