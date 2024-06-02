@@ -8,7 +8,9 @@ target_link_libraries(BlockBreaker3000
     PRIVATE 
         sfml-graphics
         Paddle
-        Ball)
+        Ball
+        PhysicOfObject
+        GameObject)
         
 target_compile_features(BlockBreaker3000 PRIVATE cxx_std_20)
 
@@ -20,5 +22,7 @@ if(WIN32)
         VERBATIM)
 endif()
 
+add_subdirectory(interface_classes)
 add_subdirectory(paddle)
 add_subdirectory(ball)
+add_subdirectory(physic_of_object)

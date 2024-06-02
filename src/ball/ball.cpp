@@ -14,6 +14,7 @@ ball::ball(sf::RenderWindow *const app_window, sf::Clock *const app_clock):
     velocity_vector.x = 250.0f;
     velocity_vector.y = 250.0f;
     ball_shape.setPosition(sf::Vector2f(385.0f, 500.0f));
+    previus_time = sf::Time();
 }
 
 ball::~ball() {}
@@ -43,7 +44,15 @@ sf::Vector2f ball::get_velocity_vector() const
     return velocity_vector;
 }
 
-void ball::display_ball()
+sf::Time ball::count_delta_time()
+{
+    sf::Time current_time = clock->getElapsedTime();
+    sf::Time delta = current_time - previus_time;
+    previus_time = current_time;
+    return delta;
+}
+
+void ball::display()
 {
     window->draw(ball_shape);
 }
