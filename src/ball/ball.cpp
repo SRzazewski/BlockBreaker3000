@@ -6,6 +6,7 @@ ball::ball(sf::RenderWindow *const app_window, sf::Clock *const app_clock):
     window(app_window),
     clock(app_clock)
 {
+    float radius = 16.0f;
     ball_shape = sf::CircleShape();
     ball_shape.setRadius(radius);
     ball_shape.setOrigin(radius/2.0f, radius/2.0f);
