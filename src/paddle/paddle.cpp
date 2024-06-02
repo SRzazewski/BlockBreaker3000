@@ -40,6 +40,21 @@ void paddle::move_paddle_right()
     }
 }
 
+void paddle::set_position(sf::Vector2f position) 
+{
+    player_s_paddle.setPosition(position);
+}
+
+void paddle::set_velocity_vector(sf::Vector2f vector) 
+{
+    velocity_vector = vector;
+}
+
+sf::Vector2f paddle::get_velocity_vector() const 
+{
+    return velocity_vector;
+}
+
 sf::RectangleShape paddle::get_paddle() const
 {
     return player_s_paddle;
@@ -50,7 +65,7 @@ sf::Vector2f paddle::get_position() const
     return player_s_paddle.getPosition();
 }
 
-void paddle::display_paddle()
+void paddle::display()
 {
     window->draw(player_s_paddle);
 }
