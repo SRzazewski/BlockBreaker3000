@@ -51,7 +51,15 @@ sf::Time ball::count_delta_time()
     return delta;
 }
 
-void ball::display()
+void ball::draw()
 {
     window->draw(ball_shape);
+}
+
+void ball::reset()
+{
+    velocity_vector.x = 250.0f;
+    velocity_vector.y = 250.0f;
+    ball_shape.setPosition(sf::Vector2f(385.0f, 500.0f));;
+    previus_time = sf::seconds(0.0f);
 }

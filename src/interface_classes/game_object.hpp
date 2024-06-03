@@ -10,7 +10,8 @@ public:
         window(app_window){}
     virtual void set_position(sf::Vector2f position) = 0;
     virtual sf::Vector2f get_position() const = 0;
-    virtual void display() = 0;
+    virtual void draw() = 0;
+    virtual void reset() = 0;
 
 protected:
     sf::RenderWindow *const window;
