@@ -6,6 +6,7 @@ target_link_libraries(PhysicOfObject
         sfml-graphics
         Paddle
         Ball
+        Block
         GameObject)
 
 target_include_directories(PhysicOfObject 

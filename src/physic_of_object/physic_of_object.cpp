@@ -2,11 +2,12 @@
 
 #include "paddle.hpp"
 #include "ball.hpp"
+#include "block.hpp"
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
 
-void move_objects(paddle &paddle_obj, std::vector<ball> &balls, game_area area)
+void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area)
 {
     sf::Vector2f position_of_ball = balls[0].get_position();
     sf::Vector2f velocity_of_ball = balls[0].get_velocity_vector();
@@ -22,6 +23,38 @@ void move_objects(paddle &paddle_obj, std::vector<ball> &balls, game_area area)
         {
             position_of_ball.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - balls[0].get_ball().getRadius()) - position_of_ball.y;
             velocity_of_ball.y *= -1.0;
+        }
+    }
+
+
+    for(int i =0; i < blocks.size(); ++i)
+    {
+        if(!blocks[i].is_broken())
+        {
+            if (velocity_of_ball.y > 0 
+                && (blocks[i].get_position().y - blocks[i].get_block().getSize().y/2.0f - 5.0f - balls[0].get_ball().getRadius()) < position_of_ball.y)
+            {
+                if((position_of_ball.x > (blocks[i].get_position().x - blocks[i].get_block().getSize().x/2.0f - 5.0f))
+                    && (position_of_ball.x) < (blocks[i].get_position().x + blocks[i].get_block().getSize().x/2.0f + 5.0f))
+                {
+                    position_of_ball.y = 2 * (blocks[i].get_position().y - blocks[i].get_block().getSize().y/2.0f - balls[0].get_ball().getRadius() - 5.0f) - position_of_ball.y;
+                    velocity_of_ball.y *= -1.0;
+
+                    blocks[i].break_obj();
+                }
+            }
+            else if (velocity_of_ball.y < 0
+                && (blocks[i].get_position().y + blocks[i].get_block().getSize().y/2.0f + 5.0f + balls[0].get_ball().getRadius()) > position_of_ball.y)
+            {
+                if((position_of_ball.x > (blocks[i].get_position().x - blocks[i].get_block().getSize().x/2.0f - 5.0f))
+                    && (position_of_ball.x) < (blocks[i].get_position().x + blocks[i].get_block().getSize().x/2.0f + 5.0f))
+                {
+                    position_of_ball.y = 2 * (blocks[i].get_position().y + blocks[i].get_block().getSize().y/2.0f + balls[0].get_ball().getRadius() + 5.0f) - position_of_ball.y;
+                    velocity_of_ball.y *= -1.0;
+
+                    blocks[i].break_obj();
+                }
+            }
         }
     }
 
@@ -49,6 +82,12 @@ void move_objects(paddle &paddle_obj, std::vector<ball> &balls, game_area area)
 
     balls[0].set_velocity_vector(velocity_of_ball);
     balls[0].set_position(position_of_ball);
+
+
+
+
+
+
 
     sf::Vector2f position_of_paddle = paddle_obj.get_position();
     sf::Vector2f velocity_of_paddle = paddle_obj.get_velocity_vector();

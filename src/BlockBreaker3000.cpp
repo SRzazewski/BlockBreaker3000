@@ -1,6 +1,7 @@
 #include "paddle.hpp"
 #include "ball.hpp"
 #include "physic_of_object.hpp"
+#include "block.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <vector>
@@ -18,6 +19,14 @@ int main()
     sf::Time time_obj = sf::Time();
     paddle paddle_obj = paddle(&window, &clock_obj, block_breaker_area.x_stop);
     std::vector<ball> balls = {ball(&window, &clock_obj)};
+    std::vector<block> blocks = {block(&window, sf::Vector2f(50.0f, 30.0f)),
+                                block(&window, sf::Vector2f(150.0f, 30.0f)),
+                                block(&window, sf::Vector2f(250.0f, 30.0f)),
+                                block(&window, sf::Vector2f(350.0f, 30.0f)),
+                                block(&window, sf::Vector2f(450.0f, 30.0f)),
+                                block(&window, sf::Vector2f(550.0f, 30.0f)),
+                                block(&window, sf::Vector2f(650.0f, 30.0f)),
+                                block(&window, sf::Vector2f(750.0f, 30.0f))};
 
     while (window.isOpen())
     {
@@ -53,11 +62,15 @@ int main()
             }
         }
 
-        move_objects(paddle_obj, balls, block_breaker_area);
+        move_objects(paddle_obj, balls, blocks, block_breaker_area);
 
         window.clear(sf::Color::Black);
         paddle_obj.display();
         balls[0].display();
+        for(int i =0; i < blocks.size(); ++i)
+        {
+            blocks[i].display();
+        }
         window.display();
     }
 }
