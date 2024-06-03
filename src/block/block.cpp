@@ -3,6 +3,7 @@
 block::block(sf::RenderWindow *const app_window, sf::Vector2f start_position):
         window(app_window)
 {
+    number_of_blocks++;
     float size_x = 90.f;
     float size_y = 20.f;
     broken = false;
@@ -13,6 +14,11 @@ block::block(sf::RenderWindow *const app_window, sf::Vector2f start_position):
     block_obj.setOutlineThickness(5.0f);
     block_obj.setOutlineColor(sf::Color(100, 150, 255));
     block_obj.setPosition(start_position);
+}
+
+block::~block()
+{
+    // number_of_blocks--;
 }
 
 void block::set_position(sf::Vector2f position) 
@@ -40,10 +46,30 @@ bool block::is_broken()
     return broken;
 }
 
-void block::display()
+int block::get_number_of_blocks()
+{
+    return number_of_blocks;
+}
+
+void block::decrement_number_of_blocks()
+{
+    number_of_blocks--;
+}
+
+void block::set_number_of_blocks(int number)
+{
+    number_of_blocks = number;
+}
+
+void block::draw()
 {
     if (!broken)
     {
         window->draw(block_obj);
     }
+}
+
+void block::reset()
+{
+    broken = false;
 }

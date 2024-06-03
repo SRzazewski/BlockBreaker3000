@@ -17,7 +17,8 @@ public:
     sf::RectangleShape get_paddle() const;
     sf::Vector2f get_position() const override;
     sf::Time count_delta_time();
-    void display() override;
+    void draw() override;
+    void reset() override;
 
 
 private:

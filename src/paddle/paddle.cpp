@@ -49,7 +49,15 @@ sf::Time paddle::count_delta_time()
     return delta;
 }
 
-void paddle::display()
+void paddle::draw()
 {
     window->draw(player_s_paddle);
+}
+
+void paddle::reset()
+{
+    velocity_vector.x = 0.0f;
+    velocity_vector.y = 0.0f;
+    player_s_paddle.setPosition(sf::Vector2f(400.0f, 560.0f));
+    previus_time = sf::seconds(0.0f);
 }

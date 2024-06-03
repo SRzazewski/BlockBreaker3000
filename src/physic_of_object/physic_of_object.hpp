@@ -15,7 +15,7 @@ struct game_area
     float y_stop;
 };
 
-void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area);
+void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area, int &game_state);
 
 class physic_of_object
 {
