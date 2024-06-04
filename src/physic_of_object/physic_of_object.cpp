@@ -131,7 +131,7 @@ void ball_meets_block(ball &ball_obj, block &block_obj)
     }
 }
 
-void ball_meets_edge(ball &ball_obj, game_area area, int &game_state)
+void ball_meets_edge(ball &ball_obj, game_area area, game_states &game_state)
 {
     sf::Vector2f position_of_ball = ball_obj.get_position();
     sf::Vector2f velocity_of_ball = ball_obj.get_velocity_vector();
@@ -157,14 +157,14 @@ void ball_meets_edge(ball &ball_obj, game_area area, int &game_state)
     }
     else if(position_of_ball.y > (area.y_stop - ball_obj.get_ball().getRadius()))
     {
-        game_state = 0;
+        game_state = game_states::init_game;
     }
 
     ball_obj.set_velocity_vector(velocity_of_ball);
     ball_obj.set_position(position_of_ball);
 }
 
-void move_ball(ball &ball_obj, paddle &paddle_obj, std::vector<block> &blocks, game_area area, int &game_state)
+void move_ball(ball &ball_obj, paddle &paddle_obj, std::vector<block> &blocks, game_area area, game_states &game_state)
 {
     ball_meets_paddle(ball_obj, paddle_obj);
     for (int j = 0; j < blocks.size(); ++j)
@@ -205,7 +205,7 @@ void move_paddle(paddle &paddle_obj, game_area area)
     }
 }
 
-void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area, int &game_state)
+void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area, game_states &game_state)
 {
     for (int i = 0; i < balls.size(); ++i)
     {
