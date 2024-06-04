@@ -46,7 +46,7 @@ int main()
     game_area_shape.setFillColor(sf::Color::Black);
     game_area_shape.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
 
-    int game_state = 1;
+    game_states game_state = game_states::during_game;
 
     while (window.isOpen())
     {
@@ -60,15 +60,15 @@ int main()
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::Left)
                 {
-                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(-200.0f, 0.0f));
+                    if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-200.0f, 0.0f));
                 }
                 else if (event.key.code == sf::Keyboard::Right)
                 {
-                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(200.0f, 0.0f));
+                    if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(200.0f, 0.0f));
                 }
                 else if (event.key.code == sf::Keyboard::R)
                 {
-                    if(game_state == 0 || game_state == 2) 
+                    if(game_state == game_states::init_game || game_state == game_states::won_game) 
                     {
                         for(int i =0; i < blocks.size(); ++i)
                         {
@@ -77,7 +77,7 @@ int main()
                         block::set_number_of_blocks(blocks.size());
                         paddle_obj.reset();
                         balls[0].reset();
-                        game_state = 1;
+                        game_state = game_states::during_game;
                         clock_obj.restart();
                     }
                 }
@@ -85,11 +85,11 @@ int main()
             case sf::Event::KeyReleased:
                 if (event.key.code == sf::Keyboard::Left)
                 {
-                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+                    if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
                 }
                 else if (event.key.code == sf::Keyboard::Right)
                 {
-                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+                    if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
                 }
                 break;
             default:
@@ -97,17 +97,17 @@ int main()
             }
         }
 
-        if (game_state == 1)
+        if (game_state == game_states::during_game)
         {
             move_objects(paddle_obj, balls, blocks, block_breaker_area, game_state);
             text.setString("BlockBreaker3000");
         }
-        else if (game_state == 0)
+        else if (game_state == game_states::init_game)
         {
             text.setString("BlockBreaker3000 - You lost :( Press R to reset");
         }
         
-        if (game_state == 2)
+        if (game_state == game_states::won_game)
         {
             text.setString("BlockBreaker3000 - You won :) Press R to reset");
         }
@@ -125,7 +125,7 @@ int main()
         }
         else
         {
-            game_state = 2;
+            game_state = game_states::won_game;
         }
 
         window.draw(text);
