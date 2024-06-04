@@ -11,7 +11,7 @@ int block::number_of_blocks = 0;
 
 int main()
 {
-    game_area block_breaker_area = {0.0f, 800.0f, 0.0f, 600.0f};
+    game_area block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};
     auto window = sf::RenderWindow{ { static_cast<unsigned int>(block_breaker_area.x_stop), static_cast<unsigned int>(block_breaker_area.y_stop) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
@@ -40,6 +40,11 @@ int main()
                                 block(&window, sf::Vector2f(550.0f, 50.0f)),
                                 block(&window, sf::Vector2f(650.0f, 50.0f)),
                                 block(&window, sf::Vector2f(750.0f, 50.0f))};
+
+    sf::RectangleShape game_area_shape = sf::RectangleShape();
+    game_area_shape.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
+    game_area_shape.setFillColor(sf::Color::Black);
+    game_area_shape.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
 
     int game_state = 1;
 
@@ -74,7 +79,6 @@ int main()
                         balls[0].reset();
                         game_state = 1;
                         clock_obj.restart();
-                        text.setString("BlockBreaker3000");
                     }
                 }
                 break;
@@ -96,21 +100,7 @@ int main()
         if (game_state == 1)
         {
             move_objects(paddle_obj, balls, blocks, block_breaker_area, game_state);
-
-            window.clear(sf::Color::Black);
-            paddle_obj.draw();
-            balls[0].draw();
-            if(block::get_number_of_blocks() > 0)
-            {
-                for(int i =0; i < blocks.size(); ++i)
-                {
-                    blocks[i].draw();
-                }
-            }
-            else
-            {
-                game_state = 2;
-            }
+            text.setString("BlockBreaker3000");
         }
         else if (game_state == 0)
         {
@@ -120,6 +110,22 @@ int main()
         if (game_state == 2)
         {
             text.setString("BlockBreaker3000 - You won :) Press R to reset");
+        }
+
+        window.clear(sf::Color(166u, 166u, 166u));
+        window.draw(game_area_shape);
+        paddle_obj.draw();
+        balls[0].draw();
+        if(block::get_number_of_blocks() > 0)
+        {
+            for(int i =0; i < blocks.size(); ++i)
+            {
+                blocks[i].draw();
+            }
+        }
+        else
+        {
+            game_state = 2;
         }
 
         window.draw(text);
