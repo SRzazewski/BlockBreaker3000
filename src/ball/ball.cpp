@@ -9,7 +9,7 @@ ball::ball(sf::RenderWindow *const app_window, sf::Clock *const app_clock):
     float radius = 16.0f;
     ball_shape = sf::CircleShape();
     ball_shape.setRadius(radius);
-    ball_shape.setOrigin(radius/2.0f, radius/2.0f);
+    ball_shape.setOrigin(radius, radius);
     ball_shape.setFillColor(sf::Color(255, 0, 0));
     velocity_vector.x = 250.0f;
     velocity_vector.y = 250.0f;
