@@ -119,9 +119,9 @@ void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<bloc
         }
     }
 
-    if (position_of_ball.x < balls[0].get_ball().getRadius())
+    if (position_of_ball.x < (area.x_start + balls[0].get_ball().getRadius()))
     {
-        position_of_ball.x = 2 * (balls[0].get_ball().getRadius()) - position_of_ball.x;
+        position_of_ball.x = 2 * (area.x_start + balls[0].get_ball().getRadius()) - position_of_ball.x;
         velocity_of_ball.x *= -1.0;
     }
     else if(position_of_ball.x > (area.x_stop - balls[0].get_ball().getRadius()))
@@ -130,9 +130,9 @@ void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<bloc
         velocity_of_ball.x *= -1.0;
     }
 
-    if (position_of_ball.y < balls[0].get_ball().getRadius())
+    if (position_of_ball.y < (area.y_start + balls[0].get_ball().getRadius()))
     {
-        position_of_ball.y = 2 * (balls[0].get_ball().getRadius()) - position_of_ball.y;
+        position_of_ball.y = 2 * (area.y_start + balls[0].get_ball().getRadius()) - position_of_ball.y;
         velocity_of_ball.y *= -1.0;
     }
     else if(position_of_ball.y > (area.y_stop - balls[0].get_ball().getRadius()))
