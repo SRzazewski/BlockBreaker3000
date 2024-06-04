@@ -6,6 +6,7 @@ ball::ball(sf::RenderWindow *const app_window, sf::Clock *const app_clock):
     window(app_window),
     clock(app_clock)
 {
+    float radius = 16.0f;
     ball_shape = sf::CircleShape();
     ball_shape.setRadius(radius);
     ball_shape.setOrigin(radius/2.0f, radius/2.0f);
@@ -42,7 +43,23 @@ sf::Vector2f ball::get_velocity_vector() const
     return velocity_vector;
 }
 
-void ball::display_ball()
+sf::Time ball::count_delta_time()
+{
+    sf::Time current_time = clock->getElapsedTime();
+    sf::Time delta = current_time - previus_time;
+    previus_time = current_time;
+    return delta;
+}
+
+void ball::draw()
 {
     window->draw(ball_shape);
+}
+
+void ball::reset()
+{
+    velocity_vector.x = 250.0f;
+    velocity_vector.y = 250.0f;
+    ball_shape.setPosition(sf::Vector2f(385.0f, 500.0f));;
+    previus_time = sf::seconds(0.0f);
 }

@@ -2,7 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-paddle::paddle(float game_area):
+paddle::paddle(sf::RenderWindow *const app_window, sf::Clock *const app_clock, float game_area):
+    window(app_window),
+    clock(app_clock),
     paddle_area(game_area)
 {
     float size_x = 120.f;
@@ -14,28 +16,19 @@ paddle::paddle(float game_area):
     player_s_paddle.setPosition(sf::Vector2f(400.0f, 560.0f));
 }
 
-void paddle::move_paddle_left()
+void paddle::set_position(sf::Vector2f position) 
 {
-    if (player_s_paddle.getPosition().x - 10 < (player_s_paddle.getSize().x/2.0f))
-    {
-        player_s_paddle.setPosition(sf::Vector2f((player_s_paddle.getSize().x/2.0f), player_s_paddle.getPosition().y));
-    }
-    else
-    {
-        player_s_paddle.setPosition(sf::Vector2f(player_s_paddle.getPosition().x - 10, player_s_paddle.getPosition().y));
-    }
+    player_s_paddle.setPosition(position);
 }
 
-void paddle::move_paddle_right()
+void paddle::set_velocity_vector(sf::Vector2f vector) 
 {
-    if ((player_s_paddle.getPosition().x + 10) > (paddle_area - player_s_paddle.getSize().x/2.0f))
-    {
-        player_s_paddle.setPosition(sf::Vector2f(paddle_area - player_s_paddle.getSize().x/2.0f, player_s_paddle.getPosition().y));
-    }
-    else
-    {
-        player_s_paddle.setPosition(sf::Vector2f(player_s_paddle.getPosition().x + 10, player_s_paddle.getPosition().y));
-    }
+    velocity_vector = vector;
+}
+
+sf::Vector2f paddle::get_velocity_vector() const 
+{
+    return velocity_vector;
 }
 
 sf::RectangleShape paddle::get_paddle() const
@@ -46,4 +39,25 @@ sf::RectangleShape paddle::get_paddle() const
 sf::Vector2f paddle::get_position() const
 {
     return player_s_paddle.getPosition();
+}
+
+sf::Time paddle::count_delta_time()
+{
+    sf::Time current_time = clock->getElapsedTime();
+    sf::Time delta = current_time - previus_time;
+    previus_time = current_time;
+    return delta;
+}
+
+void paddle::draw()
+{
+    window->draw(player_s_paddle);
+}
+
+void paddle::reset()
+{
+    velocity_vector.x = 0.0f;
+    velocity_vector.y = 0.0f;
+    player_s_paddle.setPosition(sf::Vector2f(400.0f, 560.0f));
+    previus_time = sf::seconds(0.0f);
 }

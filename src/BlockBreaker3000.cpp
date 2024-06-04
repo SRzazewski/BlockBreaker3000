@@ -1,22 +1,52 @@
 #include "paddle.hpp"
 #include "ball.hpp"
+#include "physic_of_object.hpp"
+#include "block.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <vector>
 #include <iostream>
+
+int block::number_of_blocks = 0;
 
 int main()
 {
-    float window_size_x = 800.0f;
-    float window_size_y = 600.0f;
-    auto window = sf::RenderWindow{ { static_cast<unsigned int>(window_size_x), static_cast<unsigned int>(window_size_y) }, "BlockBreaker3000" };
+    game_area block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};
+    auto window = sf::RenderWindow{ { static_cast<unsigned int>(block_breaker_area.x_stop), static_cast<unsigned int>(block_breaker_area.y_stop) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
+
+    sf::Text text;
+    sf::Font font;
+    if (!font.loadFromFile("arial.ttf"))
+    {
+        window.close();
+    }
+    text.setFont(font);
+    text.setString("BlockBreaker3000");
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::Red);
+    text.setStyle(sf::Text::Bold);
 
     sf::Clock clock_obj = sf::Clock();
     sf::Time time_obj = sf::Time();
-    paddle paddle_obj = paddle(window_size_x);
-    ball ball_obj = ball(&window, &clock_obj);
-    sf::Vector2f position_of_ball;
-    sf::Vector2f velocity_of_ball;
+    paddle paddle_obj = paddle(&window, &clock_obj, block_breaker_area.x_stop);
+    std::vector<ball> balls = {ball(&window, &clock_obj)};
+
+    std::vector<block> blocks = {block(&window, sf::Vector2f(50.0f, 50.0f)),
+                                block(&window, sf::Vector2f(150.0f, 50.0f)),
+                                block(&window, sf::Vector2f(250.0f, 50.0f)),
+                                block(&window, sf::Vector2f(350.0f, 50.0f)),
+                                block(&window, sf::Vector2f(450.0f, 50.0f)),
+                                block(&window, sf::Vector2f(550.0f, 50.0f)),
+                                block(&window, sf::Vector2f(650.0f, 50.0f)),
+                                block(&window, sf::Vector2f(750.0f, 50.0f))};
+
+    sf::RectangleShape game_area_shape = sf::RectangleShape();
+    game_area_shape.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
+    game_area_shape.setFillColor(sf::Color::Black);
+    game_area_shape.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+
+    int game_state = 1;
 
     while (window.isOpen())
     {
@@ -30,73 +60,76 @@ int main()
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::Left)
                 {
-                    paddle_obj.move_paddle_left();
+                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(-200.0f, 0.0f));
                 }
                 else if (event.key.code == sf::Keyboard::Right)
                 {
-                    paddle_obj.move_paddle_right();
+                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(200.0f, 0.0f));
+                }
+                else if (event.key.code == sf::Keyboard::R)
+                {
+                    if(game_state == 0 || game_state == 2) 
+                    {
+                        for(int i =0; i < blocks.size(); ++i)
+                        {
+                            blocks[i].reset();
+                        }
+                        block::set_number_of_blocks(blocks.size());
+                        paddle_obj.reset();
+                        balls[0].reset();
+                        game_state = 1;
+                        clock_obj.restart();
+                    }
+                }
+                break;
+            case sf::Event::KeyReleased:
+                if (event.key.code == sf::Keyboard::Left)
+                {
+                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+                }
+                else if (event.key.code == sf::Keyboard::Right)
+                {
+                    if(game_state == 1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
                 }
                 break;
             default:
                 break;
             }
-            if (event.type == sf::Event::Closed)
+        }
+
+        if (game_state == 1)
+        {
+            move_objects(paddle_obj, balls, blocks, block_breaker_area, game_state);
+            text.setString("BlockBreaker3000");
+        }
+        else if (game_state == 0)
+        {
+            text.setString("BlockBreaker3000 - You lost :( Press R to reset");
+        }
+        
+        if (game_state == 2)
+        {
+            text.setString("BlockBreaker3000 - You won :) Press R to reset");
+        }
+
+        window.clear(sf::Color(166u, 166u, 166u));
+        window.draw(game_area_shape);
+        paddle_obj.draw();
+        balls[0].draw();
+        if(block::get_number_of_blocks() > 0)
+        {
+            for(int i =0; i < blocks.size(); ++i)
             {
-                window.close();
+                blocks[i].draw();
             }
         }
-
-        time_obj = clock_obj.getElapsedTime();
-        clock_obj.restart();
-        position_of_ball = ball_obj.get_position();
-        velocity_of_ball = ball_obj.get_velocity_vector();
-        
-        position_of_ball.x = position_of_ball.x + (velocity_of_ball.x * time_obj.asSeconds());
-        position_of_ball.y = position_of_ball.y + (velocity_of_ball.y * time_obj.asSeconds());
-        
-        if (velocity_of_ball.y > 0 
-            && (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) < position_of_ball.y)
+        else
         {
-            if((position_of_ball.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
-                && (position_of_ball.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
-            {
-                position_of_ball.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - position_of_ball.y;
-                velocity_of_ball.y *= -1.0;
-            }
+            game_state = 2;
         }
 
-        if (position_of_ball.x < ball_obj.get_ball().getRadius())
-        {
-            position_of_ball.x = 2 * (ball_obj.get_ball().getRadius()) - position_of_ball.x;
-            velocity_of_ball.x *= -1.0;
-        }
-        else if(position_of_ball.x > (window_size_x - ball_obj.get_ball().getRadius()))
-        {
-            position_of_ball.x = 2 * (window_size_x - ball_obj.get_ball().getRadius()) - position_of_ball.x;
-            velocity_of_ball.x *= -1.0;
-        }
-
-        if (position_of_ball.y < ball_obj.get_ball().getRadius())
-        {
-            position_of_ball.y = 2 * (ball_obj.get_ball().getRadius()) - position_of_ball.y;
-            velocity_of_ball.y *= -1.0;
-        }
-        else if(position_of_ball.y > (window_size_y - ball_obj.get_ball().getRadius()))
-        {
-            position_of_ball.y = 2 * (window_size_y - ball_obj.get_ball().getRadius()) - position_of_ball.y;
-            velocity_of_ball.y *= -1.0;
-        }
-
-        // std::cout << "Ball position x , y:" << position_of_ball.x << " ," << position_of_ball.y << "\n";
-        // std::cout << "Ball velocity x , y:" << velocity_of_ball.x << " ," << velocity_of_ball.y << "\n";
-
-        ball_obj.set_velocity_vector(velocity_of_ball);
-        ball_obj.set_position(position_of_ball);
-
-        window.clear(sf::Color::Black);
-        window.draw(paddle_obj.get_paddle());
-        // window.draw(ball_obj.get_ball());
-        ball_obj.display_ball();
+        window.draw(text);
+        // std::cout << "Number of blocks:" << block::get_number_of_blocks() << "\n";
         window.display();
     }
 }
