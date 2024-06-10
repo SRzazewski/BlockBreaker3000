@@ -39,7 +39,31 @@ int main()
                                 block(&window, sf::Vector2f(450.0f, 50.0f)),
                                 block(&window, sf::Vector2f(550.0f, 50.0f)),
                                 block(&window, sf::Vector2f(650.0f, 50.0f)),
-                                block(&window, sf::Vector2f(750.0f, 50.0f))};
+                                block(&window, sf::Vector2f(750.0f, 50.0f)),
+                                block(&window, sf::Vector2f(50.0f, 80.0f)),
+                                block(&window, sf::Vector2f(150.0f, 80.0f)),
+                                block(&window, sf::Vector2f(250.0f, 80.0f)),
+                                block(&window, sf::Vector2f(350.0f, 80.0f)),
+                                block(&window, sf::Vector2f(450.0f, 80.0f)),
+                                block(&window, sf::Vector2f(550.0f, 80.0f)),
+                                block(&window, sf::Vector2f(650.0f, 80.0f)),
+                                block(&window, sf::Vector2f(750.0f, 80.0f)),
+                                block(&window, sf::Vector2f(50.0f, 110.0f)),
+                                block(&window, sf::Vector2f(150.0f, 110.0f)),
+                                block(&window, sf::Vector2f(250.0f, 110.0f)),
+                                block(&window, sf::Vector2f(350.0f, 110.0f)),
+                                block(&window, sf::Vector2f(450.0f, 110.0f)),
+                                block(&window, sf::Vector2f(550.0f, 110.0f)),
+                                block(&window, sf::Vector2f(650.0f, 110.0f)),
+                                block(&window, sf::Vector2f(750.0f, 110.0f)),
+                                block(&window, sf::Vector2f(50.0f, 140.0f)),
+                                block(&window, sf::Vector2f(150.0f, 140.0f)),
+                                block(&window, sf::Vector2f(250.0f, 140.0f)),
+                                block(&window, sf::Vector2f(350.0f, 140.0f)),
+                                block(&window, sf::Vector2f(450.0f, 140.0f)),
+                                block(&window, sf::Vector2f(550.0f, 140.0f)),
+                                block(&window, sf::Vector2f(650.0f, 140.0f)),
+                                block(&window, sf::Vector2f(750.0f, 140.0f))};
 
     int game_state = 1;
 
