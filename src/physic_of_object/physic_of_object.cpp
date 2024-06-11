@@ -174,11 +174,11 @@ void move_ball(ball &ball_obj, paddle &paddle_obj, std::vector<block> &blocks, g
     ball_meets_edge(ball_obj, area, game_state);
 }
 
-void move_paddle(paddle &paddle_obj, game_area area)
+void move_paddle(sf::Clock &clock, paddle &paddle_obj, game_area area)
 {
     sf::Vector2f position_of_paddle = paddle_obj.get_position();
     sf::Vector2f velocity_of_paddle = paddle_obj.get_velocity_vector();
-    sf::Time paddle_delay = paddle_obj.count_delta_time();
+    sf::Time paddle_delay = paddle_obj.count_delta_time(clock);
     position_of_paddle.x = position_of_paddle.x + (velocity_of_paddle.x * paddle_delay.asSeconds());
 
     if (velocity_of_paddle.x < 0)
@@ -205,13 +205,13 @@ void move_paddle(paddle &paddle_obj, game_area area)
     }
 }
 
-void move_objects(paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area, game_states &game_state)
+void move_objects(sf::Clock &clock, paddle &paddle_obj, std::vector<ball> &balls, std::vector<block> &blocks, game_area area, game_states &game_state)
 {
     for (int i = 0; i < balls.size(); ++i)
     {
         move_ball(balls[i], paddle_obj, blocks, area, game_state);
     }
 
-    move_paddle(paddle_obj, area);
+    move_paddle(clock, paddle_obj, area);
 
 }

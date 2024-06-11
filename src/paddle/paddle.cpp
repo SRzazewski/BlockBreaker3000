@@ -2,9 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-paddle::paddle(sf::RenderWindow *const app_window, sf::Clock *const app_clock, float game_area):
-    window(app_window),
-    clock(app_clock),
+paddle::paddle(float const game_area):
     paddle_area(game_area)
 {
     float size_x = 120.f;
@@ -41,17 +39,22 @@ sf::Vector2f paddle::get_position() const
     return player_s_paddle.getPosition();
 }
 
-sf::Time paddle::count_delta_time()
+sf::Time paddle::count_delta_time(sf::Clock &clock)
 {
-    sf::Time current_time = clock->getElapsedTime();
+    sf::Time current_time = clock.getElapsedTime();
     sf::Time delta = current_time - previus_time;
     previus_time = current_time;
     return delta;
 }
 
-void paddle::draw()
+void paddle::draw() //TODO remove after update moving_object
 {
-    window->draw(player_s_paddle);
+
+}
+
+void paddle::draw(sf::RenderWindow &window)
+{
+    window.draw(player_s_paddle);
 }
 
 void paddle::reset()
