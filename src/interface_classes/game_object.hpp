@@ -3,6 +3,13 @@
 
 #include <SFML/Graphics.hpp>
 
+enum class game_states
+{
+    init_game = 0,
+    during_game,
+    won_game
+};
+
 class game_object
 {
 public:
