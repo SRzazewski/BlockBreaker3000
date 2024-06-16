@@ -30,7 +30,7 @@ int main()
     sf::Clock clock_obj = sf::Clock();
     sf::Time time_obj = sf::Time();
     paddle paddle_obj = paddle(block_breaker_area.x_stop);
-    std::vector<ball> balls = {ball(&window, &clock_obj)};
+    std::vector<ball> balls = {ball()};
 
     std::vector<block> blocks = {block(&window, sf::Vector2f(50.0f, 50.0f)),
                                 block(&window, sf::Vector2f(150.0f, 50.0f)),
@@ -139,7 +139,7 @@ int main()
         window.clear(sf::Color(166u, 166u, 166u));
         window.draw(game_area_shape);
         paddle_obj.draw(window);
-        balls[0].draw();
+        balls[0].draw(window);
         if(block::get_number_of_blocks() > 0)
         {
             for(int i =0; i < blocks.size(); ++i)

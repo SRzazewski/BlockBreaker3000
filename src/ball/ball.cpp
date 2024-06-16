@@ -2,9 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-ball::ball(sf::RenderWindow *const app_window, sf::Clock *const app_clock):
-    window(app_window),
-    clock(app_clock)
+ball::ball()
 {
     float radius = 16.0f;
     ball_shape = sf::CircleShape();
@@ -43,17 +41,22 @@ sf::Vector2f ball::get_velocity_vector() const
     return velocity_vector;
 }
 
-sf::Time ball::count_delta_time()
+sf::Time ball::count_delta_time(sf::Clock &clock)
 {
-    sf::Time current_time = clock->getElapsedTime();
+    sf::Time current_time = clock.getElapsedTime();
     sf::Time delta = current_time - previus_time;
     previus_time = current_time;
     return delta;
 }
 
+void ball::draw(sf::RenderWindow &window)
+{
+    window.draw(ball_shape);
+}
+
 void ball::draw()
 {
-    window->draw(ball_shape);
+    
 }
 
 void ball::reset()
