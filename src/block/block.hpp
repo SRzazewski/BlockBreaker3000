@@ -7,7 +7,7 @@
 class block : public game_object
 {
 public:
-    block(sf::RenderWindow *const app_window, sf::Vector2f start_position);
+    block(sf::Vector2f start_position);
     ~block();
     void set_position(sf::Vector2f position) override;
     sf::Vector2f get_position() const override;
@@ -17,11 +17,10 @@ public:
     static int get_number_of_blocks();
     static void decrement_number_of_blocks();
     static void set_number_of_blocks(int number);
-    void draw() override;
+    void draw(sf::RenderWindow &window) override;
     void reset() override;
 
 private:
-    sf::RenderWindow *const window;
     sf::RectangleShape block_obj;
     static int number_of_blocks;
     bool broken;

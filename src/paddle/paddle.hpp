@@ -8,7 +8,7 @@
 class paddle : public moving_object
 {
 public:
-    paddle(sf::RenderWindow *const app_window, sf::Clock *const app_clock, float game_area);
+    paddle(float game_area);
 
     void set_position(sf::Vector2f position) override;
     void set_velocity_vector(sf::Vector2f vector) override;
@@ -16,14 +16,12 @@ public:
 
     sf::RectangleShape get_paddle() const;
     sf::Vector2f get_position() const override;
-    sf::Time count_delta_time();
-    void draw() override;
+    sf::Time count_delta_time(sf::Clock &clock);
+    void draw(sf::RenderWindow &window) override;
     void reset() override;
 
 
 private:
-    sf::RenderWindow *const window;
-    sf::Clock *const clock;
     float paddle_area;
     sf::RectangleShape player_s_paddle;
     sf::Vector2f velocity_vector;
