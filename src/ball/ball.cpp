@@ -54,11 +54,6 @@ void ball::draw(sf::RenderWindow &window)
     window.draw(ball_shape);
 }
 
-void ball::draw()
-{
-    
-}
-
 void ball::reset()
 {
     velocity_vector.x = 250.0f;

@@ -16,8 +16,7 @@ public:
     void set_velocity_vector(sf::Vector2f vector) override;
     sf::Vector2f get_velocity_vector() const override;
     sf::Time count_delta_time(sf::Clock &clock);
-    void draw(sf::RenderWindow &window);
-    void draw() override;//TODO remove after update moving_object
+    void draw(sf::RenderWindow &window) override;
     void reset() override;
 
 
