@@ -47,11 +47,6 @@ sf::Time paddle::count_delta_time(sf::Clock &clock)
     return delta;
 }
 
-void paddle::draw() //TODO remove after update moving_object
-{
-
-}
-
 void paddle::draw(sf::RenderWindow &window)
 {
     window.draw(player_s_paddle);

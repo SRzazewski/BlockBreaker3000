@@ -17,8 +17,7 @@ public:
     sf::RectangleShape get_paddle() const;
     sf::Vector2f get_position() const override;
     sf::Time count_delta_time(sf::Clock &clock);
-    void draw() override; //TODO remove after update moving_object
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderWindow &window) override;
     void reset() override;
 
 

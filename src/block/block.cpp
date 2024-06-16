@@ -1,7 +1,6 @@
 #include "block.hpp"
 
-block::block(sf::RenderWindow *const app_window, sf::Vector2f start_position):
-        window(app_window)
+block::block(sf::Vector2f start_position)
 {
     number_of_blocks++;
     float size_x = 90.f;
@@ -61,11 +60,11 @@ void block::set_number_of_blocks(int number)
     number_of_blocks = number;
 }
 
-void block::draw()
+void block::draw(sf::RenderWindow &window)
 {
     if (!broken)
     {
-        window->draw(block_obj);
+        window.draw(block_obj);
     }
 }
 

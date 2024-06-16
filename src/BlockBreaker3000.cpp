@@ -32,38 +32,38 @@ int main()
     paddle paddle_obj = paddle(block_breaker_area.x_stop);
     std::vector<ball> balls = {ball()};
 
-    std::vector<block> blocks = {block(&window, sf::Vector2f(50.0f, 50.0f)),
-                                block(&window, sf::Vector2f(150.0f, 50.0f)),
-                                block(&window, sf::Vector2f(250.0f, 50.0f)),
-                                block(&window, sf::Vector2f(350.0f, 50.0f)),
-                                block(&window, sf::Vector2f(450.0f, 50.0f)),
-                                block(&window, sf::Vector2f(550.0f, 50.0f)),
-                                block(&window, sf::Vector2f(650.0f, 50.0f)),
-                                block(&window, sf::Vector2f(750.0f, 50.0f)),
-                                block(&window, sf::Vector2f(50.0f, 80.0f)),
-                                block(&window, sf::Vector2f(150.0f, 80.0f)),
-                                block(&window, sf::Vector2f(250.0f, 80.0f)),
-                                block(&window, sf::Vector2f(350.0f, 80.0f)),
-                                block(&window, sf::Vector2f(450.0f, 80.0f)),
-                                block(&window, sf::Vector2f(550.0f, 80.0f)),
-                                block(&window, sf::Vector2f(650.0f, 80.0f)),
-                                block(&window, sf::Vector2f(750.0f, 80.0f)),
-                                block(&window, sf::Vector2f(50.0f, 110.0f)),
-                                block(&window, sf::Vector2f(150.0f, 110.0f)),
-                                block(&window, sf::Vector2f(250.0f, 110.0f)),
-                                block(&window, sf::Vector2f(350.0f, 110.0f)),
-                                block(&window, sf::Vector2f(450.0f, 110.0f)),
-                                block(&window, sf::Vector2f(550.0f, 110.0f)),
-                                block(&window, sf::Vector2f(650.0f, 110.0f)),
-                                block(&window, sf::Vector2f(750.0f, 110.0f)),
-                                block(&window, sf::Vector2f(50.0f, 140.0f)),
-                                block(&window, sf::Vector2f(150.0f, 140.0f)),
-                                block(&window, sf::Vector2f(250.0f, 140.0f)),
-                                block(&window, sf::Vector2f(350.0f, 140.0f)),
-                                block(&window, sf::Vector2f(450.0f, 140.0f)),
-                                block(&window, sf::Vector2f(550.0f, 140.0f)),
-                                block(&window, sf::Vector2f(650.0f, 140.0f)),
-                                block(&window, sf::Vector2f(750.0f, 140.0f))};
+    std::vector<block> blocks = {block(sf::Vector2f(50.0f, 50.0f)),
+                                block(sf::Vector2f(150.0f, 50.0f)),
+                                block(sf::Vector2f(250.0f, 50.0f)),
+                                block(sf::Vector2f(350.0f, 50.0f)),
+                                block(sf::Vector2f(450.0f, 50.0f)),
+                                block(sf::Vector2f(550.0f, 50.0f)),
+                                block(sf::Vector2f(650.0f, 50.0f)),
+                                block(sf::Vector2f(750.0f, 50.0f)),
+                                block(sf::Vector2f(50.0f, 80.0f)),
+                                block(sf::Vector2f(150.0f, 80.0f)),
+                                block(sf::Vector2f(250.0f, 80.0f)),
+                                block(sf::Vector2f(350.0f, 80.0f)),
+                                block(sf::Vector2f(450.0f, 80.0f)),
+                                block(sf::Vector2f(550.0f, 80.0f)),
+                                block(sf::Vector2f(650.0f, 80.0f)),
+                                block(sf::Vector2f(750.0f, 80.0f)),
+                                block(sf::Vector2f(50.0f, 110.0f)),
+                                block(sf::Vector2f(150.0f, 110.0f)),
+                                block(sf::Vector2f(250.0f, 110.0f)),
+                                block(sf::Vector2f(350.0f, 110.0f)),
+                                block(sf::Vector2f(450.0f, 110.0f)),
+                                block(sf::Vector2f(550.0f, 110.0f)),
+                                block(sf::Vector2f(650.0f, 110.0f)),
+                                block(sf::Vector2f(750.0f, 110.0f)),
+                                block(sf::Vector2f(50.0f, 140.0f)),
+                                block(sf::Vector2f(150.0f, 140.0f)),
+                                block(sf::Vector2f(250.0f, 140.0f)),
+                                block(sf::Vector2f(350.0f, 140.0f)),
+                                block(sf::Vector2f(450.0f, 140.0f)),
+                                block(sf::Vector2f(550.0f, 140.0f)),
+                                block(sf::Vector2f(650.0f, 140.0f)),
+                                block(sf::Vector2f(750.0f, 140.0f))};
 
     sf::RectangleShape game_area_shape = sf::RectangleShape();
     game_area_shape.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
@@ -144,7 +144,7 @@ int main()
         {
             for(int i =0; i < blocks.size(); ++i)
             {
-                blocks[i].draw();
+                blocks[i].draw(window);
             }
         }
         else
