@@ -11,7 +11,8 @@ target_link_libraries(BlockBreaker3000
         Ball
         PhysicOfObject
         Block
-        GameObject)
+        GameObject
+        Game)
         
 target_compile_features(BlockBreaker3000 PRIVATE cxx_std_20)
 

@@ -4,7 +4,12 @@ add_library(Game
 # add_library(BlockBreaker3000::Paddle ALIAS Paddle)
 target_link_libraries(Game 
     PRIVATE 
-        sfml-graphics)
+        sfml-graphics
+        GameObject
+        Paddle
+        Ball
+        Block
+        PhysicOfObject)
 
 target_include_directories(Game 
     INTERFACE 
