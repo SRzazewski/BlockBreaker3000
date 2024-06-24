@@ -4,8 +4,6 @@
 #include <vector>
 #include <iostream>
 
-int block::number_of_blocks = 0;
-
 int main()
 {
     const game_area block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};

@@ -16,13 +16,11 @@ public:
     bool is_broken();
     static int get_number_of_blocks();
     static void decrement_number_of_blocks();
-    static void set_number_of_blocks(int number);
     void draw(sf::RenderWindow &window) override;
     void reset() override;
 
 private:
     sf::RectangleShape block_obj;
-    static int number_of_blocks;
     bool broken;
 };
 
