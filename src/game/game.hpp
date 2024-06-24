@@ -40,9 +40,9 @@ private:
     void game_state_update();
     void move_paddle();
     void move_ball(ball &ball_obj);
-    void ball_meets_edge(ball &ball_obj, sf::Vector2f position_of_ball);
-    void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f position_of_ball);
-    void ball_meets_paddle(ball &ball_obj, sf::Vector2f position_of_ball);
+    void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
+    void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
+    void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
 };
 
 #endif

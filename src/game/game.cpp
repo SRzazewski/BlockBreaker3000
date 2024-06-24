@@ -155,186 +155,186 @@ void game::game_state_update()
 
 void game::move_paddle()
 {
-    sf::Vector2f position_of_paddle = paddle_obj.get_position();
-    sf::Vector2f velocity_of_paddle = paddle_obj.get_velocity_vector();
-    position_of_paddle.x = position_of_paddle.x + (velocity_of_paddle.x * time_delta.asSeconds());
+    sf::Vector2f paddle_position = paddle_obj.get_position();
+    sf::Vector2f paddle_velocity = paddle_obj.get_velocity_vector();
+    paddle_position.x = paddle_position.x + (paddle_velocity.x * time_delta.asSeconds());
 
-    if (velocity_of_paddle.x < 0)
+    if (paddle_velocity.x < 0)
     {
-        if (position_of_paddle.x < (block_breaker_area.x_start + paddle_obj.get_paddle().getSize().x/2.0f))
+        if (paddle_position.x < (block_breaker_area.x_start + paddle_obj.get_paddle().getSize().x/2.0f))
         {
             paddle_obj.set_position(sf::Vector2f((paddle_obj.get_paddle().getSize().x/2.0f), paddle_obj.get_position().y));
         }
         else
         {
-            paddle_obj.set_position(sf::Vector2f(position_of_paddle.x, paddle_obj.get_position().y));
+            paddle_obj.set_position(sf::Vector2f(paddle_position.x, paddle_obj.get_position().y));
         }
     }
 
-    if (velocity_of_paddle.x > 0) 
+    if (paddle_velocity.x > 0) 
     {
-        if (position_of_paddle.x > (block_breaker_area.x_stop - paddle_obj.get_paddle().getSize().x/2.0f))
+        if (paddle_position.x > (block_breaker_area.x_stop - paddle_obj.get_paddle().getSize().x/2.0f))
         {
             paddle_obj.set_position(sf::Vector2f(((block_breaker_area.x_stop - paddle_obj.get_paddle().getSize().x/2.0f)), paddle_obj.get_position().y));    }
         else
         {
-            paddle_obj.set_position(sf::Vector2f(position_of_paddle.x, paddle_obj.get_position().y));
+            paddle_obj.set_position(sf::Vector2f(paddle_position.x, paddle_obj.get_position().y));
         }
     }
 }
 
 void game::move_ball(ball &ball_obj)
 {
-    sf::Vector2f position_of_ball_new = ball_obj.get_position();
-    sf::Vector2f velocity_of_ball = ball_obj.get_velocity_vector();
+    sf::Vector2f ball_position_new = ball_obj.get_position();
+    sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
     
-    position_of_ball_new.x = position_of_ball_new.x + (velocity_of_ball.x * time_delta.asSeconds());
-    position_of_ball_new.y = position_of_ball_new.y + (velocity_of_ball.y * time_delta.asSeconds());
+    ball_position_new.x = ball_position_new.x + (ball_velocity.x * time_delta.asSeconds());
+    ball_position_new.y = ball_position_new.y + (ball_velocity.y * time_delta.asSeconds());
     
-    ball_meets_paddle(ball_obj, position_of_ball_new);
+    ball_meets_paddle(ball_obj, ball_position_new);
     for (int j = 0; j < blocks.size(); ++j)
     {
-        ball_meets_block(ball_obj, blocks[j], position_of_ball_new);
+        ball_meets_block(ball_obj, blocks[j], ball_position_new);
     }
-    ball_meets_edge(ball_obj, position_of_ball_new);
+    ball_meets_edge(ball_obj, ball_position_new);
 }
 
-void game::ball_meets_edge(ball &ball_obj, sf::Vector2f position_of_ball)
+void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 {
-    sf::Vector2f velocity_of_ball = ball_obj.get_velocity_vector();
+    sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
 
-    if (position_of_ball.x < (block_breaker_area.x_start + ball_obj.get_ball().getRadius()))
+    if (ball_position.x < (block_breaker_area.x_start + ball_obj.get_ball().getRadius()))
     {
-        position_of_ball.x = 2 * (block_breaker_area.x_start + ball_obj.get_ball().getRadius()) - position_of_ball.x;
-        velocity_of_ball.x *= -1.0;
+        ball_position.x = 2 * (block_breaker_area.x_start + ball_obj.get_ball().getRadius()) - ball_position.x;
+        ball_velocity.x *= -1.0;
     }
-    else if(position_of_ball.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
+    else if(ball_position.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
     {
-        position_of_ball.x = 2 * (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()) - position_of_ball.x;
-        velocity_of_ball.x *= -1.0;
+        ball_position.x = 2 * (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()) - ball_position.x;
+        ball_velocity.x *= -1.0;
     }
 
-    if (position_of_ball.y < (block_breaker_area.y_start + ball_obj.get_ball().getRadius()))
+    if (ball_position.y < (block_breaker_area.y_start + ball_obj.get_ball().getRadius()))
     {
-        position_of_ball.y = 2 * (block_breaker_area.y_start + ball_obj.get_ball().getRadius()) - position_of_ball.y;
-        velocity_of_ball.y *= -1.0;
+        ball_position.y = 2 * (block_breaker_area.y_start + ball_obj.get_ball().getRadius()) - ball_position.y;
+        ball_velocity.y *= -1.0;
     }
-    else if(position_of_ball.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
+    else if(ball_position.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
     {
         game_state_request = game_states::init_game;
     }
 
-    ball_obj.set_velocity_vector(velocity_of_ball);
-    ball_obj.set_position(position_of_ball);
+    ball_obj.set_velocity_vector(ball_velocity);
+    ball_obj.set_position(ball_position);
 }
 
-void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f position_of_ball)
+void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position)
 {
-    sf::Vector2f velocity_of_ball = ball_obj.get_velocity_vector();
+    sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
     
     if(!block_obj.is_broken())
     {
-        if (velocity_of_ball.y > 0 
-            && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < position_of_ball.y
-            && (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > position_of_ball.y)
+        if (ball_velocity.y > 0 
+            && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < ball_position.y
+            && (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > ball_position.y)
         {
-            if((position_of_ball.x > (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f))
-                && (position_of_ball.x) < (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f))
+            if((ball_position.x > (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f))
+                && (ball_position.x) < (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f))
             {
-                position_of_ball.y = 2 * (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - ball_obj.get_ball().getRadius() - 5.0f) - position_of_ball.y;
-                velocity_of_ball.y *= -1.0;
+                ball_position.y = 2 * (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - ball_obj.get_ball().getRadius() - 5.0f) - ball_position.y;
+                ball_velocity.y *= -1.0;
 
                 block_obj.break_obj();
                 blocks_number--;
             }
         }
-        else if (velocity_of_ball.y < 0
-            && (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > position_of_ball.y
-            && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < position_of_ball.y)
+        else if (ball_velocity.y < 0
+            && (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > ball_position.y
+            && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < ball_position.y)
         {
-            if((position_of_ball.x > (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f))
-                && (position_of_ball.x) < (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f))
+            if((ball_position.x > (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f))
+                && (ball_position.x) < (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f))
             {
-                position_of_ball.y = 2 * (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + ball_obj.get_ball().getRadius() + 5.0f) - position_of_ball.y;
-                velocity_of_ball.y *= -1.0;
-
-                block_obj.break_obj();
-                blocks_number--;
-            }
-        }
-
-        if (velocity_of_ball.x > 0 
-            && (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < position_of_ball.x
-            && (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > position_of_ball.x)
-        {
-            if((position_of_ball.y > (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f))
-                && (position_of_ball.y) < (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f))
-            {
-                position_of_ball.x = 2 * (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - ball_obj.get_ball().getRadius() - 5.0f) - position_of_ball.x;
-                velocity_of_ball.x *= -1.0;
-
-                block_obj.break_obj();
-                blocks_number--;
-            }
-        }
-        else if (velocity_of_ball.x < 0
-            && (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > position_of_ball.x
-            && (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < position_of_ball.x)
-        {
-            if((position_of_ball.y > (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f))
-                && (position_of_ball.y) < (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f))
-            {
-                position_of_ball.x = 2 * (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + ball_obj.get_ball().getRadius() + 5.0f) - position_of_ball.x;
-                velocity_of_ball.x *= -1.0;
+                ball_position.y = 2 * (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + ball_obj.get_ball().getRadius() + 5.0f) - ball_position.y;
+                ball_velocity.y *= -1.0;
 
                 block_obj.break_obj();
                 blocks_number--;
             }
         }
 
-        ball_obj.set_velocity_vector(velocity_of_ball);
-        ball_obj.set_position(position_of_ball);
+        if (ball_velocity.x > 0 
+            && (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < ball_position.x
+            && (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
+        {
+            if((ball_position.y > (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f))
+                && (ball_position.y) < (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f))
+            {
+                ball_position.x = 2 * (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - ball_obj.get_ball().getRadius() - 5.0f) - ball_position.x;
+                ball_velocity.x *= -1.0;
+
+                block_obj.break_obj();
+                blocks_number--;
+            }
+        }
+        else if (ball_velocity.x < 0
+            && (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + 5.0f + ball_obj.get_ball().getRadius()) > ball_position.x
+            && (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - 5.0f - ball_obj.get_ball().getRadius()) < ball_position.x)
+        {
+            if((ball_position.y > (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - 5.0f))
+                && (ball_position.y) < (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + 5.0f))
+            {
+                ball_position.x = 2 * (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + ball_obj.get_ball().getRadius() + 5.0f) - ball_position.x;
+                ball_velocity.x *= -1.0;
+
+                block_obj.break_obj();
+                blocks_number--;
+            }
+        }
+
+        ball_obj.set_velocity_vector(ball_velocity);
+        ball_obj.set_position(ball_position);
     }
 }
 
-void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f position_of_ball)
+void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
 {
-    sf::Vector2f velocity_of_ball = ball_obj.get_velocity_vector();
+    sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
     
-    if (velocity_of_ball.y > 0 
-        && (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) < position_of_ball.y)
+    if (ball_velocity.y > 0 
+        && (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) < ball_position.y)
     {
-        if((position_of_ball.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
-            && (position_of_ball.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
+        if((ball_position.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
+            && (ball_position.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
         {
-            position_of_ball.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - position_of_ball.y;
-            velocity_of_ball.y *= -1.0;
+            ball_position.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - ball_position.y;
+            ball_velocity.y *= -1.0;
         }
     }
 
-    if (velocity_of_ball.x > 0 
-        && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < position_of_ball.x
-        && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > position_of_ball.x)
+    if (ball_velocity.x > 0 
+        && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
+        && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
     {
-        if((position_of_ball.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
-            && (position_of_ball.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+        if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
+            && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
         {
-            position_of_ball.x = 2 * (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) - position_of_ball.x;
-            velocity_of_ball.x *= -1.0;
+            ball_position.x = 2 * (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) - ball_position.x;
+            ball_velocity.x *= -1.0;
         }
     }
-    else if (velocity_of_ball.x < 0 
-        && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < position_of_ball.x
-        && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > position_of_ball.x)
+    else if (ball_velocity.x < 0 
+        && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
+        && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
     {
-        if((position_of_ball.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
-            && (position_of_ball.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+        if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
+            && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
         {
-            position_of_ball.x = 2 * (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) - position_of_ball.x;
-            velocity_of_ball.x *= -1.0;
+            ball_position.x = 2 * (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) - ball_position.x;
+            ball_velocity.x *= -1.0;
         }
     }
 
-    ball_obj.set_velocity_vector(velocity_of_ball);
-    ball_obj.set_position(position_of_ball);
+    ball_obj.set_velocity_vector(ball_velocity);
+    ball_obj.set_position(ball_position);
 }
