@@ -9,7 +9,6 @@ target_link_libraries(BlockBreaker3000
         sfml-graphics
         Paddle
         Ball
-        PhysicOfObject
         Block
         GameObject
         Game)
@@ -27,6 +26,5 @@ endif()
 add_subdirectory(interface_classes)
 add_subdirectory(paddle)
 add_subdirectory(ball)
-add_subdirectory(physic_of_object)
 add_subdirectory(block)
 add_subdirectory(game)

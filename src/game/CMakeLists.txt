@@ -8,8 +8,7 @@ target_link_libraries(Game
         GameObject
         Paddle
         Ball
-        Block
-        PhysicOfObject)
+        Block)
 
 target_include_directories(Game 
     INTERFACE 
