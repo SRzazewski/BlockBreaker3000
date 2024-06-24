@@ -19,6 +19,7 @@ game::game(game_area area):
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+    blocks_number = 0;
 }
 
 
@@ -37,6 +38,7 @@ void game::init(sf::Font &font)
         for(int j = 0; j < 8; ++j)
         {
             blocks.push_back(block(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks_number++;
         }
     }
 }
@@ -51,11 +53,11 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::Left)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-200.0f, 0.0f));
+            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-300.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(200.0f, 0.0f));
+            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(300.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::R)
         {
@@ -65,7 +67,7 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
                 {
                     blocks[i].reset();
                 }
-                block::set_number_of_blocks(blocks.size());
+                blocks_number = blocks.size();
                 paddle_obj.reset();
                 balls[0].reset();
                 game_state_request = game_states::during_game;
@@ -115,7 +117,7 @@ void game::draw(sf::RenderWindow &window)
 
     paddle_obj.draw(window);
     balls[0].draw(window);
-    if(block::get_number_of_blocks() > 0)
+    if(blocks_number > 0)
     {
         for(int i =0; i < blocks.size(); ++i)
         {
@@ -243,8 +245,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f posit
                 velocity_of_ball.y *= -1.0;
 
                 block_obj.break_obj();
-                block::decrement_number_of_blocks();
-                // blocks.erase(blocks.begin() + i);
+                blocks_number--;
             }
         }
         else if (velocity_of_ball.y < 0
@@ -258,8 +259,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f posit
                 velocity_of_ball.y *= -1.0;
 
                 block_obj.break_obj();
-                block::decrement_number_of_blocks();
-                // blocks.erase(blocks.begin() + i);
+                blocks_number--;
             }
         }
 
@@ -274,8 +274,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f posit
                 velocity_of_ball.x *= -1.0;
 
                 block_obj.break_obj();
-                block::decrement_number_of_blocks();
-                // blocks.erase(blocks.begin() + i);
+                blocks_number--;
             }
         }
         else if (velocity_of_ball.x < 0
@@ -289,8 +288,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f posit
                 velocity_of_ball.x *= -1.0;
 
                 block_obj.break_obj();
-                block::decrement_number_of_blocks();
-                // blocks.erase(blocks.begin() + i);
+                blocks_number--;
             }
         }
 
