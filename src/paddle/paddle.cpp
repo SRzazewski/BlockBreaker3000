@@ -2,8 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-paddle::paddle(float const game_area):
-    paddle_area(game_area)
+paddle::paddle()
 {
     float size_x = 120.f;
     float size_y = 20.f;
