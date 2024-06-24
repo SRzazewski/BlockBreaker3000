@@ -35,6 +35,7 @@ private:
     sf::Font font_obj;
     sf::Time previus_time;
     sf::Time time_delta;
+    int blocks_number;
 
     void game_state_update();
     void move_paddle();
