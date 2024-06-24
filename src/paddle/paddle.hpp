@@ -8,7 +8,7 @@
 class paddle : public moving_object
 {
 public:
-    paddle(float game_area);
+    paddle();
 
     void set_position(sf::Vector2f position) override;
     void set_velocity_vector(sf::Vector2f vector) override;
@@ -22,7 +22,6 @@ public:
 
 
 private:
-    float paddle_area;
     sf::RectangleShape player_s_paddle;
     sf::Vector2f velocity_vector;
     sf::Time previus_time;
