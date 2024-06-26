@@ -73,6 +73,7 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
                 balls[0].reset();
                 game_state_request = game_states::during_game;
                 clock_obj.restart();
+                previus_time = sf::seconds(0.0f);;
             }
         }
         break;
@@ -345,9 +346,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 fi -= ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*M_PI/24;
             }
             fi *=2;
-            sf::Vector2f ball_velocity_old = ball_velocity;
-            ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-            ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+            ball_velocity = game::calculate_new_vector(ball_velocity, fi);
         }
         else if (ball_velocity.x > 0 
             && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
@@ -360,9 +359,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 float fi = atan2(ball_velocity.y, ball_velocity.x);
                 fi = M_PI/2 - fi;
                 fi *= 2;
-                sf::Vector2f ball_velocity_old = ball_velocity;
-                ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-                ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+                ball_velocity = game::calculate_new_vector(ball_velocity, fi);
             }
         }
         else if (ball_velocity.x < 0 
@@ -376,13 +373,20 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 float fi = atan2(ball_velocity.y, ball_velocity.x);
                 fi = fi - M_PI/2;
                 fi *= -1.0f;
-                sf::Vector2f ball_velocity_old = ball_velocity;
-                ball_velocity.x = ball_velocity_old.x * cos(2*fi) - ball_velocity_old.y * sin(2*fi);
-                ball_velocity.y = ball_velocity_old.x * sin(2*fi) + ball_velocity_old.y * cos(2*fi);
+                fi *= 2.0f;
+                ball_velocity = game::calculate_new_vector(ball_velocity, fi);
             }
         }
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
     ball_obj.set_position(ball_position);
+}
+
+sf::Vector2f game::calculate_new_vector(sf::Vector2f vector_current, float fi)
+{
+    sf::Vector2f vector_new;
+    vector_new.x = vector_current.x * cos(fi) - vector_current.y * sin(fi);
+    vector_new.y = vector_current.x * sin(fi) + vector_current.y * cos(fi);
+    return vector_new;
 }

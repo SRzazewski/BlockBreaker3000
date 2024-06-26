@@ -43,6 +43,7 @@ private:
     void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
     void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
+    sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
 };
 
 #endif
