@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include <cmath>
 #include <iostream>
 
 game::game() 
@@ -53,11 +54,11 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::Left)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-300.0f, 0.0f));
+            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(300.0f, 0.0f));
+            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::R)
         {
@@ -207,17 +208,39 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
     {
         ball_position.x = 2 * (block_breaker_area.x_start + ball_obj.get_ball().getRadius()) - ball_position.x;
         ball_velocity.x *= -1.0;
+        float fi = 2*atan2(ball_velocity.y, ball_velocity.x);
+        //std::cout << "Angle of x1:" << fi << "\n";
+        sf::Vector2f ball_velocity_old = ball_velocity;
+        // ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
+        // ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+        //std::cout << "x of x1:" << ball_velocity.x << "\n";
+        //std::cout << "y of x1:" << ball_velocity.y << "\n";
     }
     else if(ball_position.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
     {
         ball_position.x = 2 * (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()) - ball_position.x;
         ball_velocity.x *= -1.0;
+        float fi = 2*atan2(ball_velocity.y, ball_velocity.x);
+        //std::cout << "Angle of x2:" << fi << "\n";
+        sf::Vector2f ball_velocity_old = ball_velocity;
+        // ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
+        // ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+        //std::cout << "x of x2:" << ball_velocity.x << "\n";
+        //std::cout << "y of x2:" << ball_velocity.y << "\n";
     }
 
     if (ball_position.y < (block_breaker_area.y_start + ball_obj.get_ball().getRadius()))
     {
         ball_position.y = 2 * (block_breaker_area.y_start + ball_obj.get_ball().getRadius()) - ball_position.y;
         ball_velocity.y *= -1.0;
+        float fi = 2*atan2(ball_velocity.y, ball_velocity.x);
+        fi += M_PI/2;
+        //std::cout << "Angle of y:" << fi << "\n";
+        sf::Vector2f ball_velocity_old = ball_velocity;
+        // ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
+        // ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+        //std::cout << "x of y:" << ball_velocity.x << "\n";
+        //std::cout << "y of y:" << ball_velocity.y << "\n";
     }
     else if(ball_position.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
     {
@@ -308,30 +331,55 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
             && (ball_position.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
         {
             ball_position.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - ball_position.y;
-            ball_velocity.y *= -1.0;
+            float fi = atan2(ball_velocity.y, ball_velocity.x);
+            if (ball_velocity.x > 0)
+            {
+                float padleball = paddle_obj.get_position().x - ball_position.x;
+                fi += ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*(M_PI/24);
+                fi *= -1.0f;
+            }
+            else
+            {
+                fi = M_PI - fi;
+                float padleball = paddle_obj.get_position().x - ball_position.x;
+                fi -= ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*M_PI/24;
+            }
+            fi *=2;
+            sf::Vector2f ball_velocity_old = ball_velocity;
+            ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
+            ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
         }
-    }
-
-    if (ball_velocity.x > 0 
-        && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
-        && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
-    {
-        if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
-            && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+        else if (ball_velocity.x > 0 
+            && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
+            && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
         {
-            ball_position.x = 2 * (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) - ball_position.x;
-            ball_velocity.x *= -1.0;
+            if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
+                && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+            {
+                ball_position.x = 2 * (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) - ball_position.x;
+                float fi = atan2(ball_velocity.y, ball_velocity.x);
+                fi = M_PI/2 - fi;
+                fi *= 2;
+                sf::Vector2f ball_velocity_old = ball_velocity;
+                ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
+                ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+            }
         }
-    }
-    else if (ball_velocity.x < 0 
-        && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
-        && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
-    {
-        if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
-            && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+        else if (ball_velocity.x < 0 
+            && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
+            && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
         {
-            ball_position.x = 2 * (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) - ball_position.x;
-            ball_velocity.x *= -1.0;
+            if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
+                && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+            {
+                ball_position.x = 2 * (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) - ball_position.x;
+                float fi = atan2(ball_velocity.y, ball_velocity.x);
+                fi = fi - M_PI/2;
+                fi *= -1.0f;
+                sf::Vector2f ball_velocity_old = ball_velocity;
+                ball_velocity.x = ball_velocity_old.x * cos(2*fi) - ball_velocity_old.y * sin(2*fi);
+                ball_velocity.y = ball_velocity_old.x * sin(2*fi) + ball_velocity_old.y * cos(2*fi);
+            }
         }
     }
 
