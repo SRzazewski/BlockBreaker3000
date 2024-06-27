@@ -571,7 +571,7 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         }
         else if(ball_velocity.y > 0)
         {
-            fi -= M_PI/2;
+            fi += -M_PI/2;
             fi *= -1.0;
         }
         fi *= 2.0f;
@@ -633,12 +633,11 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 void game::block_broke(block &block_obj)
 {
     block_obj.break_obj();
-    sf::Vector2f powerup_position = block_obj.get_position();
     for(int i : powerup_from_blocks)
     {
         if (i == blocks_number)
         {
-            powerups.push_back(powerup(powerup_position));
+            powerups.push_back(powerup(block_obj.get_position()));
         }
     }
     blocks_number--;
@@ -714,7 +713,8 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
     
     if (ball_velocity.y > 0 
-        && (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) < ball_position.y)
+        && (ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()))
+        && (ball_position.y < (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f)))
     {
         if((ball_position.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
             && (ball_position.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
