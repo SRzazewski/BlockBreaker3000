@@ -5,10 +5,19 @@
 
 enum class game_states
 {
-    init_game = 0,
+    game_init = 0,
+    level_1_init,
     level_1,
-    level_1_won,
-    level_1_lost
+    level_2_init,
+    level_2,
+    level_3_init,
+    level_3,
+    level_4_init,
+    level_4,
+    level_5_init,
+    level_5,
+    level_won,
+    level_lost
 };
 
 class game_object
