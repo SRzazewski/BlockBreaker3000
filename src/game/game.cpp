@@ -5,35 +5,294 @@
 game::game() 
 {
     block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};
-    game_state = game_states::init_game;
-    game_state_request = game_states::level_1;
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
-    text_obj.setString("BlockBreaker3000");
-    blocks_number = 0;
 }
 
 game::game(game_area area):
     block_breaker_area(area)
 {
-    game_state = game_states::init_game;
-    game_state_request = game_states::level_1;
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
-    text_obj.setString("BlockBreaker3000");
-    blocks_number = 0;
 }
 
 
 void game::init(sf::Font &font)
 {
+    game_state = game_states::game_init;
+    game_state_requested = game_states::level_1_init;
     text_obj.setFont(font);
     text_obj.setString("BlockBreaker3000");
     text_obj.setCharacterSize(24);
     text_obj.setFillColor(sf::Color::Red);
     text_obj.setStyle(sf::Text::Bold);
+}
+
+void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+{
+    if(game_state == game_states::level_1_init
+        || game_state == game_states::level_2_init
+        || game_state == game_states::level_3_init
+        || game_state == game_states::level_4_init
+        || game_state == game_states::level_5_init)
+    {
+        game::serve_events_level_init(event, window, clock_obj);
+    }
+    else if(game_state == game_states::level_1
+        || game_state == game_states::level_2
+        || game_state == game_states::level_3
+        || game_state == game_states::level_4
+        || game_state == game_states::level_5)
+    {
+        game::serve_events_level(event, window, clock_obj);
+    }
+    else if(game_state == game_states::level_won)
+    {
+        game::serve_events_level_won(event, window, clock_obj);
+    }
+    else if(game_state == game_states::level_lost)
+    {
+        game::serve_events_level_lost(event, window, clock_obj);
+    }
+}
+
+void game::serve_events_level_init(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+{
+    switch (event.type)
+    {
+    case sf::Event::Closed:
+        window.close();
+        break;
+    case sf::Event::KeyPressed:
+        if (event.key.code == sf::Keyboard::S)
+        {
+            if (game_state == game_states::level_1_init)
+            {
+                game_state_requested = game_states::level_1;
+            }
+            else if (game_state == game_states::level_2_init)
+            {
+                game_state_requested = game_states::level_2;
+            }
+            else if (game_state == game_states::level_3_init)
+            {
+                game_state_requested = game_states::level_3;
+            }
+            else if (game_state == game_states::level_4_init)
+            {
+                game_state_requested = game_states::level_4;
+            }
+            else if (game_state == game_states::level_5_init)
+            {
+                game_state_requested = game_states::level_5;
+            }
+            clock_obj.restart();
+            previus_time = sf::seconds(0.0f);
+        }
+    default:
+        break;
+    }
+}
+
+void game::serve_events_level(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+{
+switch (event.type)
+    {
+    case sf::Event::Closed:
+        window.close();
+        break;
+    case sf::Event::KeyPressed:
+        if (event.key.code == sf::Keyboard::Left)
+        {
+            paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
+        }
+        else if (event.key.code == sf::Keyboard::Right)
+        {
+            paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
+        }
+        break;
+    case sf::Event::KeyReleased:
+        if (event.key.code == sf::Keyboard::Left)
+        {
+            paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+        }
+        else if (event.key.code == sf::Keyboard::Right)
+        {
+            paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void game::serve_events_level_won(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+{
+    switch (event.type)
+    {
+    case sf::Event::Closed:
+        window.close();
+        break;
+    case sf::Event::KeyPressed:
+        if (event.key.code == sf::Keyboard::N)
+        {
+            if (game_state_previus == game_states::level_1)
+            {
+                game_state_requested = game_states::level_2_init;
+            }
+            else if (game_state_previus == game_states::level_2)
+            {
+                game_state_requested = game_states::level_3_init;
+            }
+            else if (game_state_previus == game_states::level_3)
+            {
+                game_state_requested = game_states::level_4_init;
+            }
+            else if (game_state_previus == game_states::level_4)
+            {
+                game_state_requested = game_states::level_5_init;
+            }
+            else if (game_state_previus == game_states::level_5_init)
+            {
+                game_state_requested = game_states::level_1_init;
+            }
+        }
+    default:
+        break;
+    }
+}
+
+void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+{
+
+    switch (event.type)
+    {
+    case sf::Event::Closed:
+        window.close();
+        break;
+    case sf::Event::KeyPressed:
+        if (event.key.code == sf::Keyboard::R)
+        {
+            if (game_state_previus == game_states::level_1)
+            {
+                game_state_requested = game_states::level_1_init;
+            }
+            else if (game_state_previus == game_states::level_2)
+            {
+                game_state_requested = game_states::level_2_init;
+            }
+            else if (game_state_previus == game_states::level_3)
+            {
+                game_state_requested = game_states::level_3_init;
+            }
+            else if (game_state_previus == game_states::level_4)
+            {
+                game_state_requested = game_states::level_4_init;
+            }
+            else if (game_state_previus == game_states::level_5_init)
+            {
+                game_state_requested = game_states::level_5_init;
+            }
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+
+void game::update(sf::Clock &clock_obj)
+{
+    if (game_state_requested != game_state)
+    {
+        game::game_state_update();
+    }
+
+
+    for(const game_states state: states_playing)
+    {
+        if(game_state == state)
+        {   
+            sf::Time current_time = clock_obj.getElapsedTime();
+            time_delta = current_time - previus_time;
+            previus_time = current_time;
+
+            for (auto &ball : balls)
+            {
+                move_ball(ball);
+            }
+            move_paddle();
+            break;
+        }   
+    }
+}
+
+void game::game_state_level_1_prepare()
+{
+    balls.clear();
+    blocks.clear();
+    blocks_number = 0;
+    paddle_obj.reset();
+
+    balls.push_back(ball());
+
+    for(int i = 0; i < 1; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(block(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks_number++;
+        }
+    }
+}
+
+void game::game_state_level_2_prepare()
+{
+    balls.clear();
+    blocks.clear();
+    blocks_number = 0;
+    paddle_obj.reset();
+
+    balls.push_back(ball());
+
+    for(int i = 0; i < 2; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(block(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks_number++;
+        }
+    }
+}
+
+void game::game_state_level_3_prepare()
+{
+
+    balls.clear();
+    blocks.clear();
+    blocks_number = 0;
+    paddle_obj.reset();
+
+    balls.push_back(ball());
+
+    for(int i = 0; i < 3; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(block(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks_number++;
+        }
+    }
+}
+
+void game::game_state_level_4_prepare()
+{
+    balls.clear();
+    blocks.clear();
+    blocks_number = 0;
+    paddle_obj.reset();
 
     balls.push_back(ball());
 
@@ -47,72 +306,103 @@ void game::init(sf::Font &font)
     }
 }
 
-void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::game_state_level_5_prepare()
 {
-    switch (event.type)
+    balls.clear();
+    blocks.clear();
+    blocks_number = 0;
+    paddle_obj.reset();
+
+    balls.push_back(ball());
+
+    for(int i = 0; i < 5; ++i)
     {
-    case sf::Event::Closed:
-        window.close();
-        break;
-    case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::Left)
+        for(int j = 0; j < 8; ++j)
         {
-            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
+            blocks.push_back(block(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks_number++;
         }
-        else if (event.key.code == sf::Keyboard::Right)
-        {
-            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
-        }
-        else if (event.key.code == sf::Keyboard::R)
-        {
-            if(game_state == game_states::level_1_lost || game_state == game_states::level_1_won) 
-            {
-                for(int i =0; i < blocks.size(); ++i)
-                {
-                    blocks[i].reset();
-                }
-                blocks_number = blocks.size();
-                paddle_obj.reset();
-                balls[0].reset();
-                game_state_request = game_states::level_1;
-                clock_obj.restart();
-                previus_time = sf::seconds(0.0f);;
-            }
-        }
-        break;
-    case sf::Event::KeyReleased:
-        if (event.key.code == sf::Keyboard::Left)
-        {
-            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
-        }
-        else if (event.key.code == sf::Keyboard::Right)
-        {
-            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
-        }
-        break;
-    default:
-        break;
     }
 }
 
-void game::update(sf::Clock &clock_obj)
+void game::game_state_update()
 {
-    if (game_state_request != game_state)
+    if (game_state_requested == game_states::level_1_init)
     {
-        game::game_state_update();
+        game::game_state_level_1_prepare();
+        text_obj.setString("BlockBreaker3000 - Press S to start level 1");
+        game_state_previus = game_state;
+        game_state = game_states::level_1_init;
     }
-
-    if (game_state == game_states::level_1)
+    else if (game_state_requested == game_states::level_2_init)
     {
-        sf::Time current_time = clock_obj.getElapsedTime();
-        time_delta = current_time - previus_time;
-        previus_time = current_time;
-
-        for (int i = 0; i < balls.size(); ++i)
-        {
-            move_ball(balls[i]);
-        }
-        move_paddle();
+        game::game_state_level_2_prepare();
+        text_obj.setString("BlockBreaker3000 - Press S to start level 2");
+        game_state_previus = game_state;
+        game_state = game_states::level_2_init;
+    }
+    else if (game_state_requested == game_states::level_3_init)
+    {
+        game::game_state_level_3_prepare();
+        text_obj.setString("BlockBreaker3000 - Press S to start level 3");
+        game_state_previus = game_state;
+        game_state = game_states::level_3_init;
+    }
+    else if (game_state_requested == game_states::level_4_init)
+    {
+        game::game_state_level_4_prepare();
+        text_obj.setString("BlockBreaker3000 - Press S to start level 4");
+        game_state_previus = game_state;
+        game_state = game_states::level_4_init;
+    }
+    else if (game_state_requested == game_states::level_5_init)
+    {
+        game::game_state_level_5_prepare();
+        text_obj.setString("BlockBreaker3000 - Press S to start level 5");
+        game_state_previus = game_state;
+        game_state = game_states::level_5_init;
+    }
+    else if (game_state_requested == game_states::level_1)
+    {
+        text_obj.setString("BlockBreaker3000 - level 1");
+        game_state_previus = game_state;
+        game_state = game_states::level_1;
+    }
+    else if (game_state_requested == game_states::level_2)
+    {
+        text_obj.setString("BlockBreaker3000 - level 2");
+        game_state_previus = game_state;
+        game_state = game_states::level_2;
+    }
+    else if (game_state_requested == game_states::level_3)
+    {
+        text_obj.setString("BlockBreaker3000 - level 3");
+        game_state_previus = game_state;
+        game_state = game_states::level_3;
+    }
+    else if (game_state_requested == game_states::level_4)
+    {
+        text_obj.setString("BlockBreaker3000 - level 4");
+        game_state_previus = game_state;
+        game_state = game_states::level_4;
+    }
+    else if (game_state_requested == game_states::level_5)
+    {
+        text_obj.setString("BlockBreaker3000 - level 5");
+        game_state_previus = game_state;
+        game_state = game_states::level_5;
+    }
+    else if (game_state_requested == game_states::level_lost)
+    {
+        text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset level");
+        game_state_previus = game_state;
+        game_state = game_states::level_lost;
+    }
+    else if (game_state_requested == game_states::level_won)
+    {
+        text_obj.setString("BlockBreaker3000 - You won :) Press N to next level");
+        game_state_previus = game_state;
+        game_state = game_states::level_won;
     }
 }
 
@@ -124,38 +414,17 @@ void game::draw(sf::RenderWindow &window)
     balls[0].draw(window);
     if(blocks_number > 0)
     {
-        for(int i =0; i < blocks.size(); ++i)
+        for(auto block : blocks)
         {
-            blocks[i].draw(window);
+            block.draw(window);
         }
     }
     else
     {
-        game_state_request = game_states::level_1_won;
+        game_state_requested = game_states::level_won;
     }
 
     window.draw(text_obj);
-}
-
-void game::game_state_update()
-{
-    if (game_state_request == game_states::level_1)
-    {
-        // std::cout << "phase game: during game\n";
-        text_obj.setString("BlockBreaker3000 - level 1");
-        game_state = game_states::level_1;
-    }
-    else if (game_state_request == game_states::level_1_lost)
-    {
-        text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset");
-        game_state = game_states::level_1_lost;
-    }
-    
-    if (game_state_request == game_states::level_1_won)
-    {
-        text_obj.setString("BlockBreaker3000 - You won :) Press R to reset");
-        game_state = game_states::level_1_won;
-    }
 }
 
 void game::move_paddle()
@@ -197,9 +466,9 @@ void game::move_ball(ball &ball_obj)
     ball_position_new.y = ball_position_new.y + (ball_velocity.y * time_delta.asSeconds());
     
     ball_meets_paddle(ball_obj, ball_position_new);
-    for (int j = 0; j < blocks.size(); ++j)
+    for (auto &block : blocks)
     {
-        ball_meets_block(ball_obj, blocks[j], ball_position_new);
+        ball_meets_block(ball_obj, block, ball_position_new);
     }
     ball_meets_edge(ball_obj, ball_position_new);
 }
@@ -266,7 +535,7 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
     }
     else if(ball_position.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
     {
-        game_state_request = game_states::level_1_lost;
+        game_state_requested = game_states::level_lost;
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
