@@ -8,7 +8,8 @@ target_link_libraries(Game
         GameObject
         Paddle
         Ball
-        Block)
+        Block
+        Powerup)
 
 target_include_directories(Game 
     INTERFACE 
