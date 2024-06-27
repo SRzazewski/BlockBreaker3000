@@ -1,5 +1,7 @@
 #include "game.hpp"
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 
 game::game() 
@@ -221,22 +223,75 @@ void game::update(sf::Clock &clock_obj)
 
             for (auto &ball : balls)
             {
-                move_ball(ball);
+                if(ball.get_visible())
+                {
+                    move_ball(ball);
+                }
             }
             move_paddle();
+            for (auto &powerup_obj : powerups)
+            {
+                if(powerup_obj.get_visible())
+                {
+                    move_powerup(powerup_obj);
+                }
+            }
             break;
         }   
     }
 }
 
-void game::game_state_level_1_prepare()
+void game::obj_reset()
 {
     balls.clear();
+    balls_number = 0;
     blocks.clear();
     blocks_number = 0;
     paddle_obj.reset();
+    powerups.clear();
+    powerup_from_blocks.clear();
+}
+
+void game::rand_powerups(int powerup_number)
+{
+    std::srand(std::time(0));
+    int rand_number = 0;
+    bool repeated_number = false;
+
+    auto number_is_in_vector = [&](int number)
+    {
+        repeated_number = false;
+        if(powerup_from_blocks.size() > 0)
+        {
+            for(int i: powerup_from_blocks)
+            {
+                if(i == number)
+                {
+                    repeated_number = true;
+                }
+            }
+        }
+    };
+
+    for(int i = 0; i < powerup_number; ++i)
+    {
+        do
+        { 
+            rand_number = std::rand() % (blocks.size());
+            number_is_in_vector(rand_number);
+        }
+        while(rand_number < 4 && repeated_number);
+        
+        powerup_from_blocks.push_back(rand_number);
+    }
+}
+
+void game::game_state_level_1_prepare()
+{
+    obj_reset();
 
     balls.push_back(ball());
+    balls_number++;
 
     for(int i = 0; i < 1; ++i)
     {
@@ -246,16 +301,16 @@ void game::game_state_level_1_prepare()
             blocks_number++;
         }
     }
+
+    rand_powerups(1);
 }
 
 void game::game_state_level_2_prepare()
 {
-    balls.clear();
-    blocks.clear();
-    blocks_number = 0;
-    paddle_obj.reset();
+    obj_reset();
 
     balls.push_back(ball());
+    balls_number++;
 
     for(int i = 0; i < 2; ++i)
     {
@@ -265,17 +320,16 @@ void game::game_state_level_2_prepare()
             blocks_number++;
         }
     }
+
+    rand_powerups(2);
 }
 
 void game::game_state_level_3_prepare()
 {
-
-    balls.clear();
-    blocks.clear();
-    blocks_number = 0;
-    paddle_obj.reset();
+    obj_reset();
 
     balls.push_back(ball());
+    balls_number++;
 
     for(int i = 0; i < 3; ++i)
     {
@@ -285,16 +339,16 @@ void game::game_state_level_3_prepare()
             blocks_number++;
         }
     }
+
+    rand_powerups(4);
 }
 
 void game::game_state_level_4_prepare()
 {
-    balls.clear();
-    blocks.clear();
-    blocks_number = 0;
-    paddle_obj.reset();
+    obj_reset();
 
     balls.push_back(ball());
+    balls_number++;
 
     for(int i = 0; i < 4; ++i)
     {
@@ -304,16 +358,16 @@ void game::game_state_level_4_prepare()
             blocks_number++;
         }
     }
+
+    rand_powerups(5);
 }
 
 void game::game_state_level_5_prepare()
 {
-    balls.clear();
-    blocks.clear();
-    blocks_number = 0;
-    paddle_obj.reset();
+    obj_reset();
 
     balls.push_back(ball());
+    balls_number++;
 
     for(int i = 0; i < 5; ++i)
     {
@@ -323,6 +377,8 @@ void game::game_state_level_5_prepare()
             blocks_number++;
         }
     }
+
+    rand_powerups(7);
 }
 
 void game::game_state_update()
@@ -411,7 +467,20 @@ void game::draw(sf::RenderWindow &window)
     window.draw(game_area_field);
 
     paddle_obj.draw(window);
-    balls[0].draw(window);
+    
+    for(auto ball : balls)
+    {
+        ball.draw(window);
+    }
+
+    if(powerups.size() > 0)
+    {
+        for(auto powerup : powerups)
+        {
+            powerup.draw(window);
+        }
+    }
+
     if(blocks_number > 0)
     {
         for(auto block : blocks)
@@ -471,6 +540,20 @@ void game::move_ball(ball &ball_obj)
         ball_meets_block(ball_obj, block, ball_position_new);
     }
     ball_meets_edge(ball_obj, ball_position_new);
+}
+
+void game::move_powerup(powerup &powerup_obj)
+{
+    sf::Vector2f powerup_position_new = powerup_obj.get_position();
+    sf::Vector2f powerup_velocity = powerup_obj.get_velocity_vector();
+    
+    powerup_position_new.x = powerup_position_new.x + (powerup_velocity.x * time_delta.asSeconds());
+    powerup_position_new.y = powerup_position_new.y + (powerup_velocity.y * time_delta.asSeconds());
+
+    powerup_meets_paddle(powerup_obj);
+    powerup_meets_edge(powerup_obj);
+
+    powerup_obj.set_position(powerup_position_new);
 }
 
 void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
@@ -535,11 +618,30 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
     }
     else if(ball_position.y > (block_breaker_area.y_stop + ball_obj.get_ball().getRadius()))
     {
-        game_state_requested = game_states::level_lost;
+        balls_number--;
+        ball_obj.set_visible(false);
+        if(balls_number < 1)
+        {
+            game_state_requested = game_states::level_lost;
+        }
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
     ball_obj.set_position(ball_position);
+}
+
+void game::block_broke(block &block_obj)
+{
+    block_obj.break_obj();
+    sf::Vector2f powerup_position = block_obj.get_position();
+    for(int i : powerup_from_blocks)
+    {
+        if (i == blocks_number)
+        {
+            powerups.push_back(powerup(powerup_position));
+        }
+    }
+    blocks_number--;
 }
 
 void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position)
@@ -558,8 +660,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
                 ball_position.y = 2 * (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - ball_obj.get_ball().getRadius() - block_obj.get_block().getOutlineThickness()) - ball_position.y;
                 ball_velocity.y *= -1.0;
 
-                block_obj.break_obj();
-                blocks_number--;
+                game::block_broke(block_obj);
             }
         }
         else if (ball_velocity.y < 0
@@ -572,8 +673,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
                 ball_position.y = 2 * (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + ball_obj.get_ball().getRadius() + block_obj.get_block().getOutlineThickness()) - ball_position.y;
                 ball_velocity.y *= -1.0;
 
-                block_obj.break_obj();
-                blocks_number--;
+                game::block_broke(block_obj);
             }
         }
 
@@ -587,8 +687,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
                 ball_position.x = 2 * (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - ball_obj.get_ball().getRadius() - block_obj.get_block().getOutlineThickness()) - ball_position.x;
                 ball_velocity.x *= -1.0;
 
-                block_obj.break_obj();
-                blocks_number--;
+                game::block_broke(block_obj);
             }
         }
         else if (ball_velocity.x < 0
@@ -601,8 +700,7 @@ void game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
                 ball_position.x = 2 * (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + ball_obj.get_ball().getRadius() + block_obj.get_block().getOutlineThickness()) - ball_position.x;
                 ball_velocity.x *= -1.0;
 
-                block_obj.break_obj();
-                blocks_number--;
+                game::block_broke(block_obj);
             }
         }
 
@@ -669,6 +767,28 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
 
     ball_obj.set_velocity_vector(ball_velocity);
     ball_obj.set_position(ball_position);
+}
+
+void game::powerup_meets_paddle(powerup &powerup_obj)
+{
+    if((powerup_obj.get_position().x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
+        && (powerup_obj.get_position().x < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
+        && (powerup_obj.get_position().y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
+        && (powerup_obj.get_position().y < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f)))
+    {
+        powerup_obj.set_visible(false);
+        balls.push_back(ball(sf::Vector2f(paddle_obj.get_position().x + ball_start_position_shift.x, 
+            paddle_obj.get_position().y + ball_start_position_shift.y)));
+        balls_number++;
+    }
+}
+
+void game::powerup_meets_edge(powerup &powerup_obj)
+{
+    if(powerup_obj.get_position().y > (block_breaker_area.y_stop + powerup_obj.get_powerup().getRadius()))
+    {
+        powerup_obj.set_visible(false);
+    }
 }
 
 sf::Vector2f game::calculate_new_vector(sf::Vector2f vector_current, float fi)
