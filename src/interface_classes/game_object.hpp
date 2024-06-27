@@ -6,8 +6,9 @@
 enum class game_states
 {
     init_game = 0,
-    during_game,
-    won_game
+    level_1,
+    level_1_won,
+    level_1_lost
 };
 
 class game_object

@@ -5,21 +5,24 @@
 game::game() 
 {
     block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};
-    game_state = game_states::during_game;
-    game_state_request = game_states::during_game;
+    game_state = game_states::init_game;
+    game_state_request = game_states::level_1;
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+    text_obj.setString("BlockBreaker3000");
+    blocks_number = 0;
 }
 
 game::game(game_area area):
     block_breaker_area(area)
 {
-    game_state = game_states::during_game;
-    game_state_request = game_states::during_game;
+    game_state = game_states::init_game;
+    game_state_request = game_states::level_1;
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+    text_obj.setString("BlockBreaker3000");
     blocks_number = 0;
 }
 
@@ -54,15 +57,15 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::Left)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::R)
         {
-            if(game_state == game_states::init_game || game_state == game_states::won_game) 
+            if(game_state == game_states::level_1_lost || game_state == game_states::level_1_won) 
             {
                 for(int i =0; i < blocks.size(); ++i)
                 {
@@ -71,19 +74,20 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
                 blocks_number = blocks.size();
                 paddle_obj.reset();
                 balls[0].reset();
-                game_state_request = game_states::during_game;
+                game_state_request = game_states::level_1;
                 clock_obj.restart();
+                previus_time = sf::seconds(0.0f);;
             }
         }
         break;
     case sf::Event::KeyReleased:
         if (event.key.code == sf::Keyboard::Left)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
         }
         break;
     default:
@@ -98,7 +102,7 @@ void game::update(sf::Clock &clock_obj)
         game::game_state_update();
     }
 
-    if (game_state == game_states::during_game)
+    if (game_state == game_states::level_1)
     {
         sf::Time current_time = clock_obj.getElapsedTime();
         time_delta = current_time - previus_time;
@@ -127,7 +131,7 @@ void game::draw(sf::RenderWindow &window)
     }
     else
     {
-        game_state_request = game_states::won_game;
+        game_state_request = game_states::level_1_won;
     }
 
     window.draw(text_obj);
@@ -135,22 +139,22 @@ void game::draw(sf::RenderWindow &window)
 
 void game::game_state_update()
 {
-    if (game_state_request == game_states::during_game)
+    if (game_state_request == game_states::level_1)
     {
         // std::cout << "phase game: during game\n";
-        text_obj.setString("BlockBreaker3000");
-        game_state = game_states::during_game;
+        text_obj.setString("BlockBreaker3000 - level 1");
+        game_state = game_states::level_1;
     }
-    else if (game_state_request == game_states::init_game)
+    else if (game_state_request == game_states::level_1_lost)
     {
         text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset");
-        game_state = game_states::init_game;
+        game_state = game_states::level_1_lost;
     }
     
-    if (game_state_request == game_states::won_game)
+    if (game_state_request == game_states::level_1_won)
     {
         text_obj.setString("BlockBreaker3000 - You won :) Press R to reset");
-        game_state = game_states::won_game;
+        game_state = game_states::level_1_won;
     }
 }
 
@@ -207,44 +211,62 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
     if (ball_position.x < (block_breaker_area.x_start + ball_obj.get_ball().getRadius()))
     {
         ball_position.x = 2 * (block_breaker_area.x_start + ball_obj.get_ball().getRadius()) - ball_position.x;
-        ball_velocity.x *= -1.0;
-        float fi = 2*atan2(ball_velocity.y, ball_velocity.x);
-        //std::cout << "Angle of x1:" << fi << "\n";
-        sf::Vector2f ball_velocity_old = ball_velocity;
-        // ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-        // ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
-        //std::cout << "x of x1:" << ball_velocity.x << "\n";
-        //std::cout << "y of x1:" << ball_velocity.y << "\n";
+        float fi = atan2(ball_velocity.y, ball_velocity.x);
+        if(ball_velocity.y < 0)
+        {
+            fi += M_PI/2;
+            fi *= -1.0f;
+        }
+        else if(ball_velocity.y > 0)
+        {
+            fi -= M_PI/2;
+            fi *= -1.0;
+        }
+        fi *= 2.0f;
+        ball_velocity = game::calculate_new_vector(ball_velocity, fi);
     }
     else if(ball_position.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
     {
         ball_position.x = 2 * (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()) - ball_position.x;
-        ball_velocity.x *= -1.0;
-        float fi = 2*atan2(ball_velocity.y, ball_velocity.x);
-        //std::cout << "Angle of x2:" << fi << "\n";
-        sf::Vector2f ball_velocity_old = ball_velocity;
-        // ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-        // ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
-        //std::cout << "x of x2:" << ball_velocity.x << "\n";
-        //std::cout << "y of x2:" << ball_velocity.y << "\n";
+        float fi = atan2(ball_velocity.y, ball_velocity.x);
+        // std::cout << "1Angle before:" << 180/M_PI*fi << "\n";
+        if(ball_velocity.y < 0)
+        {
+            fi = M_PI/2 + fi;
+            fi *= -1.0;
+        }
+        else if(ball_velocity.y > 0)
+        {
+            fi = M_PI/2 - fi;
+        }
+        fi *= 2.0f;
+        // std::cout << "Angle after:" << 180/M_PI*fi << "\n";
+        // std::cout << "Velocity before x:" << ball_velocity.x << "\n";
+        // std::cout << "Velocity before y:" << ball_velocity.y << "\n";
+        ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+        // std::cout << "Velocity after x:" << ball_velocity.x << "\n";
+        // std::cout << "Velocity after y:" << ball_velocity.y << "\n\n";
     }
 
     if (ball_position.y < (block_breaker_area.y_start + ball_obj.get_ball().getRadius()))
     {
         ball_position.y = 2 * (block_breaker_area.y_start + ball_obj.get_ball().getRadius()) - ball_position.y;
-        ball_velocity.y *= -1.0;
-        float fi = 2*atan2(ball_velocity.y, ball_velocity.x);
-        fi += M_PI/2;
-        //std::cout << "Angle of y:" << fi << "\n";
-        sf::Vector2f ball_velocity_old = ball_velocity;
-        // ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-        // ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
-        //std::cout << "x of y:" << ball_velocity.x << "\n";
-        //std::cout << "y of y:" << ball_velocity.y << "\n";
+        float fi = atan2(ball_velocity.y, ball_velocity.x);
+        if(ball_velocity.x < 0)
+        {
+            fi += M_PI;
+            fi *= -1.0;
+        }
+        else if(ball_velocity.x > 0)
+        {
+            fi *= -1.0;
+        }
+        fi *= 2.0f;
+        ball_velocity = game::calculate_new_vector(ball_velocity, fi);
     }
     else if(ball_position.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
     {
-        game_state_request = game_states::init_game;
+        game_state_request = game_states::level_1_lost;
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
@@ -334,20 +356,16 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
             float fi = atan2(ball_velocity.y, ball_velocity.x);
             if (ball_velocity.x > 0)
             {
-                float padleball = paddle_obj.get_position().x - ball_position.x;
                 fi += ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*(M_PI/24);
                 fi *= -1.0f;
             }
             else
             {
                 fi = M_PI - fi;
-                float padleball = paddle_obj.get_position().x - ball_position.x;
-                fi -= ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*M_PI/24;
+                fi += ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*(-M_PI/24);
             }
             fi *=2;
-            sf::Vector2f ball_velocity_old = ball_velocity;
-            ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-            ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+            ball_velocity = game::calculate_new_vector(ball_velocity, fi);
         }
         else if (ball_velocity.x > 0 
             && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
@@ -360,9 +378,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 float fi = atan2(ball_velocity.y, ball_velocity.x);
                 fi = M_PI/2 - fi;
                 fi *= 2;
-                sf::Vector2f ball_velocity_old = ball_velocity;
-                ball_velocity.x = ball_velocity_old.x * cos(fi) - ball_velocity_old.y * sin(fi);
-                ball_velocity.y = ball_velocity_old.x * sin(fi) + ball_velocity_old.y * cos(fi);
+                ball_velocity = game::calculate_new_vector(ball_velocity, fi);
             }
         }
         else if (ball_velocity.x < 0 
@@ -376,13 +392,20 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 float fi = atan2(ball_velocity.y, ball_velocity.x);
                 fi = fi - M_PI/2;
                 fi *= -1.0f;
-                sf::Vector2f ball_velocity_old = ball_velocity;
-                ball_velocity.x = ball_velocity_old.x * cos(2*fi) - ball_velocity_old.y * sin(2*fi);
-                ball_velocity.y = ball_velocity_old.x * sin(2*fi) + ball_velocity_old.y * cos(2*fi);
+                fi *= 2.0f;
+                ball_velocity = game::calculate_new_vector(ball_velocity, fi);
             }
         }
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
     ball_obj.set_position(ball_position);
+}
+
+sf::Vector2f game::calculate_new_vector(sf::Vector2f vector_current, float fi)
+{
+    sf::Vector2f vector_new;
+    vector_new.x = vector_current.x * cos(fi) - vector_current.y * sin(fi);
+    vector_new.y = vector_current.x * sin(fi) + vector_current.y * cos(fi);
+    return vector_new;
 }
