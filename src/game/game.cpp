@@ -533,7 +533,7 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         fi *= 2.0f;
         ball_velocity = game::calculate_new_vector(ball_velocity, fi);
     }
-    else if(ball_position.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
+    else if(ball_position.y > (block_breaker_area.y_stop + ball_obj.get_ball().getRadius()))
     {
         game_state_requested = game_states::level_lost;
     }
