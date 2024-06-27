@@ -5,21 +5,24 @@
 game::game() 
 {
     block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};
-    game_state = game_states::during_game;
-    game_state_request = game_states::during_game;
+    game_state = game_states::init_game;
+    game_state_request = game_states::level_1;
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+    text_obj.setString("BlockBreaker3000");
+    blocks_number = 0;
 }
 
 game::game(game_area area):
     block_breaker_area(area)
 {
-    game_state = game_states::during_game;
-    game_state_request = game_states::during_game;
+    game_state = game_states::init_game;
+    game_state_request = game_states::level_1;
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+    text_obj.setString("BlockBreaker3000");
     blocks_number = 0;
 }
 
@@ -54,15 +57,15 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::Left)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::R)
         {
-            if(game_state == game_states::init_game || game_state == game_states::won_game) 
+            if(game_state == game_states::level_1_lost || game_state == game_states::level_1_won) 
             {
                 for(int i =0; i < blocks.size(); ++i)
                 {
@@ -71,7 +74,7 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
                 blocks_number = blocks.size();
                 paddle_obj.reset();
                 balls[0].reset();
-                game_state_request = game_states::during_game;
+                game_state_request = game_states::level_1;
                 clock_obj.restart();
                 previus_time = sf::seconds(0.0f);;
             }
@@ -80,11 +83,11 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
     case sf::Event::KeyReleased:
         if (event.key.code == sf::Keyboard::Left)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            if(game_state == game_states::during_game) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+            if(game_state == game_states::level_1) paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
         }
         break;
     default:
@@ -99,7 +102,7 @@ void game::update(sf::Clock &clock_obj)
         game::game_state_update();
     }
 
-    if (game_state == game_states::during_game)
+    if (game_state == game_states::level_1)
     {
         sf::Time current_time = clock_obj.getElapsedTime();
         time_delta = current_time - previus_time;
@@ -128,7 +131,7 @@ void game::draw(sf::RenderWindow &window)
     }
     else
     {
-        game_state_request = game_states::won_game;
+        game_state_request = game_states::level_1_won;
     }
 
     window.draw(text_obj);
@@ -136,22 +139,22 @@ void game::draw(sf::RenderWindow &window)
 
 void game::game_state_update()
 {
-    if (game_state_request == game_states::during_game)
+    if (game_state_request == game_states::level_1)
     {
         // std::cout << "phase game: during game\n";
-        text_obj.setString("BlockBreaker3000");
-        game_state = game_states::during_game;
+        text_obj.setString("BlockBreaker3000 - level 1");
+        game_state = game_states::level_1;
     }
-    else if (game_state_request == game_states::init_game)
+    else if (game_state_request == game_states::level_1_lost)
     {
         text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset");
-        game_state = game_states::init_game;
+        game_state = game_states::level_1_lost;
     }
     
-    if (game_state_request == game_states::won_game)
+    if (game_state_request == game_states::level_1_won)
     {
         text_obj.setString("BlockBreaker3000 - You won :) Press R to reset");
-        game_state = game_states::won_game;
+        game_state = game_states::level_1_won;
     }
 }
 
@@ -263,7 +266,7 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
     }
     else if(ball_position.y > (block_breaker_area.y_stop - ball_obj.get_ball().getRadius()))
     {
-        game_state_request = game_states::init_game;
+        game_state_request = game_states::level_1_lost;
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
