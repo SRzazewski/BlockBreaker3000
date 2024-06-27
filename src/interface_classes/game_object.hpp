@@ -2,6 +2,7 @@
 #define GAME_OBJECT_HPP
 
 #include <SFML/Graphics.hpp>
+#include <array>
 
 enum class game_states
 {
@@ -19,6 +20,20 @@ enum class game_states
     level_won,
     level_lost
 };
+
+constexpr std::array<game_states, 5> states_init
+{{game_states::level_1_init, 
+game_states::level_2_init, 
+game_states::level_3_init, 
+game_states::level_4_init, 
+game_states::level_5_init}};
+
+constexpr std::array<game_states, 5> states_playing
+{{game_states::level_1, 
+game_states::level_2, 
+game_states::level_3, 
+game_states::level_4, 
+game_states::level_5}};
 
 class game_object
 {

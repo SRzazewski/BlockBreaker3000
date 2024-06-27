@@ -210,21 +210,22 @@ void game::update(sf::Clock &clock_obj)
         game::game_state_update();
     }
 
-    if (game_state == game_states::level_1
-        || game_state == game_states::level_2
-        || game_state == game_states::level_3
-        || game_state == game_states::level_4
-        || game_state == game_states::level_5)
-    {
-        sf::Time current_time = clock_obj.getElapsedTime();
-        time_delta = current_time - previus_time;
-        previus_time = current_time;
 
-        for (int i = 0; i < balls.size(); ++i)
-        {
-            move_ball(balls[i]);
-        }
-        move_paddle();
+    for(const game_states state: states_playing)
+    {
+        if(game_state == state)
+        {   
+            sf::Time current_time = clock_obj.getElapsedTime();
+            time_delta = current_time - previus_time;
+            previus_time = current_time;
+
+            for (auto &ball : balls)
+            {
+                move_ball(ball);
+            }
+            move_paddle();
+            break;
+        }   
     }
 }
 
@@ -328,7 +329,6 @@ void game::game_state_update()
 {
     if (game_state_requested == game_states::level_1_init)
     {
-        // std::cout << "phase game: during game\n";
         game::game_state_level_1_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 1");
         game_state_previus = game_state;
@@ -336,7 +336,6 @@ void game::game_state_update()
     }
     else if (game_state_requested == game_states::level_2_init)
     {
-        // std::cout << "phase game: during game\n";
         game::game_state_level_2_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 2");
         game_state_previus = game_state;
@@ -344,7 +343,6 @@ void game::game_state_update()
     }
     else if (game_state_requested == game_states::level_3_init)
     {
-        // std::cout << "phase game: during game\n";
         game::game_state_level_3_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 3");
         game_state_previus = game_state;
@@ -352,7 +350,6 @@ void game::game_state_update()
     }
     else if (game_state_requested == game_states::level_4_init)
     {
-        // std::cout << "phase game: during game\n";
         game::game_state_level_4_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 4");
         game_state_previus = game_state;
@@ -360,7 +357,6 @@ void game::game_state_update()
     }
     else if (game_state_requested == game_states::level_5_init)
     {
-        // std::cout << "phase game: during game\n";
         game::game_state_level_5_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 5");
         game_state_previus = game_state;
@@ -368,35 +364,30 @@ void game::game_state_update()
     }
     else if (game_state_requested == game_states::level_1)
     {
-        // std::cout << "phase game: during game\n";
         text_obj.setString("BlockBreaker3000 - level 1");
         game_state_previus = game_state;
         game_state = game_states::level_1;
     }
     else if (game_state_requested == game_states::level_2)
     {
-        // std::cout << "phase game: during game\n";
         text_obj.setString("BlockBreaker3000 - level 2");
         game_state_previus = game_state;
         game_state = game_states::level_2;
     }
     else if (game_state_requested == game_states::level_3)
     {
-        // std::cout << "phase game: during game\n";
         text_obj.setString("BlockBreaker3000 - level 3");
         game_state_previus = game_state;
         game_state = game_states::level_3;
     }
     else if (game_state_requested == game_states::level_4)
     {
-        // std::cout << "phase game: during game\n";
         text_obj.setString("BlockBreaker3000 - level 4");
         game_state_previus = game_state;
         game_state = game_states::level_4;
     }
     else if (game_state_requested == game_states::level_5)
     {
-        // std::cout << "phase game: during game\n";
         text_obj.setString("BlockBreaker3000 - level 5");
         game_state_previus = game_state;
         game_state = game_states::level_5;
@@ -423,9 +414,9 @@ void game::draw(sf::RenderWindow &window)
     balls[0].draw(window);
     if(blocks_number > 0)
     {
-        for(int i =0; i < blocks.size(); ++i)
+        for(auto block : blocks)
         {
-            blocks[i].draw(window);
+            block.draw(window);
         }
     }
     else
@@ -475,9 +466,9 @@ void game::move_ball(ball &ball_obj)
     ball_position_new.y = ball_position_new.y + (ball_velocity.y * time_delta.asSeconds());
     
     ball_meets_paddle(ball_obj, ball_position_new);
-    for (int j = 0; j < blocks.size(); ++j)
+    for (auto &block : blocks)
     {
-        ball_meets_block(ball_obj, blocks[j], ball_position_new);
+        ball_meets_block(ball_obj, block, ball_position_new);
     }
     ball_meets_edge(ball_obj, ball_position_new);
 }
