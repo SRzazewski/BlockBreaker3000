@@ -13,7 +13,7 @@ int main()
     game game_obj = game(block_breaker_area);
 
     sf::Font font;
-    if (!font.loadFromFile("arial.ttf"))
+    if (!font.loadFromFile("font/arial.ttf"))
     {
         window.close();
     }
