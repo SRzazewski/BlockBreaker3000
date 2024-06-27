@@ -2,7 +2,6 @@
 
 block::block(sf::Vector2f start_position)
 {
-    number_of_blocks++;
     float size_x = 90.f;
     float size_y = 20.f;
     broken = false;
@@ -43,21 +42,6 @@ void block::break_obj()
 bool block::is_broken()
 {
     return broken;
-}
-
-int block::get_number_of_blocks()
-{
-    return number_of_blocks;
-}
-
-void block::decrement_number_of_blocks()
-{
-    number_of_blocks--;
-}
-
-void block::set_number_of_blocks(int number)
-{
-    number_of_blocks = number;
 }
 
 void block::draw(sf::RenderWindow &window)
