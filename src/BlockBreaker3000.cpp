@@ -1,8 +1,5 @@
 #include "game.hpp"
 #include <SFML/Graphics.hpp>
-#include <memory>
-#include <vector>
-#include <iostream>
 
 int main()
 {
@@ -13,13 +10,12 @@ int main()
     game game_obj = game(block_breaker_area);
 
     sf::Font font;
-    if (!font.loadFromFile("arial.ttf"))
+    if (!font.loadFromFile("font/arial.ttf"))
     {
         window.close();
     }
 
     sf::Clock clock_obj = sf::Clock();
-    sf::Time time_obj = sf::Time();
 
     game_obj.init(font);
 
@@ -33,8 +29,6 @@ int main()
         window.clear(sf::Color(166u, 166u, 166u));
         game_obj.update(clock_obj);
         game_obj.draw(window);
-
-        // std::cout << "Number of blocks:" << block::get_number_of_blocks() << "\n";
         window.display();
     }
 }

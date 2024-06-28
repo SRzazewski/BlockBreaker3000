@@ -11,6 +11,7 @@ target_link_libraries(BlockBreaker3000
         Ball
         Block
         GameObject
+        Powerup
         Game)
         
 target_compile_features(BlockBreaker3000 PRIVATE cxx_std_20)
@@ -27,4 +28,11 @@ add_subdirectory(interface_classes)
 add_subdirectory(paddle)
 add_subdirectory(ball)
 add_subdirectory(block)
+add_subdirectory(powerup)
 add_subdirectory(game)
+
+add_custom_command(
+    TARGET BlockBreaker3000 POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/font/arial.ttf" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/font/arial.ttf"
+    COMMENT "Copying ${arial.ttf} to build directory"
+)

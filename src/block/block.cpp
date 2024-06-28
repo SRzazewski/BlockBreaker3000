@@ -51,8 +51,3 @@ void block::draw(sf::RenderWindow &window)
         window.draw(block_obj);
     }
 }
-
-void block::reset()
-{
-    broken = false;
-}
