@@ -34,19 +34,23 @@ void game::init(sf::Font &font)
 
 void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
 {
-    if(game_state == game_states::level_1_init
-        || game_state == game_states::level_2_init
-        || game_state == game_states::level_3_init
-        || game_state == game_states::level_4_init
-        || game_state == game_states::level_5_init)
+    auto state_is_from_scope = [](game_states state, const std::array<game_states, 5> scope) -> bool
+    {
+        for(game_states st : scope)
+        {
+            if(state == st)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    if(state_is_from_scope(game_state, states_init))
     {
         game::serve_events_level_init(event, window, clock_obj);
     }
-    else if(game_state == game_states::level_1
-        || game_state == game_states::level_2
-        || game_state == game_states::level_3
-        || game_state == game_states::level_4
-        || game_state == game_states::level_5)
+    else if(state_is_from_scope(game_state, states_playing))
     {
         game::serve_events_level(event, window, clock_obj);
     }
@@ -193,7 +197,7 @@ void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &wind
             {
                 game_state_requested = game_states::level_4_init;
             }
-            else if (game_state_previus == game_states::level_5_init)
+            else if (game_state_previus == game_states::level_5)
             {
                 game_state_requested = game_states::level_5_init;
             }
@@ -203,7 +207,6 @@ void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &wind
         break;
     }
 }
-
 
 void game::update(sf::Clock &clock_obj)
 {
@@ -256,21 +259,20 @@ void game::rand_powerups(int powerup_number)
 {
     std::srand(std::time(0));
     int rand_number = 0;
-    bool repeated_number = false;
 
-    auto number_is_in_vector = [&](int number)
+    auto number_is_in_vector = [=](int number) -> bool
     {
-        repeated_number = false;
         if(powerup_from_blocks.size() > 0)
         {
             for(int i: powerup_from_blocks)
             {
                 if(i == number)
                 {
-                    repeated_number = true;
+                    return true;
                 }
             }
         }
+        return false;
     };
 
     for(int i = 0; i < powerup_number; ++i)
@@ -278,9 +280,8 @@ void game::rand_powerups(int powerup_number)
         do
         { 
             rand_number = std::rand() % (blocks.size());
-            number_is_in_vector(rand_number);
         }
-        while(rand_number < 4 && repeated_number);
+        while(rand_number < 4 || number_is_in_vector(rand_number));
         
         powerup_from_blocks.push_back(rand_number);
     }
@@ -388,77 +389,77 @@ void game::game_state_update()
         game::game_state_level_1_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 1");
         game_state_previus = game_state;
-        game_state = game_states::level_1_init;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_2_init)
     {
         game::game_state_level_2_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 2");
         game_state_previus = game_state;
-        game_state = game_states::level_2_init;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_3_init)
     {
         game::game_state_level_3_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 3");
         game_state_previus = game_state;
-        game_state = game_states::level_3_init;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_4_init)
     {
         game::game_state_level_4_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 4");
         game_state_previus = game_state;
-        game_state = game_states::level_4_init;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_5_init)
     {
         game::game_state_level_5_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 5");
         game_state_previus = game_state;
-        game_state = game_states::level_5_init;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_1)
     {
         text_obj.setString("BlockBreaker3000 - level 1");
         game_state_previus = game_state;
-        game_state = game_states::level_1;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_2)
     {
         text_obj.setString("BlockBreaker3000 - level 2");
         game_state_previus = game_state;
-        game_state = game_states::level_2;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_3)
     {
         text_obj.setString("BlockBreaker3000 - level 3");
         game_state_previus = game_state;
-        game_state = game_states::level_3;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_4)
     {
         text_obj.setString("BlockBreaker3000 - level 4");
         game_state_previus = game_state;
-        game_state = game_states::level_4;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_5)
     {
         text_obj.setString("BlockBreaker3000 - level 5");
         game_state_previus = game_state;
-        game_state = game_states::level_5;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_lost)
     {
         text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset level");
         game_state_previus = game_state;
-        game_state = game_states::level_lost;
+        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_won)
     {
         text_obj.setString("BlockBreaker3000 - You won :) Press N to next level");
         game_state_previus = game_state;
-        game_state = game_states::level_won;
+        game_state = game_state_requested;
     }
 }
 

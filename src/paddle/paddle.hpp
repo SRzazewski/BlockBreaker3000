@@ -18,7 +18,7 @@ public:
     sf::Vector2f get_position() const override;
     sf::Time count_delta_time(sf::Clock &clock);
     void draw(sf::RenderWindow &window) override;
-    void reset() override;
+    void reset();
 
 
 private:

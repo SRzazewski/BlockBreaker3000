@@ -17,7 +17,6 @@ public:
     static int get_number_of_blocks();
     static void decrement_number_of_blocks();
     void draw(sf::RenderWindow &window) override;
-    void reset() override;
 
 private:
     sf::RectangleShape block_obj;

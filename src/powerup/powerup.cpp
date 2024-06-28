@@ -67,8 +67,3 @@ bool powerup::get_visible()
 {
     return visible;
 }
-
-void powerup::reset()
-{
-
-}

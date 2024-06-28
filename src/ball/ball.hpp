@@ -18,7 +18,6 @@ public:
     sf::Vector2f get_velocity_vector() const override;
     sf::Time count_delta_time(sf::Clock &clock);
     void draw(sf::RenderWindow &window) override;
-    void reset() override;
     void set_visible(bool is_visible);
     bool get_visible();
 
