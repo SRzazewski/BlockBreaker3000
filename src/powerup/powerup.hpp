@@ -19,9 +19,6 @@ public:
     void draw(sf::RenderWindow &window) override;
     void set_visible(bool is_visable);
     bool get_visible();
-    void reset() override;
-
-
 
 private:
     sf::CircleShape powerup_shape;

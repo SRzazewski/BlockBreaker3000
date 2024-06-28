@@ -71,14 +71,6 @@ void ball::draw(sf::RenderWindow &window)
     }
 }
 
-void ball::reset()
-{
-    velocity_vector.x = 250.0f;
-    velocity_vector.y = 250.0f;
-    ball_shape.setPosition(sf::Vector2f(385.0f, 500.0f));;
-    previus_time = sf::seconds(0.0f);
-}
-
 void ball::set_visible(bool is_visible)
 {
     visible = is_visible;
