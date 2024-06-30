@@ -6,6 +6,38 @@
 #include "block.hpp"
 #include "powerup.hpp"
 #include <SFML/Graphics.hpp>
+#include <array>
+
+enum class game_states
+{
+    game_init = 0,
+    level_1_init,
+    level_1,
+    level_2_init,
+    level_2,
+    level_3_init,
+    level_3,
+    level_4_init,
+    level_4,
+    level_5_init,
+    level_5,
+    level_won,
+    level_lost
+};
+
+constexpr std::array<game_states, 5> states_init
+{{game_states::level_1_init, 
+game_states::level_2_init, 
+game_states::level_3_init, 
+game_states::level_4_init, 
+game_states::level_5_init}};
+
+constexpr std::array<game_states, 5> states_playing
+{{game_states::level_1, 
+game_states::level_2, 
+game_states::level_3, 
+game_states::level_4, 
+game_states::level_5}};
 
 struct game_area
 {
@@ -34,7 +66,7 @@ private:
     game_states game_state_requested;
     paddle paddle_obj;
     std::vector<ball> balls;
-    std::vector<block> blocks;
+    std::vector<std::shared_ptr<block>> blocks;
     std::vector<powerup> powerups;
     sf::Text text_obj;
     sf::Font font_obj;
@@ -64,8 +96,8 @@ private:
     void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
     void powerup_meets_paddle(powerup &powerup_obj);
     void powerup_meets_edge(powerup &powerup_obj);
-    void block_broke(block &block_obj);
-    void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
+    void block_broke(std::shared_ptr<block> block_obj);
+    void ball_meets_block(ball &ball_obj, std::shared_ptr<block> block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
     sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
 };
