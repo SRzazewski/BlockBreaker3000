@@ -1,5 +1,6 @@
 add_library(Block
-    block.cpp)
+    block_blue.cpp
+    block_orange.cpp)
 
 target_link_libraries(Block
     PRIVATE 

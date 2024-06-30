@@ -7,20 +7,16 @@
 class block : public game_object
 {
 public:
-    block(sf::Vector2f start_position);
-    ~block();
-    void set_position(sf::Vector2f position) override;
-    sf::Vector2f get_position() const override;
-    sf::RectangleShape get_block();
-    void break_obj();
-    bool is_broken();
-    static int get_number_of_blocks();
-    static void decrement_number_of_blocks();
-    void draw(sf::RenderWindow &window) override;
+    block(sf::Vector2f start_position = sf::Vector2f(0.0f, 0.0f)) {};
+    ~block() {};
+    virtual sf::RectangleShape get_block() = 0;
+    virtual int break_obj() = 0;
+    virtual bool is_broken() = 0;
 
-private:
+protected:
     sf::RectangleShape block_obj;
     bool broken;
+    int point_for_breaking;
 };
 
 #endif
