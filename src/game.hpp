@@ -58,8 +58,8 @@ public:
     game();
     game(game_area area);
     void init(sf::Font &font);
-    void serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
-    void update(sf::RenderWindow &window, sf::Clock &clock_obj);
+    void serve_events(const sf::Event event, sf::RenderWindow &window);
+    void update(sf::RenderWindow &window, sf::Time delta);
     void draw(sf::RenderWindow &window);
 
 private:
@@ -75,18 +75,16 @@ private:
     sf::Text text_obj;
     sf::Text text_score;
     sf::Font font_obj;
-    sf::Time previus_time;
-    sf::Time time_delta;
     int blocks_number;
     int balls_number;
     std::vector<int> powerup_from_blocks;
     int score;
     int score_level;
 
-    void serve_events_level_init(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
-    void serve_events_level(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
-    void serve_events_level_won(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
-    void serve_events_level_lost(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
+    void serve_events_level_init(const sf::Event event, sf::RenderWindow &window);
+    void serve_events_level(const sf::Event event, sf::RenderWindow &window);
+    void serve_events_level_won(const sf::Event event, sf::RenderWindow &window);
+    void serve_events_level_lost(const sf::Event event, sf::RenderWindow &window);
 
     void game_state_update(sf::RenderWindow &window);
     void obj_reset();
@@ -97,9 +95,9 @@ private:
     void game_state_level_4_prepare();
     void game_state_level_5_prepare();
     
-    void move_paddle();
-    void move_ball(ball &ball_obj);
-    void move_powerup(powerup &powerup_obj);
+    void move_paddle(sf::Time time_delta);
+    void move_ball(ball &ball_obj, sf::Time time_delta);
+    void move_powerup(powerup &powerup_obj, sf::Time time_delta);
     void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
     void powerup_meets_paddle(powerup &powerup_obj);
     void powerup_meets_edge(powerup &powerup_obj);

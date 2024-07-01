@@ -44,7 +44,7 @@ void game::init(sf::Font &font)
     text_score.setPosition(0.0f, 30.0f);
 }
 
-void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::serve_events(const sf::Event event, sf::RenderWindow &window)
 {
     auto state_is_from_scope = [](game_states state, const std::array<game_states, 5> scope) -> bool
     {
@@ -60,23 +60,23 @@ void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clo
 
     if(state_is_from_scope(game_state, states_init))
     {
-        game::serve_events_level_init(event, window, clock_obj);
+        game::serve_events_level_init(event, window);
     }
     else if(state_is_from_scope(game_state, states_playing))
     {
-        game::serve_events_level(event, window, clock_obj);
+        game::serve_events_level(event, window);
     }
     else if(game_state == game_states::level_won)
     {
-        game::serve_events_level_won(event, window, clock_obj);
+        game::serve_events_level_won(event, window);
     }
     else if(game_state == game_states::level_lost)
     {
-        game::serve_events_level_lost(event, window, clock_obj);
+        game::serve_events_level_lost(event, window);
     }
 }
 
-void game::serve_events_level_init(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::serve_events_level_init(const sf::Event event, sf::RenderWindow &window)
 {
     switch (event.type)
     {
@@ -106,15 +106,13 @@ void game::serve_events_level_init(const sf::Event event, sf::RenderWindow &wind
             {
                 game_state_requested = game_states::level_5;
             }
-            clock_obj.restart();
-            previus_time = sf::seconds(0.0f);
         }
     default:
         break;
     }
 }
 
-void game::serve_events_level(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::serve_events_level(const sf::Event event, sf::RenderWindow &window)
 {
 switch (event.type)
     {
@@ -146,7 +144,7 @@ switch (event.type)
     }
 }
 
-void game::serve_events_level_won(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::serve_events_level_won(const sf::Event event, sf::RenderWindow &window)
 {
     switch (event.type)
     {
@@ -182,7 +180,7 @@ void game::serve_events_level_won(const sf::Event event, sf::RenderWindow &windo
     }
 }
 
-void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &window)
 {
 
     switch (event.type)
@@ -220,35 +218,30 @@ void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &wind
     }
 }
 
-void game::update(sf::RenderWindow &window, sf::Clock &clock_obj)
+void game::update(sf::RenderWindow &window, sf::Time time_delta)
 {
     if (game_state_requested != game_state)
     {
         game::game_state_update(window);
     }
 
-
     for(const game_states state: states_playing)
     {
         if(game_state == state)
         {   
-            sf::Time current_time = clock_obj.getElapsedTime();
-            time_delta = current_time - previus_time;
-            previus_time = current_time;
-
             for (auto &ball : balls)
             {
                 if(ball.get_visible())
                 {
-                    move_ball(ball);
+                    move_ball(ball, time_delta);
                 }
             }
-            move_paddle();
+            move_paddle(time_delta);
             for (auto &powerup_obj : powerups)
             {
                 if(powerup_obj.get_visible())
                 {
-                    move_powerup(powerup_obj);
+                    move_powerup(powerup_obj, time_delta);
                 }
             }
             break;
@@ -274,28 +267,13 @@ void game::rand_powerups(int powerup_number)
     std::srand(std::time(0));
     int rand_number = 0;
 
-    auto number_is_in_vector = [=](int number) -> bool
-    {
-        if(powerup_from_blocks.size() > 0)
-        {
-            for(int i: powerup_from_blocks)
-            {
-                if(i == number)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
-
     for(int i = 0; i < powerup_number; ++i)
     {
         do
         { 
             rand_number = std::rand() % (blocks.size());
         }
-        while(rand_number < powerup_banned_blocks || number_is_in_vector(rand_number));
+        while(rand_number < powerup_banned_blocks || std::find(powerup_from_blocks.begin(), powerup_from_blocks.end(), rand_number) != powerup_from_blocks.end());
         
         powerup_from_blocks.push_back(rand_number);
     }
@@ -612,7 +590,7 @@ void game::draw(sf::RenderWindow &window)
     window.draw(text_score);
 }
 
-void game::move_paddle()
+void game::move_paddle(sf::Time time_delta)
 {
     sf::Vector2f paddle_position = paddle_obj.get_position();
     sf::Vector2f paddle_velocity = paddle_obj.get_velocity_vector();
@@ -642,7 +620,7 @@ void game::move_paddle()
     }
 }
 
-void game::move_ball(ball &ball_obj)
+void game::move_ball(ball &ball_obj, sf::Time time_delta)
 {
     sf::Vector2f ball_position_new = ball_obj.get_position();
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
@@ -658,7 +636,7 @@ void game::move_ball(ball &ball_obj)
     ball_meets_edge(ball_obj, ball_position_new);
 }
 
-void game::move_powerup(powerup &powerup_obj)
+void game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
 {
     sf::Vector2f powerup_position_new = powerup_obj.get_position();
     sf::Vector2f powerup_velocity = powerup_obj.get_velocity_vector();

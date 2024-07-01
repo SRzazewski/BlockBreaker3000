@@ -23,11 +23,11 @@ int main()
     {
         for (auto event = sf::Event{}; window.pollEvent(event);)
         {
-            game_obj.serve_events(event, window, clock_obj);
+            game_obj.serve_events(event, window);
         }
 
         window.clear(sf::Color(166u, 166u, 166u));
-        game_obj.update(window, clock_obj);
+        game_obj.update(window, clock_obj.restart());
         game_obj.draw(window);
         window.display();
     }
