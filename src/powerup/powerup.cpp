@@ -13,6 +13,7 @@ powerup::powerup(sf::Vector2f start_position)
     velocity_vector.y = 100.0f;
     powerup_shape.setPosition(start_position);
     visible = true;
+    points = 50;
 }
 
 powerup::~powerup() {}
@@ -66,4 +67,9 @@ void powerup::set_visible(bool is_visable)
 bool powerup::get_visible()
 {
     return visible;
+}
+
+int powerup::get_points()
+{
+    return points;
 }

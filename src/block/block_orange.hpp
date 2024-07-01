@@ -17,7 +17,7 @@ public:
 
 private:
     sf::RectangleShape block_obj;
-    bool broken;
+    int number_hits_to_break;
     int point_for_breaking;
 };
 

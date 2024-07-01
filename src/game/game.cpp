@@ -1,6 +1,8 @@
 #include "game.hpp"
 #include "block_blue.hpp"
+#include "block_yellow.hpp"
 #include "block_orange.hpp"
+#include "block_brown.hpp"
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
@@ -8,7 +10,7 @@
 
 game::game() 
 {
-    block_breaker_area = {0.0f, 800.0f, 30.0f, 600.0f};
+    block_breaker_area = {0.0f, 800.0f, 60.0f, 600.0f};
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
@@ -27,11 +29,19 @@ void game::init(sf::Font &font)
 {
     game_state = game_states::game_init;
     game_state_requested = game_states::level_1_init;
+    score = 0;
+    score_level = 0;
     text_obj.setFont(font);
     text_obj.setString("BlockBreaker3000");
     text_obj.setCharacterSize(24);
     text_obj.setFillColor(sf::Color::Red);
     text_obj.setStyle(sf::Text::Bold);
+    text_score.setFont(font);
+    text_score.setString("Score: " + std::to_string(score + score_level));
+    text_score.setCharacterSize(24);
+    text_score.setFillColor(sf::Color::Red);
+    text_score.setStyle(sf::Text::Bold);
+    text_score.setPosition(0.0f, 30.0f);
 }
 
 void game::serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj)
@@ -114,11 +124,11 @@ switch (event.type)
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::Left)
         {
-            paddle_obj.set_velocity_vector(sf::Vector2f(-400.0f, 0.0f));
+            paddle_obj.set_velocity_vector(sf::Vector2f(-paddle_velocity, 0.0f));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            paddle_obj.set_velocity_vector(sf::Vector2f(400.0f, 0.0f));
+            paddle_obj.set_velocity_vector(sf::Vector2f(paddle_velocity, 0.0f));
         }
         break;
     case sf::Event::KeyReleased:
@@ -210,11 +220,11 @@ void game::serve_events_level_lost(const sf::Event event, sf::RenderWindow &wind
     }
 }
 
-void game::update(sf::Clock &clock_obj)
+void game::update(sf::RenderWindow &window, sf::Clock &clock_obj)
 {
     if (game_state_requested != game_state)
     {
-        game::game_state_update();
+        game::game_state_update(window);
     }
 
 
@@ -255,6 +265,8 @@ void game::obj_reset()
     paddle_obj.reset();
     powerups.clear();
     powerup_from_blocks.clear();
+    score_level = 0;
+    text_score.setString("Score: " + std::to_string(score + score_level));
 }
 
 void game::rand_powerups(int powerup_number)
@@ -283,7 +295,7 @@ void game::rand_powerups(int powerup_number)
         { 
             rand_number = std::rand() % (blocks.size());
         }
-        while(rand_number < 4 || number_is_in_vector(rand_number));
+        while(rand_number < powerup_banned_blocks || number_is_in_vector(rand_number));
         
         powerup_from_blocks.push_back(rand_number);
     }
@@ -300,21 +312,13 @@ void game::game_state_level_1_prepare()
     {
         for(int j = 0; j < 8; ++j)
         {
-            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
             blocks_number++;
         }
     }
 
-    for(int i = 2; i < 3; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(std::make_shared<block_orange>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
-            blocks_number++;
-        }
-    }
-
-    rand_powerups(1);
+    rand_powerups(2);
 }
 
 void game::game_state_level_2_prepare()
@@ -328,21 +332,23 @@ void game::game_state_level_2_prepare()
     {
         for(int j = 0; j < 8; ++j)
         {
-            blocks.push_back(std::make_shared<block_orange>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks.push_back(std::make_shared<block_yellow>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
             blocks_number++;
         }
     }
 
-    for(int i = 1; i < 2; ++i)
+    for(int i = 1; i < 3; ++i)
     {
         for(int j = 0; j < 8; ++j)
         {
-            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
             blocks_number++;
         }
     }
 
-    rand_powerups(2);
+    rand_powerups(4);
 }
 
 void game::game_state_level_3_prepare()
@@ -352,16 +358,37 @@ void game::game_state_level_3_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 3; ++i)
+    for(int i = 0; i < 1; ++i)
     {
         for(int j = 0; j < 8; ++j)
         {
-            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks.push_back(std::make_shared<block_orange>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
             blocks_number++;
         }
     }
 
-    rand_powerups(4);
+    for(int i = 1; i < 2; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_yellow>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    for(int i = 2; i < 3; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    rand_powerups(5);
 }
 
 void game::game_state_level_4_prepare()
@@ -371,16 +398,47 @@ void game::game_state_level_4_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 4; ++i)
+    for(int i = 0; i < 1; ++i)
     {
         for(int j = 0; j < 8; ++j)
         {
-            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks.push_back(std::make_shared<block_brown>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
             blocks_number++;
         }
     }
 
-    rand_powerups(5);
+    for(int i = 1; i < 2; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_orange>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    for(int i = 2; i < 3; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_yellow>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    for(int i = 3; i < 4; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    rand_powerups(6);
 }
 
 void game::game_state_level_5_prepare()
@@ -390,24 +448,56 @@ void game::game_state_level_5_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0; i < 2; ++i)
     {
         for(int j = 0; j < 8; ++j)
         {
-            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * 100.0f + 50.0f, i * 30.0f + 50.0f)));
+            blocks.push_back(std::make_shared<block_brown>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
             blocks_number++;
         }
     }
 
-    rand_powerups(7);
+    for(int i = 2; i < 3; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_orange>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    for(int i = 3; i < 4; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_yellow>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    for(int i = 4; i < 5; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            blocks.push_back(std::make_shared<block_blue>(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start)));
+            blocks_number++;
+        }
+    }
+
+    rand_powerups(8);
 }
 
-void game::game_state_update()
+void game::game_state_update(sf::RenderWindow &window)
 {
     if (game_state_requested == game_states::level_1_init)
     {
         game::game_state_level_1_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 1");
+        window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
         game_state_previus = game_state;
         game_state = game_state_requested;
     }
@@ -478,6 +568,10 @@ void game::game_state_update()
     else if (game_state_requested == game_states::level_won)
     {
         text_obj.setString("BlockBreaker3000 - You won :) Press N to next level");
+        score_level += balls_number * points_for_ball;
+        score += score_level;
+        text_score.setString("Score: " + std::to_string(score));
+        window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
         game_state_previus = game_state;
         game_state = game_state_requested;
     }
@@ -515,6 +609,7 @@ void game::draw(sf::RenderWindow &window)
     }
 
     window.draw(text_obj);
+    window.draw(text_score);
 }
 
 void game::move_paddle()
@@ -653,16 +748,20 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 
 void game::block_broke(std::shared_ptr<block> block_obj)
 {
-    int a = block_obj->break_obj();
-    std::cout << "Points for block" << a << "\n";
-    for(int i : powerup_from_blocks)
+    int points_for_block = block_obj->break_obj();
+    score_level += points_for_block;
+    if (points_for_block > 0)
     {
-        if (i == blocks_number)
+        text_score.setString("Score: " + std::to_string(score + score_level));
+        for(int i : powerup_from_blocks)
         {
-            powerups.push_back(powerup(block_obj->get_position()));
+            if (i == blocks_number)
+            {
+                powerups.push_back(powerup(block_obj->get_position()));
+            }
         }
+        blocks_number--;
     }
-    blocks_number--;
 }
 
 void game::ball_meets_block(ball &ball_obj, std::shared_ptr<block> block_obj, sf::Vector2f ball_position)
@@ -802,6 +901,8 @@ void game::powerup_meets_paddle(powerup &powerup_obj)
         balls.push_back(ball(sf::Vector2f(paddle_obj.get_position().x + ball_start_position_shift.x, 
             paddle_obj.get_position().y + ball_start_position_shift.y)));
         balls_number++;
+        score_level += powerup_obj.get_points();
+        text_score.setString("Score: " + std::to_string(score + score_level));
     }
 }
 

@@ -4,6 +4,10 @@
 #include "game_object.hpp"
 #include <SFML/Graphics.hpp>
 
+
+const sf::Vector2f block_size = sf::Vector2f(90.0f, 20.0f);
+constexpr float block_outline_thickness = 5.0f;
+
 class block : public game_object
 {
 public:
@@ -15,7 +19,7 @@ public:
 
 protected:
     sf::RectangleShape block_obj;
-    bool broken;
+    int number_hits_to_break;
     int point_for_breaking;
 };
 
