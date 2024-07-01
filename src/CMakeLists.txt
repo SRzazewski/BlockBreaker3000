@@ -6,14 +6,7 @@ target_sources(BlockBreaker3000_core
         ball.cpp
         ball.hpp
         block.hpp
-        block_blue.cpp
-        block_blue.hpp
-        block_brown.cpp
-        block_brown.hpp
-        block_orange.cpp
-        block_orange.hpp
-        block_yellow.cpp
-        block_yellow.hpp
+        block.cpp
         game.cpp
         game.hpp
         game_object.hpp

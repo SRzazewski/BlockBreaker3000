@@ -70,7 +70,7 @@ private:
     game_states game_state_requested;
     paddle paddle_obj;
     std::vector<ball> balls;
-    std::vector<std::shared_ptr<block>> blocks;
+    std::vector<block> blocks;
     std::vector<powerup> powerups;
     sf::Text text_obj;
     sf::Text text_score;
@@ -81,10 +81,10 @@ private:
     int score;
     int score_level;
 
-    void serve_events_level_init(const sf::Event event, sf::RenderWindow &window);
-    void serve_events_level(const sf::Event event, sf::RenderWindow &window);
-    void serve_events_level_won(const sf::Event event, sf::RenderWindow &window);
-    void serve_events_level_lost(const sf::Event event, sf::RenderWindow &window);
+    void serve_events_level_init(const sf::Event event);
+    void serve_events_level(const sf::Event event);
+    void serve_events_level_won(const sf::Event event);
+    void serve_events_level_lost(const sf::Event event);
 
     void game_state_update(sf::RenderWindow &window);
     void obj_reset();
@@ -101,8 +101,8 @@ private:
     void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
     void powerup_meets_paddle(powerup &powerup_obj);
     void powerup_meets_edge(powerup &powerup_obj);
-    void block_broke(std::shared_ptr<block> block_obj);
-    void ball_meets_block(ball &ball_obj, std::shared_ptr<block> block_obj, sf::Vector2f ball_position);
+    void block_broke(block &block_obj);
+    void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
     sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
 };
