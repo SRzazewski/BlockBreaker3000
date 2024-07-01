@@ -19,6 +19,7 @@ public:
     void draw(sf::RenderWindow &window) override;
     void set_visible(bool is_visable);
     bool get_visible();
+    int get_points();
 
 private:
     sf::CircleShape powerup_shape;
@@ -26,6 +27,7 @@ private:
     sf::Vector2f position;
     sf::Time previus_time;
     bool visible;
+    int points;
 };
 
 #endif

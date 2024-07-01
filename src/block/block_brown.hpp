@@ -1,13 +1,13 @@
-#ifndef BLOCK_BLUE_HPP
-#define BLOCK_BLUE_HPP
+#ifndef BLOCK_BROWN_HPP
+#define BLOCK_BROWN_HPP
 
 #include "block.hpp"
 #include <SFML/Graphics.hpp>
 
-class block_blue : public block
+class block_brown : public block
 {
 public:
-    block_blue(sf::Vector2f start_position);
+    block_brown(sf::Vector2f start_position);
     void set_position(sf::Vector2f position) override;
     sf::Vector2f get_position() const override;
     sf::RectangleShape get_block() override;

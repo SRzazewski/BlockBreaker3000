@@ -48,6 +48,10 @@ struct game_area
 };
 
 const sf::Vector2f ball_start_position_shift = sf::Vector2f(-10.0f, -40.f);
+constexpr int points_for_ball = 200;
+constexpr float paddle_velocity = 400.0f;
+constexpr int powerup_banned_blocks = 6;
+
 class game
 {
 public:
@@ -55,7 +59,7 @@ public:
     game(game_area area);
     void init(sf::Font &font);
     void serve_events(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
-    void update(sf::Clock &clock_obj);
+    void update(sf::RenderWindow &window, sf::Clock &clock_obj);
     void draw(sf::RenderWindow &window);
 
 private:
@@ -69,19 +73,22 @@ private:
     std::vector<std::shared_ptr<block>> blocks;
     std::vector<powerup> powerups;
     sf::Text text_obj;
+    sf::Text text_score;
     sf::Font font_obj;
     sf::Time previus_time;
     sf::Time time_delta;
     int blocks_number;
     int balls_number;
     std::vector<int> powerup_from_blocks;
+    int score;
+    int score_level;
 
     void serve_events_level_init(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
     void serve_events_level(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
     void serve_events_level_won(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
     void serve_events_level_lost(const sf::Event event, sf::RenderWindow &window, sf::Clock &clock_obj);
 
-    void game_state_update();
+    void game_state_update(sf::RenderWindow &window);
     void obj_reset();
     void rand_powerups(int powerup_number);
     void game_state_level_1_prepare();
