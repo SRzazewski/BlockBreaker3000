@@ -51,13 +51,13 @@ const sf::Vector2f ball_start_position_shift = sf::Vector2f(-10.0f, -40.f);
 constexpr int points_for_ball = 200;
 constexpr float paddle_velocity = 400.0f;
 constexpr int powerup_banned_blocks = 6;
+constexpr int blocks_in_row = 8;
 
 class game
 {
 public:
-    game();
-    game(game_area area);
-    void init(sf::Font &font);
+    // game(sf::Font &font);
+    game(sf::Font &font, game_area area = {0.0f, 800.0f, 60.0f, 600.0f});
     void serve_events(const sf::Event event, sf::RenderWindow &window);
     void update(sf::RenderWindow &window, sf::Time delta);
     void draw(sf::RenderWindow &window);
@@ -89,6 +89,7 @@ private:
     void game_state_update(sf::RenderWindow &window);
     void obj_reset();
     void rand_powerups(int powerup_number);
+    void put_blocks(int block_type, int rows_number);
     void game_state_level_1_prepare();
     void game_state_level_2_prepare();
     void game_state_level_3_prepare();

@@ -7,17 +7,15 @@ int main()
     auto window = sf::RenderWindow{ { static_cast<unsigned int>(block_breaker_area.x_stop), static_cast<unsigned int>(block_breaker_area.y_stop) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
-    game game_obj = game(block_breaker_area);
-
     sf::Font font;
     if (!font.loadFromFile("font/arial.ttf"))
     {
         window.close();
     }
 
-    sf::Clock clock_obj = sf::Clock();
+    game game_obj = game(font, block_breaker_area);
 
-    game_obj.init(font);
+    sf::Clock clock_obj = sf::Clock();
 
     while (window.isOpen())
     {

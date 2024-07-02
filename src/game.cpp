@@ -4,25 +4,12 @@
 #include <random>
 // #include <iostream>
 
-game::game() 
-{
-    block_breaker_area = {0.0f, 800.0f, 60.0f, 600.0f};
-    game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
-    game_area_field.setFillColor(sf::Color::Black);
-    game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
-}
-
-game::game(game_area area):
+game::game(sf::Font &font, game_area area):
     block_breaker_area(area)
 {
     game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, block_breaker_area.y_stop - block_breaker_area.y_start));
     game_area_field.setFillColor(sf::Color::Black);
     game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
-}
-
-
-void game::init(sf::Font &font)
-{
     game_state = game_states::game_init;
     game_state_requested = game_states::level_1_init;
     score = 0;
@@ -272,6 +259,22 @@ void game::rand_powerups(int powerup_number)
     }
 }
 
+void game::put_blocks(int block_type, int rows_number)
+{
+    int ready_rows = blocks.size()/blocks_in_row;
+    
+    for(int i = ready_rows; i < (ready_rows + rows_number); ++i)
+    {
+        for(int j = 0; j < blocks_in_row; ++j)
+        {
+            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
+                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), 
+                block_type));
+            blocks_number++;
+        }
+    }
+}
+
 void game::game_state_level_1_prepare()
 {
     obj_reset();
@@ -279,16 +282,7 @@ void game::game_state_level_1_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 2; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), 
-                block_blue));
-            blocks_number++;
-        }
-    }
+    put_blocks(block_blue, 2);
 
     rand_powerups(2);
 }
@@ -300,25 +294,9 @@ void game::game_state_level_2_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 1; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_yellow));
-            blocks_number++;
-        }
-    }
 
-    for(int i = 1; i < 3; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_blue));
-            blocks_number++;
-        }
-    }
+    put_blocks(block_yellow, 1);
+    put_blocks(block_blue, 2);
 
     rand_powerups(4);
 }
@@ -330,35 +308,9 @@ void game::game_state_level_3_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 1; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_orange));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 1; i < 2; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_yellow));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 2; i < 3; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_blue));
-            blocks_number++;
-        }
-    }
+    put_blocks(block_orange, 1);
+    put_blocks(block_yellow, 1);
+    put_blocks(block_blue, 1);
 
     rand_powerups(5);
 }
@@ -370,45 +322,10 @@ void game::game_state_level_4_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 1; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_brown));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 1; i < 2; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_orange));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 2; i < 3; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_yellow));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 3; i < 4; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_blue));
-            blocks_number++;
-        }
-    }
+    put_blocks(block_brown, 1);
+    put_blocks(block_orange, 1);
+    put_blocks(block_yellow, 1);
+    put_blocks(block_blue, 1);
 
     rand_powerups(6);
 }
@@ -420,45 +337,10 @@ void game::game_state_level_5_prepare()
     balls.push_back(ball());
     balls_number++;
 
-    for(int i = 0; i < 2; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_brown));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 2; i < 3; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_orange));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 3; i < 4; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_yellow));
-            blocks_number++;
-        }
-    }
-
-    for(int i = 4; i < 5; ++i)
-    {
-        for(int j = 0; j < 8; ++j)
-        {
-            blocks.push_back(block(sf::Vector2f(j * (block_size.x + 2*block_outline_thickness) + (((block_size.x + 2*block_outline_thickness)/2) + block_breaker_area.x_start), 
-                i * (block_size.y + 2*block_outline_thickness) + ((block_size.y + 2*block_outline_thickness)/2) + block_breaker_area.y_start), block_blue));
-            blocks_number++;
-        }
-    }
+    put_blocks(block_brown, 2);
+    put_blocks(block_orange, 1);
+    put_blocks(block_yellow, 1);
+    put_blocks(block_blue, 1);
 
     rand_powerups(8);
 }
