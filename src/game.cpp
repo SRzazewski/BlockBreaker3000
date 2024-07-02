@@ -1,9 +1,8 @@
 #include "game.hpp"
 #include "block.hpp"
 #include <cmath>
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
+#include <random>
+// #include <iostream>
 
 game::game() 
 {
@@ -256,16 +255,18 @@ void game::obj_reset()
 
 void game::rand_powerups(int powerup_number)
 {
-    std::srand(std::time(0));
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<int> dist(powerup_banned_blocks, blocks.size());
     int rand_number = 0;
 
     for(int i = 0; i < powerup_number; ++i)
     {
         do
         { 
-            rand_number = std::rand() % (blocks.size());
+            rand_number = dist(mt);
         }
-        while(rand_number < powerup_banned_blocks || std::find(powerup_from_blocks.begin(), powerup_from_blocks.end(), rand_number) != powerup_from_blocks.end());
+        while(std::find(powerup_from_blocks.begin(), powerup_from_blocks.end(), rand_number) != powerup_from_blocks.end());
         
         powerup_from_blocks.push_back(rand_number);
     }
