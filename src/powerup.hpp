@@ -24,9 +24,6 @@ public:
 private:
     sf::CircleShape powerup_shape;
     sf::Vector2f velocity_vector;
-    sf::Vector2f position;
-    sf::Time previus_time;
-    bool visible;
     int points;
 };
 

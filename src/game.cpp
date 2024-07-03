@@ -214,12 +214,14 @@ void game::update(sf::RenderWindow &window, sf::Time time_delta)
                     move_ball(ball, time_delta);
                 }
             }
+
             move_paddle(time_delta);
-            for (auto &powerup_obj : powerups)
+
+            for (auto i = 0ul; i < powerups.size(); ++i)
             {
-                if(powerup_obj.get_visible())
+                if(!move_powerup(powerups[i], time_delta))
                 {
-                    move_powerup(powerup_obj, time_delta);
+                    powerups.erase(powerups.begin() + i);
                 }
             }
             break;
@@ -352,72 +354,50 @@ void game::game_state_update(sf::RenderWindow &window)
         game::game_state_level_1_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 1");
         window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_2_init)
     {
         game::game_state_level_2_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 2");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_3_init)
     {
         game::game_state_level_3_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 3");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_4_init)
     {
         game::game_state_level_4_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 4");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_5_init)
     {
         game::game_state_level_5_prepare();
         text_obj.setString("BlockBreaker3000 - Press S to start level 5");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_1)
     {
         text_obj.setString("BlockBreaker3000 - level 1");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_2)
     {
         text_obj.setString("BlockBreaker3000 - level 2");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_3)
     {
         text_obj.setString("BlockBreaker3000 - level 3");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_4)
     {
         text_obj.setString("BlockBreaker3000 - level 4");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_5)
     {
         text_obj.setString("BlockBreaker3000 - level 5");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_lost)
     {
         text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset level");
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
     else if (game_state_requested == game_states::level_won)
     {
@@ -426,9 +406,9 @@ void game::game_state_update(sf::RenderWindow &window)
         score += score_level;
         text_score.setString("Score: " + std::to_string(score));
         window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
-        game_state_previus = game_state;
-        game_state = game_state_requested;
     }
+    game_state_previus = game_state;
+    game_state = game_state_requested;
 }
 
 void game::draw(sf::RenderWindow &window)
@@ -512,7 +492,7 @@ void game::move_ball(ball &ball_obj, sf::Time time_delta)
     ball_meets_edge(ball_obj, ball_position_new);
 }
 
-void game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
+bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
 {
     sf::Vector2f powerup_position_new = powerup_obj.get_position();
     sf::Vector2f powerup_velocity = powerup_obj.get_velocity_vector();
@@ -520,10 +500,12 @@ void game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
     powerup_position_new.x = powerup_position_new.x + (powerup_velocity.x * time_delta.asSeconds());
     powerup_position_new.y = powerup_position_new.y + (powerup_velocity.y * time_delta.asSeconds());
 
-    powerup_meets_paddle(powerup_obj);
-    powerup_meets_edge(powerup_obj);
-
-    powerup_obj.set_position(powerup_position_new);
+    if(!powerup_meets_paddle(powerup_obj) && !powerup_meets_edge(powerup_obj))
+    {
+        powerup_obj.set_position(powerup_position_new);
+        return true;
+    }
+    return false;
 }
 
 void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
@@ -744,28 +726,30 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
     ball_obj.set_position(ball_position);
 }
 
-void game::powerup_meets_paddle(powerup &powerup_obj)
+bool game::powerup_meets_paddle(powerup &powerup_obj)
 {
     if((powerup_obj.get_position().x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
         && (powerup_obj.get_position().x < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
         && (powerup_obj.get_position().y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
         && (powerup_obj.get_position().y < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f)))
     {
-        powerup_obj.set_visible(false);
         balls.push_back(ball(sf::Vector2f(paddle_obj.get_position().x + ball_start_position_shift.x, 
             paddle_obj.get_position().y + ball_start_position_shift.y)));
         balls_number++;
         score_level += powerup_obj.get_points();
         text_score.setString("Score: " + std::to_string(score + score_level));
+        return true;
     }
+    return false;
 }
 
-void game::powerup_meets_edge(powerup &powerup_obj)
+bool game::powerup_meets_edge(powerup &powerup_obj)
 {
     if(powerup_obj.get_position().y > (block_breaker_area.y_stop + powerup_obj.get_powerup().getRadius()))
     {
-        powerup_obj.set_visible(false);
+        return true;
     }
+    return false;
 }
 
 sf::Vector2f game::calculate_new_vector(sf::Vector2f vector_current, float fi)

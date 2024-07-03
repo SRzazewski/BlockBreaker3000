@@ -98,10 +98,10 @@ private:
     
     void move_paddle(sf::Time time_delta);
     void move_ball(ball &ball_obj, sf::Time time_delta);
-    void move_powerup(powerup &powerup_obj, sf::Time time_delta);
+    bool move_powerup(powerup &powerup_obj, sf::Time time_delta);
     void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
-    void powerup_meets_paddle(powerup &powerup_obj);
-    void powerup_meets_edge(powerup &powerup_obj);
+    bool powerup_meets_paddle(powerup &powerup_obj);
+    bool powerup_meets_edge(powerup &powerup_obj);
     void block_broke(block &block_obj);
     void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);

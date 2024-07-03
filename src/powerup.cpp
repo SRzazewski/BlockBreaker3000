@@ -12,7 +12,6 @@ powerup::powerup(sf::Vector2f start_position)
     velocity_vector.x = 0.0f;
     velocity_vector.y = 100.0f;
     powerup_shape.setPosition(start_position);
-    visible = true;
     points = 50;
 }
 
@@ -43,30 +42,9 @@ sf::Vector2f powerup::get_velocity_vector() const
     return velocity_vector;
 }
 
-sf::Time powerup::count_delta_time(sf::Clock &clock)
-{
-    sf::Time current_time = clock.getElapsedTime();
-    sf::Time delta = current_time - previus_time;
-    previus_time = current_time;
-    return delta;
-}
-
 void powerup::draw(sf::RenderWindow &window)
 {
-    if(visible)
-    {
-        window.draw(powerup_shape);
-    }
-}
-
-void powerup::set_visible(bool is_visable)
-{
-    visible = is_visable;
-}
-
-bool powerup::get_visible()
-{
-    return visible;
+    window.draw(powerup_shape);
 }
 
 int powerup::get_points()
