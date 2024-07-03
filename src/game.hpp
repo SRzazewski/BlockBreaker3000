@@ -56,7 +56,6 @@ constexpr int blocks_in_row = 8;
 class game
 {
 public:
-    // game(sf::Font &font);
     game(sf::Font &font, game_area area = {0.0f, 800.0f, 60.0f, 600.0f});
     void serve_events(const sf::Event event, sf::RenderWindow &window);
     void update(sf::RenderWindow &window, sf::Time delta);
@@ -75,7 +74,6 @@ private:
     sf::Text text_obj;
     sf::Text text_score;
     sf::Font font_obj;
-    int blocks_number;
     int balls_number;
     std::vector<int> powerup_from_blocks;
     int score;
@@ -102,8 +100,8 @@ private:
     void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
     bool powerup_meets_paddle(powerup &powerup_obj);
     bool powerup_meets_edge(powerup &powerup_obj);
-    void block_broke(block &block_obj);
-    void ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
+    bool block_broke(block &block_obj);
+    bool ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
     sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
 };
