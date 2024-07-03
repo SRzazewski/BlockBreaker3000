@@ -74,7 +74,6 @@ private:
     sf::Text text_obj;
     sf::Text text_score;
     sf::Font font_obj;
-    int balls_number;
     std::vector<int> powerup_from_blocks;
     int score;
     int score_level;
@@ -95,9 +94,9 @@ private:
     void game_state_level_5_prepare();
     
     void move_paddle(sf::Time time_delta);
-    void move_ball(ball &ball_obj, sf::Time time_delta);
+    bool move_ball(ball &ball_obj, sf::Time time_delta);
     bool move_powerup(powerup &powerup_obj, sf::Time time_delta);
-    void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
+    bool ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
     bool powerup_meets_paddle(powerup &powerup_obj);
     bool powerup_meets_edge(powerup &powerup_obj);
     bool block_broke(block &block_obj);

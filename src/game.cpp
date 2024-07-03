@@ -207,11 +207,16 @@ void game::update(sf::RenderWindow &window, sf::Time time_delta)
     {
         if(game_state == state)
         {   
-            for (auto &ball : balls)
+            for (auto i = 0ul; i < balls.size(); ++i)
             {
-                if(ball.get_visible())
+                if(!move_ball(balls[i], time_delta))
                 {
-                    move_ball(ball, time_delta);
+                    balls.erase(balls.begin() + i);
+
+                    if(balls.size() < 1)
+                    {
+                        game_state_requested = game_states::level_lost;
+                    }
                 }
             }
 
@@ -232,7 +237,6 @@ void game::update(sf::RenderWindow &window, sf::Time time_delta)
 void game::obj_reset()
 {
     balls.clear();
-    balls_number = 0;
     blocks.clear();
     paddle_obj.reset();
     powerups.clear();
@@ -280,7 +284,6 @@ void game::game_state_level_1_prepare()
     obj_reset();
 
     balls.push_back(ball());
-    balls_number++;
 
     put_blocks(block_blue, 2);
 
@@ -292,8 +295,6 @@ void game::game_state_level_2_prepare()
     obj_reset();
 
     balls.push_back(ball());
-    balls_number++;
-
 
     put_blocks(block_yellow, 1);
     put_blocks(block_blue, 2);
@@ -306,7 +307,6 @@ void game::game_state_level_3_prepare()
     obj_reset();
 
     balls.push_back(ball());
-    balls_number++;
 
     put_blocks(block_orange, 1);
     put_blocks(block_yellow, 1);
@@ -320,7 +320,6 @@ void game::game_state_level_4_prepare()
     obj_reset();
 
     balls.push_back(ball());
-    balls_number++;
 
     put_blocks(block_brown, 1);
     put_blocks(block_orange, 1);
@@ -335,7 +334,6 @@ void game::game_state_level_5_prepare()
     obj_reset();
 
     balls.push_back(ball());
-    balls_number++;
 
     put_blocks(block_brown, 2);
     put_blocks(block_orange, 1);
@@ -400,7 +398,7 @@ void game::game_state_update(sf::RenderWindow &window)
     else if (game_state_requested == game_states::level_won)
     {
         text_obj.setString("BlockBreaker3000 - You won :) Press N to next level");
-        score_level += balls_number * points_for_ball;
+        score_level += static_cast<int>(balls.size()) * points_for_ball;
         score += score_level;
         text_score.setString("Score: " + std::to_string(score));
         window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
@@ -474,7 +472,7 @@ void game::move_paddle(sf::Time time_delta)
     }
 }
 
-void game::move_ball(ball &ball_obj, sf::Time time_delta)
+bool game::move_ball(ball &ball_obj, sf::Time time_delta)
 {
     sf::Vector2f ball_position_new = ball_obj.get_position();
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
@@ -490,7 +488,7 @@ void game::move_ball(ball &ball_obj, sf::Time time_delta)
             blocks.erase(blocks.begin() + i);
         }
     }
-    ball_meets_edge(ball_obj, ball_position_new);
+    return !ball_meets_edge(ball_obj, ball_position_new);
 }
 
 bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
@@ -509,7 +507,7 @@ bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
     return false;
 }
 
-void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
+bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 {
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
 
@@ -571,16 +569,13 @@ void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
     }
     else if(ball_position.y > (block_breaker_area.y_stop + ball_obj.get_ball().getRadius()))
     {
-        balls_number--;
-        ball_obj.set_visible(false);
-        if(balls_number < 1)
-        {
-            game_state_requested = game_states::level_lost;
-        }
+        return true;
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
     ball_obj.set_position(ball_position);
+
+    return false;
 }
 
 bool game::block_broke(block &block_obj)
@@ -737,7 +732,6 @@ bool game::powerup_meets_paddle(powerup &powerup_obj)
     {
         balls.push_back(ball(sf::Vector2f(paddle_obj.get_position().x + ball_start_position_shift.x, 
             paddle_obj.get_position().y + ball_start_position_shift.y)));
-        balls_number++;
         score_level += powerup_obj.get_points();
         text_score.setString("Score: " + std::to_string(score + score_level));
         return true;
