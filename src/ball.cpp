@@ -1,6 +1,5 @@
 #include "ball.hpp"
 #include <SFML/Graphics.hpp>
-#include <memory>
 
 ball::ball(sf::Vector2f start_position)
 {

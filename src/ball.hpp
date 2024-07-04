@@ -3,7 +3,6 @@
 
 #include "game_object.hpp"
 #include <SFML/Graphics.hpp>
-#include <memory>
 
 class ball : public moving_object
 {
@@ -21,7 +20,6 @@ private:
     sf::CircleShape ball_shape;
     sf::Vector2f velocity_vector;
     sf::Vector2f position;
-    sf::Time previus_time;
 };
 
 #endif

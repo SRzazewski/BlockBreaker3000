@@ -1,6 +1,5 @@
 #include "powerup.hpp"
 #include <SFML/Graphics.hpp>
-#include <memory>
 
 powerup::powerup(sf::Vector2f start_position)
 {
@@ -14,8 +13,6 @@ powerup::powerup(sf::Vector2f start_position)
     powerup_shape.setPosition(start_position);
     points = 50;
 }
-
-powerup::~powerup() {}
 
 void powerup::set_position(sf::Vector2f new_position)
 {

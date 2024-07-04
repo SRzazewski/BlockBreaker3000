@@ -116,11 +116,11 @@ switch (event.type)
     case sf::Event::KeyReleased:
         if (event.key.code == sf::Keyboard::Left)
         {
-            paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+            paddle_obj.set_velocity_vector(sf::Vector2f({}));
         }
         else if (event.key.code == sf::Keyboard::Right)
         {
-            paddle_obj.set_velocity_vector(sf::Vector2f(0.0f, 0.0f));
+            paddle_obj.set_velocity_vector(sf::Vector2f({}));
         }
         break;
     default:
@@ -213,7 +213,7 @@ void game::update(sf::RenderWindow &window, sf::Time time_delta)
                 {
                     balls.erase(balls.begin() + i);
 
-                    if(balls.size() < 1)
+                    if(balls.empty())
                     {
                         game_state_requested = game_states::level_lost;
                     }
@@ -413,20 +413,17 @@ void game::draw(sf::RenderWindow &window)
 
     paddle_obj.draw(window);
     
-    for(auto ball : balls)
+    for(auto &ball : balls)
     {
         ball.draw(window);
     }
 
-    if(powerups.size() > 0)
+    for(auto powerup : powerups)
     {
-        for(auto powerup : powerups)
-        {
-            powerup.draw(window);
-        }
+        powerup.draw(window);
     }
 
-    if(blocks.size() > 0)
+    if(!blocks.empty())
     {
         for(auto block : blocks)
         {
@@ -580,7 +577,7 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 
 bool game::block_broke(block &block_obj)
 {
-    int points_for_block = block_obj.break_obj();
+    int points_for_block = block_obj.hit_obj();
     score_level += points_for_block;
     if (points_for_block > 0)
     {

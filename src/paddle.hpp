@@ -22,9 +22,8 @@ public:
 
 
 private:
-    sf::RectangleShape player_s_paddle;
+    sf::RectangleShape player_paddle;
     sf::Vector2f velocity_vector;
-    sf::Time previus_time;
 };
 
 #endif

@@ -23,12 +23,12 @@ sf::Vector2f block::get_position() const
     return block_obj.getPosition();
 }
 
-sf::RectangleShape block::get_block()
+sf::RectangleShape block::get_block() const
 {
     return block_obj;
 }
 
-int block::break_obj()
+int block::hit_obj()
 {
     number_hits_to_break--;
     if(number_hits_to_break < 1)
@@ -45,14 +45,7 @@ int block::break_obj()
 
 bool block::is_broken()
 {
-    if(number_hits_to_break < 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return number_hits_to_break == 0;
 }
 
 void block::draw(sf::RenderWindow &window)
