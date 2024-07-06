@@ -1,19 +1,6 @@
 #include "powerup.hpp"
 #include <SFML/Graphics.hpp>
 
-powerup::powerup(sf::Vector2f start_position)
-{
-    float radius = 10.0f;
-    powerup_shape = sf::CircleShape(radius, 3);
-    powerup_shape.setRadius(radius);
-    powerup_shape.setOrigin(radius, radius);
-    powerup_shape.setFillColor(sf::Color(255, 0, 50));
-    velocity_vector.x = 0.0f;
-    velocity_vector.y = 100.0f;
-    powerup_shape.setPosition(start_position);
-    points = 50;
-}
-
 void powerup::set_position(sf::Vector2f new_position)
 {
     powerup_shape.setPosition(new_position);

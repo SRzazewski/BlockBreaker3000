@@ -3,11 +3,9 @@
 
 paddle::paddle()
 {
-    float size_x = 120.f;
-    float size_y = 20.f;
     player_paddle = sf::RectangleShape();
-    player_paddle.setSize(sf::Vector2f(size_x, size_y));
-    player_paddle.setOrigin(size_x/2.0f, size_y/2.0f);
+    player_paddle.setSize(sf::Vector2f(paddle_size.x, paddle_size.y));
+    player_paddle.setOrigin(paddle_size.x/2.0f, paddle_size.y/2.0f);
     player_paddle.setFillColor(sf::Color(100, 250, 50));
     player_paddle.setPosition(sf::Vector2f(400.0f, 560.0f));
 }

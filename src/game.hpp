@@ -7,6 +7,7 @@
 #include "powerup.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <random>
 
 enum class game_states
 {
@@ -56,8 +57,27 @@ constexpr int blocks_in_row = 8;
 class game
 {
 public:
-    game(sf::Font &font, game_area area = {0.0f, 800.0f, 60.0f, 600.0f});
-    void serve_events(const sf::Event event, sf::RenderWindow &window);
+    game(sf::Font &font, game_area area):
+        block_breaker_area(area)
+    {
+        game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, 
+                                            block_breaker_area.y_stop - block_breaker_area.y_start));
+        game_area_field.setFillColor(sf::Color::Black);
+        game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+        text_obj.setFont(font);
+        text_obj.setString("BlockBreaker3000");
+        text_obj.setCharacterSize(24);
+        text_obj.setFillColor(sf::Color::Red);
+        text_obj.setStyle(sf::Text::Bold);
+        text_score.setFont(font);
+        text_score.setString("Score: " + std::to_string(score + score_level));
+        text_score.setCharacterSize(24);
+        text_score.setFillColor(sf::Color::Red);
+        text_score.setStyle(sf::Text::Bold);
+        text_score.setPosition(0.0f, 30.0f);
+        mt = std::mt19937(rd());
+    }
+    void serve_events(const sf::Event event);
     void update(sf::RenderWindow &window, sf::Time delta);
     void draw(sf::RenderWindow &window);
 
@@ -65,18 +85,21 @@ private:
     game_area block_breaker_area;
     sf::RectangleShape game_area_field;
     game_states game_state_previus;
-    game_states game_state;
-    game_states game_state_requested;
+    game_states game_state = game_states::game_init;
+    game_states game_state_requested = game_states::level_1_init;
     paddle paddle_obj;
     std::vector<ball> balls;
     std::vector<block> blocks;
     std::vector<powerup> powerups;
     sf::Text text_obj;
     sf::Text text_score;
-    sf::Font font_obj;
     std::vector<int> powerup_from_blocks;
-    int score;
-    int score_level;
+    std::random_device rd;
+    std::mt19937 mt;
+    int score = 0;
+    int score_level = 0;
+    const float position_paddle_x_min = block_breaker_area.x_start + paddle_size.x/2.0f;
+    const float position_paddle_x_max = block_breaker_area.x_stop - paddle_size.x/2.0f;
 
     void serve_events_level_init(const sf::Event event);
     void serve_events_level(const sf::Event event);

@@ -7,10 +7,10 @@ block::block(const sf::Vector2f start_position, const int hits_to_break)
     block_obj.setOrigin(block_size.x/2.0f, block_size.y/2.0f);
     block_obj.setOutlineThickness(block_outline_thickness);
     block_obj.setPosition(start_position);
-    number_hits_to_break = block_types[hits_to_break].hits_to_break;
-    point_for_breaking = block_types[hits_to_break].points;
-    block_obj.setFillColor(block_types[hits_to_break].block_color);
-    block_obj.setOutlineColor(block_types[hits_to_break].thickness_color);
+    this->hits_to_break = block_types[hits_to_break].hits_to_break;
+    points_for_breaking = block_types[hits_to_break].points_for_breaking;
+    block_obj.setFillColor(block_types[hits_to_break].fill_color);
+    block_obj.setOutlineColor(block_types[hits_to_break].outline_color);
 }
 
 void block::set_position(sf::Vector2f position) 
@@ -30,22 +30,22 @@ sf::RectangleShape block::get_block() const
 
 int block::hit_obj()
 {
-    number_hits_to_break--;
-    if(number_hits_to_break < 1)
+    hits_to_break--;
+    if(hits_to_break < 1)
     {
-        return point_for_breaking;
+        return points_for_breaking;
     }
     else
     {
-        block_obj.setFillColor(block_types[number_hits_to_break].block_color);
-        block_obj.setOutlineColor(block_types[number_hits_to_break].thickness_color);
+        block_obj.setFillColor(block_types[hits_to_break].fill_color);
+        block_obj.setOutlineColor(block_types[hits_to_break].outline_color);
         return 0;
     }
 }
 
 bool block::is_broken()
 {
-    return number_hits_to_break == 0;
+    return hits_to_break == 0;
 }
 
 void block::draw(sf::RenderWindow &window)

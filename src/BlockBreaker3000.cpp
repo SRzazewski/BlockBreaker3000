@@ -21,7 +21,14 @@ int main()
     {
         for (auto event = sf::Event{}; window.pollEvent(event);)
         {
-            game_obj.serve_events(event, window);
+            if(event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+            else
+            {
+                game_obj.serve_events(event);
+            }
         }
 
         window.clear(sf::Color(166u, 166u, 166u));

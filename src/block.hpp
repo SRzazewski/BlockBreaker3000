@@ -8,9 +8,9 @@
 struct block_type
 {
     const int hits_to_break;
-    const int points;
-    const sf::Color block_color;
-    const sf::Color thickness_color;
+    const int points_for_breaking;
+    const sf::Color fill_color;
+    const sf::Color outline_color;
 };
 
 const std::array<block_type, 5> block_types =
@@ -43,8 +43,8 @@ public:
 
 protected:
     sf::RectangleShape block_obj;
-    int number_hits_to_break;
-    int point_for_breaking;
+    int hits_to_break;
+    int points_for_breaking;
 };
 
 #endif

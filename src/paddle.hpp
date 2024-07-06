@@ -5,6 +5,8 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+const sf::Vector2f paddle_size = sf::Vector2f(120.0f, 20.0f);
+
 class paddle : public moving_object
 {
 public:
