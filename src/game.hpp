@@ -5,6 +5,7 @@
 #include "ball.hpp"
 #include "block.hpp"
 #include "powerup.hpp"
+// #include "states.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
 #include <random>
@@ -12,33 +13,30 @@
 enum class game_states
 {
     game_init = 0,
-    level_1_init,
-    level_1,
-    level_2_init,
-    level_2,
-    level_3_init,
-    level_3,
-    level_4_init,
-    level_4,
-    level_5_init,
-    level_5,
-    level_won,
-    level_lost
+    game_init_level,
+    game_playing,
+    game_won,
+    game_lost
 };
 
-constexpr std::array<game_states, 5> states_init
-{{game_states::level_1_init, 
-game_states::level_2_init, 
-game_states::level_3_init, 
-game_states::level_4_init, 
-game_states::level_5_init}};
+enum class game_levels
+{
+    level_0 = 0,
+    level_1,
+    level_2,
+    level_3,
+    level_4,
+    level_5,
+};
 
-constexpr std::array<game_states, 5> states_playing
-{{game_states::level_1, 
-game_states::level_2, 
-game_states::level_3, 
-game_states::level_4, 
-game_states::level_5}};
+// class game;
+
+// struct game_states_st
+// {
+//     game_levels state_name;
+//     int level_number;
+//     void (game:: *init_function)();
+// };
 
 struct game_area
 {
@@ -84,9 +82,9 @@ public:
 private:
     game_area block_breaker_area;
     sf::RectangleShape game_area_field;
-    game_states game_state_previus;
     game_states game_state = game_states::game_init;
-    game_states game_state_requested = game_states::level_1_init;
+    game_states game_state_requested = game_states::game_init_level;
+    int game_level = 1;
     paddle paddle_obj;
     std::vector<ball> balls;
     std::vector<block> blocks;
@@ -101,6 +99,16 @@ private:
     const float position_paddle_x_min = block_breaker_area.x_start + paddle_size.x/2.0f;
     const float position_paddle_x_max = block_breaker_area.x_stop - paddle_size.x/2.0f;
 
+    // std::array<game_states_st, 6> game_levels_var
+    // {{
+    //     {game_levels::level_0, 0, nullptr},
+    //     {game_levels::level_1, 1, &game::game_state_level_1_prepare},
+    //     {game_levels::level_2, 2, &game::game_state_level_2_prepare},
+    //     {game_levels::level_3, 3, &game::game_state_level_3_prepare},
+    //     {game_levels::level_4, 4, &game::game_state_level_4_prepare},
+    //     {game_levels::level_5, 5, &game::game_state_level_5_prepare}
+    // }};
+
     void serve_events_level_init(const sf::Event event);
     void serve_events_level(const sf::Event event);
     void serve_events_level_won(const sf::Event event);
@@ -108,7 +116,7 @@ private:
 
     void game_state_update(sf::RenderWindow &window);
     void obj_reset();
-    void rand_powerups(int powerup_number);
+    std::vector<int> rand_powerups(int powerup_number);
     void put_blocks(int block_type, int rows_number);
     void game_state_level_1_prepare();
     void game_state_level_2_prepare();
@@ -127,5 +135,4 @@ private:
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
     sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
 };
-
 #endif

@@ -2,34 +2,24 @@
 #include "block.hpp"
 #include <cmath>
 #include <numbers>
+#include <numeric>
+#include <string>
 
 void game::serve_events(const sf::Event event)
 {
-    auto state_is_from_scope = [](game_states state, const std::array<game_states, 5> scope) -> bool
-    {
-        for(game_states st : scope)
-        {
-            if(state == st)
-            {
-                return true;
-            }
-        }
-        return false;
-    };
- 
-    if(state_is_from_scope(game_state, states_init))
+    if(game_state == game_states::game_init_level)
     {
         game::serve_events_level_init(event);
     }
-    else if(state_is_from_scope(game_state, states_playing))
+    else if(game_state == game_states::game_playing)
     {
         game::serve_events_level(event);
     }
-    else if(game_state == game_states::level_won)
+    else if(game_state == game_states::game_won)
     {
         game::serve_events_level_won(event);
     }
-    else if(game_state == game_states::level_lost)
+    else if(game_state == game_states::game_lost)
     {
         game::serve_events_level_lost(event);
     }
@@ -42,26 +32,7 @@ void game::serve_events_level_init(const sf::Event event)
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::S)
         {
-            if (game_state == game_states::level_1_init)
-            {
-                game_state_requested = game_states::level_1;
-            }
-            else if (game_state == game_states::level_2_init)
-            {
-                game_state_requested = game_states::level_2;
-            }
-            else if (game_state == game_states::level_3_init)
-            {
-                game_state_requested = game_states::level_3;
-            }
-            else if (game_state == game_states::level_4_init)
-            {
-                game_state_requested = game_states::level_4;
-            }
-            else if (game_state == game_states::level_5_init)
-            {
-                game_state_requested = game_states::level_5;
-            }
+            game_state_requested = game_states::game_playing;
         }
     default:
         break;
@@ -104,26 +75,11 @@ void game::serve_events_level_won(const sf::Event event)
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::N)
         {
-            if (game_state_previus == game_states::level_1)
+            if(game_level < 5)
             {
-                game_state_requested = game_states::level_2_init;
+                ++game_level;
             }
-            else if (game_state_previus == game_states::level_2)
-            {
-                game_state_requested = game_states::level_3_init;
-            }
-            else if (game_state_previus == game_states::level_3)
-            {
-                game_state_requested = game_states::level_4_init;
-            }
-            else if (game_state_previus == game_states::level_4)
-            {
-                game_state_requested = game_states::level_5_init;
-            }
-            else if (game_state_previus == game_states::level_5_init)
-            {
-                game_state_requested = game_states::level_1_init;
-            }
+            game_state_requested = game_states::game_init_level;
         }
     default:
         break;
@@ -138,26 +94,7 @@ void game::serve_events_level_lost(const sf::Event event)
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::R)
         {
-            if (game_state_previus == game_states::level_1)
-            {
-                game_state_requested = game_states::level_1_init;
-            }
-            else if (game_state_previus == game_states::level_2)
-            {
-                game_state_requested = game_states::level_2_init;
-            }
-            else if (game_state_previus == game_states::level_3)
-            {
-                game_state_requested = game_states::level_3_init;
-            }
-            else if (game_state_previus == game_states::level_4)
-            {
-                game_state_requested = game_states::level_4_init;
-            }
-            else if (game_state_previus == game_states::level_5)
-            {
-                game_state_requested = game_states::level_5_init;
-            }
+            game_state_requested = game_states::game_init_level;
         }
         break;
     default:
@@ -172,36 +109,32 @@ void game::update(sf::RenderWindow &window, sf::Time time_delta)
         game::game_state_update(window);
     }
 
-    for(const game_states state: states_playing)
-    {
-        if(game_state == state)
-        {   
-            for (auto i = 0ul; i < balls.size(); ++i)
+    if(game_state == game_states::game_playing)
+    {   
+        for (auto i = 0ul; i < balls.size(); ++i)
+        {
+            if(!move_ball(balls[i], time_delta))
             {
-                if(!move_ball(balls[i], time_delta))
-                {
-                    balls.erase(balls.begin() + i);
-                    --i;
+                balls.erase(balls.begin() + i);
+                --i;
 
-                    if(balls.empty())
-                    {
-                        game_state_requested = game_states::level_lost;
-                    }
+                if(balls.empty())
+                {
+                    game_state_requested = game_states::game_lost;
                 }
             }
+        }
 
-            move_paddle(time_delta);
+        move_paddle(time_delta);
 
-            for (auto i = 0ul; i < powerups.size(); ++i)
+        for (auto i = 0ul; i < powerups.size(); ++i)
+        {
+            if(!move_powerup(powerups[i], time_delta))
             {
-                if(!move_powerup(powerups[i], time_delta))
-                {
-                    powerups.erase(powerups.begin() + i);
-                    --i;
-                }
+                powerups.erase(powerups.begin() + i);
+                --i;
             }
-            break;
-        }   
+        }
     }
 }
 
@@ -216,21 +149,15 @@ void game::obj_reset()
     text_score.setString("Score: " + std::to_string(score + score_level));
 }
 
-void game::rand_powerups(int powerup_number)
+std::vector<int> game::rand_powerups(int powerup_number)
 {
-    std::uniform_int_distribution<int> dist(powerup_banned_blocks, blocks.size() - 1);
-    int rand_number = 0;
+    std::vector<int> powerups((blocks.size() - powerup_banned_blocks));
+    std::iota(powerups.begin(), powerups.end(), powerup_banned_blocks);
+    std::shuffle(powerups.begin(), powerups.end(), mt);
 
-    for(int i = 0; i < powerup_number; ++i)
-    {
-        do
-        { 
-            rand_number = dist(mt);
-        }
-        while(std::find(powerup_from_blocks.begin(), powerup_from_blocks.end(), rand_number) != powerup_from_blocks.end());
-        
-        powerup_from_blocks.push_back(rand_number);
-    }
+    powerups.erase(powerups.begin() + powerup_number, powerups.end());
+
+    return powerups;
 }
 
 void game::put_blocks(int block_type, int rows_number)
@@ -260,7 +187,7 @@ void game::game_state_level_1_prepare()
 
     put_blocks(block_blue, 2);
 
-    rand_powerups(2);
+    powerup_from_blocks = rand_powerups(2);
 }
 
 void game::game_state_level_2_prepare()
@@ -272,7 +199,7 @@ void game::game_state_level_2_prepare()
     put_blocks(block_yellow, 1);
     put_blocks(block_blue, 2);
 
-    rand_powerups(4);
+    powerup_from_blocks = rand_powerups(4);
 }
 
 void game::game_state_level_3_prepare()
@@ -285,7 +212,7 @@ void game::game_state_level_3_prepare()
     put_blocks(block_yellow, 1);
     put_blocks(block_blue, 1);
 
-    rand_powerups(5);
+    powerup_from_blocks = rand_powerups(5);
 }
 
 void game::game_state_level_4_prepare()
@@ -299,7 +226,7 @@ void game::game_state_level_4_prepare()
     put_blocks(block_yellow, 1);
     put_blocks(block_blue, 1);
 
-    rand_powerups(6);
+    powerup_from_blocks = rand_powerups(6);
 }
 
 void game::game_state_level_5_prepare()
@@ -313,70 +240,52 @@ void game::game_state_level_5_prepare()
     put_blocks(block_yellow, 1);
     put_blocks(block_blue, 1);
 
-    rand_powerups(8);
+    powerup_from_blocks = rand_powerups(8);
 }
 
 void game::game_state_update(sf::RenderWindow &window)
 {
-    if (game_state_requested == game_states::level_1_init)
+    if (game_state_requested == game_states::game_init_level)
     {
-        game::game_state_level_1_prepare();
-        text_obj.setString("BlockBreaker3000 - Press S to start level 1");
-        window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
+        // game_levels_var[game_level].init_function();
+        if(game_level == 1)
+        {
+            game_state_level_1_prepare();
+        }
+        else if(game_level == 2)
+        {
+            game_state_level_2_prepare();
+        }
+        else if(game_level == 3)
+        {
+            game_state_level_3_prepare();
+        }
+        else if(game_level == 4)
+        {
+            game_state_level_4_prepare();
+        }
+        else if(game_level == 5)
+        {
+            game_state_level_5_prepare();
+        }
+        text_obj.setString("BlockBreaker3000 - Press S to start level " + std::to_string(game_level));
+        window.setTitle("BlockBreaker3000 - Level " + std::to_string(game_level));
     }
-    else if (game_state_requested == game_states::level_2_init)
+    else if (game_state_requested == game_states::game_playing)
     {
-        game::game_state_level_2_prepare();
-        text_obj.setString("BlockBreaker3000 - Press S to start level 2");
+        text_obj.setString("BlockBreaker3000 - level " + std::to_string(game_level));
     }
-    else if (game_state_requested == game_states::level_3_init)
-    {
-        game::game_state_level_3_prepare();
-        text_obj.setString("BlockBreaker3000 - Press S to start level 3");
-    }
-    else if (game_state_requested == game_states::level_4_init)
-    {
-        game::game_state_level_4_prepare();
-        text_obj.setString("BlockBreaker3000 - Press S to start level 4");
-    }
-    else if (game_state_requested == game_states::level_5_init)
-    {
-        game::game_state_level_5_prepare();
-        text_obj.setString("BlockBreaker3000 - Press S to start level 5");
-    }
-    else if (game_state_requested == game_states::level_1)
-    {
-        text_obj.setString("BlockBreaker3000 - level 1");
-    }
-    else if (game_state_requested == game_states::level_2)
-    {
-        text_obj.setString("BlockBreaker3000 - level 2");
-    }
-    else if (game_state_requested == game_states::level_3)
-    {
-        text_obj.setString("BlockBreaker3000 - level 3");
-    }
-    else if (game_state_requested == game_states::level_4)
-    {
-        text_obj.setString("BlockBreaker3000 - level 4");
-    }
-    else if (game_state_requested == game_states::level_5)
-    {
-        text_obj.setString("BlockBreaker3000 - level 5");
-    }
-    else if (game_state_requested == game_states::level_lost)
+    else if (game_state_requested == game_states::game_lost)
     {
         text_obj.setString("BlockBreaker3000 - You lost :( Press R to reset level");
     }
-    else if (game_state_requested == game_states::level_won)
+    else if (game_state_requested == game_states::game_won)
     {
         text_obj.setString("BlockBreaker3000 - You won :) Press N to next level");
         score_level += static_cast<int>(balls.size()) * points_for_ball;
         score += score_level;
         text_score.setString("Score: " + std::to_string(score));
-        window.setTitle("BlockBreaker3000 - Score: " + std::to_string(score));
     }
-    game_state_previus = game_state;
     game_state = game_state_requested;
 }
 
@@ -405,7 +314,7 @@ void game::draw(sf::RenderWindow &window)
     }
     else
     {
-        game_state_requested = game_states::level_won;
+        game_state_requested = game_states::game_won;
     }
 
     window.draw(text_obj);
