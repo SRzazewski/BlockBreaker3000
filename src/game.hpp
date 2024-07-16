@@ -29,14 +29,14 @@ enum class game_levels
     level_5,
 };
 
-// class game;
+class game;
 
-// struct game_states_st
-// {
-//     game_levels state_name;
-//     int level_number;
-//     void (game:: *init_function)();
-// };
+struct game_states_st
+{
+    game_levels state_name;
+    int level_number;
+    void (game:: *init_function)();
+};
 
 struct game_area
 {
@@ -55,8 +55,9 @@ constexpr int blocks_in_row = 8;
 class game
 {
 public:
-    game(sf::Font &font, game_area area):
-        block_breaker_area(area)
+    game(sf::Font &font, game_area area)
+        : block_breaker_area(area)
+        , mt(std::random_device()())
     {
         game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, 
                                             block_breaker_area.y_stop - block_breaker_area.y_start));
@@ -73,7 +74,6 @@ public:
         text_score.setFillColor(sf::Color::Red);
         text_score.setStyle(sf::Text::Bold);
         text_score.setPosition(0.0f, 30.0f);
-        mt = std::mt19937(rd());
     }
     void serve_events(const sf::Event event);
     void update(sf::RenderWindow &window, sf::Time delta);
@@ -92,22 +92,21 @@ private:
     sf::Text text_obj;
     sf::Text text_score;
     std::vector<int> powerup_from_blocks;
-    std::random_device rd;
     std::mt19937 mt;
     int score = 0;
     int score_level = 0;
     const float position_paddle_x_min = block_breaker_area.x_start + paddle_size.x/2.0f;
     const float position_paddle_x_max = block_breaker_area.x_stop - paddle_size.x/2.0f;
 
-    // std::array<game_states_st, 6> game_levels_var
-    // {{
-    //     {game_levels::level_0, 0, nullptr},
-    //     {game_levels::level_1, 1, &game::game_state_level_1_prepare},
-    //     {game_levels::level_2, 2, &game::game_state_level_2_prepare},
-    //     {game_levels::level_3, 3, &game::game_state_level_3_prepare},
-    //     {game_levels::level_4, 4, &game::game_state_level_4_prepare},
-    //     {game_levels::level_5, 5, &game::game_state_level_5_prepare}
-    // }};
+    std::array<game_states_st, 6> game_levels_var
+    {{
+        {game_levels::level_0, 0, nullptr},
+        {game_levels::level_1, 1, &game::game_state_level_1_prepare},
+        {game_levels::level_2, 2, &game::game_state_level_2_prepare},
+        {game_levels::level_3, 3, &game::game_state_level_3_prepare},
+        {game_levels::level_4, 4, &game::game_state_level_4_prepare},
+        {game_levels::level_5, 5, &game::game_state_level_5_prepare}
+    }};
 
     void serve_events_level_init(const sf::Event event);
     void serve_events_level(const sf::Event event);
@@ -133,6 +132,6 @@ private:
     bool block_broke(block &block_obj);
     bool ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
-    sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
+    static sf::Vector2f calculate_new_vector(sf::Vector2f vector_current, float fi);
 };
 #endif

@@ -40,6 +40,7 @@ public:
     sf::RectangleShape get_block() const;
     int hit_obj();
     bool is_broken();
+    void update_color();
 
 protected:
     sf::RectangleShape block_obj;

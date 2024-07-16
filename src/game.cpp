@@ -247,26 +247,10 @@ void game::game_state_update(sf::RenderWindow &window)
 {
     if (game_state_requested == game_states::game_init_level)
     {
-        // game_levels_var[game_level].init_function();
-        if(game_level == 1)
+        auto init_fun = game_levels_var[game_level].init_function;
+        if (init_fun != nullptr)
         {
-            game_state_level_1_prepare();
-        }
-        else if(game_level == 2)
-        {
-            game_state_level_2_prepare();
-        }
-        else if(game_level == 3)
-        {
-            game_state_level_3_prepare();
-        }
-        else if(game_level == 4)
-        {
-            game_state_level_4_prepare();
-        }
-        else if(game_level == 5)
-        {
-            game_state_level_5_prepare();
+            (this->*init_fun)();
         }
         text_obj.setString("BlockBreaker3000 - Press S to start level " + std::to_string(game_level));
         window.setTitle("BlockBreaker3000 - Level " + std::to_string(game_level));
@@ -324,8 +308,7 @@ void game::draw(sf::RenderWindow &window)
 void game::move_paddle(sf::Time time_delta)
 {
     sf::Vector2f paddle_position = paddle_obj.get_position();
-    sf::Vector2f paddle_velocity = paddle_obj.get_velocity_vector();
-    paddle_position.x = paddle_position.x + (paddle_velocity.x * time_delta.asSeconds());
+    paddle_position.x += paddle_obj.get_velocity_vector().x * time_delta.asSeconds();
 
     if (paddle_position.x < position_paddle_x_min)
     {
@@ -387,14 +370,12 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         if(ball_velocity.y < 0)
         {
             fi += std::numbers::pi_v<float>/2;
-            fi *= -1.0f;
         }
         else if(ball_velocity.y > 0)
         {
             fi += -std::numbers::pi_v<float>/2;
-            fi *= -1.0;
         }
-        fi *= 2.0f;
+        fi *= -2.0f;
         ball_velocity = game::calculate_new_vector(ball_velocity, fi);
     }
     else if(ball_position.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
@@ -427,13 +408,8 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         if(ball_velocity.x < 0)
         {
             fi += std::numbers::pi_v<float>;
-            fi *= -1.0;
         }
-        else if(ball_velocity.x > 0)
-        {
-            fi *= -1.0;
-        }
-        fi *= 2.0f;
+        fi *= -2.0f;
         ball_velocity = game::calculate_new_vector(ball_velocity, fi);
     }
     else if(ball_position.y > (block_breaker_area.y_stop + ball_obj.get_ball().getRadius()))
