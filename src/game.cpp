@@ -376,7 +376,7 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
             fi += -std::numbers::pi_v<float>/2;
         }
         fi *= -2.0f;
-        ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+        ball_velocity = game::rotate_vector(ball_velocity, fi);
     }
     else if(ball_position.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
     {
@@ -396,7 +396,7 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         // std::cout << "Angle after:" << 180/std::numbers::pi_v<float>*fi << "\n";
         // std::cout << "Velocity before x:" << ball_velocity.x << "\n";
         // std::cout << "Velocity before y:" << ball_velocity.y << "\n";
-        ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+        ball_velocity = game::rotate_vector(ball_velocity, fi);
         // std::cout << "Velocity after x:" << ball_velocity.x << "\n";
         // std::cout << "Velocity after y:" << ball_velocity.y << "\n\n";
     }
@@ -410,7 +410,7 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
             fi += std::numbers::pi_v<float>;
         }
         fi *= -2.0f;
-        ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+        ball_velocity = game::rotate_vector(ball_velocity, fi);
     }
     else if(ball_position.y > (block_breaker_area.y_stop + ball_obj.get_ball().getRadius()))
     {
@@ -531,7 +531,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 fi += ((paddle_obj.get_position().x - ball_position.x)/(paddle_obj.get_paddle().getSize().x/2.0f))*(-std::numbers::pi_v<float>/24);
             }
             fi *=2;
-            ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+            ball_velocity = game::rotate_vector(ball_velocity, fi);
         }
         else if (ball_velocity.x > 0 
             && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
@@ -544,7 +544,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 float fi = atan2(ball_velocity.y, ball_velocity.x);
                 fi = std::numbers::pi_v<float>/2 - fi;
                 fi *= 2;
-                ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+                ball_velocity = game::rotate_vector(ball_velocity, fi);
             }
         }
         else if (ball_velocity.x < 0 
@@ -559,7 +559,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 fi = fi - std::numbers::pi_v<float>/2;
                 fi *= -1.0f;
                 fi *= 2.0f;
-                ball_velocity = game::calculate_new_vector(ball_velocity, fi);
+                ball_velocity = game::rotate_vector(ball_velocity, fi);
             }
         }
     }
@@ -589,7 +589,7 @@ bool game::powerup_meets_edge(powerup &powerup_obj)
     return powerup_obj.get_position().y > (block_breaker_area.y_stop + powerup_obj.get_powerup().getRadius());
 }
 
-sf::Vector2f game::calculate_new_vector(sf::Vector2f vector_current, float fi)
+sf::Vector2f game::rotate_vector(sf::Vector2f vector_current, float fi)
 {
     sf::Vector2f vector_new;
     vector_new.x = vector_current.x * cos(fi) - vector_current.y * sin(fi);
