@@ -20,11 +20,13 @@ add_executable(BlockBreaker3000_tests
 target_link_libraries(BlockBreaker3000_tests
     PRIVATE
         GTest::gtest_main
+        BlockBreaker3000::BlockBreaker3000_core
 )
 
 target_include_directories(BlockBreaker3000_tests
     PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR}
+        ${PROJECT_SOURCE_DIR}
 )
 
 include(GoogleTest)

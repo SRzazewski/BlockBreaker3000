@@ -1,5 +1,6 @@
 # Add an executable
 add_library(BlockBreaker3000_core STATIC)
+add_library(BlockBreaker3000::BlockBreaker3000_core ALIAS BlockBreaker3000_core )
 
 target_sources(BlockBreaker3000_core
     PRIVATE

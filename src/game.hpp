@@ -78,6 +78,7 @@ public:
     void serve_events(const sf::Event event);
     void update(sf::RenderWindow &window, sf::Time delta);
     void draw(sf::RenderWindow &window);
+    static sf::Vector2f rotate_vector(sf::Vector2f vector_current, float fi);
 
 private:
     game_area block_breaker_area;
@@ -132,6 +133,5 @@ private:
     bool block_broke(block &block_obj);
     bool ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
-    static sf::Vector2f rotate_vector(sf::Vector2f vector_current, float fi);
 };
 #endif
