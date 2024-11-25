@@ -589,10 +589,22 @@ bool game::powerup_meets_edge(powerup &powerup_obj)
     return powerup_obj.get_position().y > (block_breaker_area.y_stop + powerup_obj.get_powerup().getRadius());
 }
 
+void game::calculate_angle_of_incidence(float &fi)
+{
+    if(fi < 0)
+    {
+        fi = fi +(std::numbers::pi_v<float> -fi);
+    }
+}
+
 sf::Vector2f game::rotate_vector(sf::Vector2f vector_current, float fi)
 {
+    auto round_num = [](double num)
+    {
+        return std::round(num * 100.0f)/100.0f;
+    };
     sf::Vector2f vector_new;
-    vector_new.x = vector_current.x * cos(fi) - vector_current.y * sin(fi);
-    vector_new.y = vector_current.x * sin(fi) + vector_current.y * cos(fi);
+    vector_new.x = vector_current.x * round_num(cos(fi)) - vector_current.y * round_num(sin(fi));
+    vector_new.y = vector_current.x * round_num(sin(fi)) + vector_current.y * round_num(cos(fi));
     return vector_new;
 }

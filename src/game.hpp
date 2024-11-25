@@ -133,5 +133,6 @@ private:
     bool block_broke(block &block_obj);
     bool ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
+    void calculate_angle_of_incidence(float &fi);
 };
 #endif
