@@ -599,12 +599,8 @@ void game::calculate_angle_of_incidence(float &fi)
 
 sf::Vector2f game::rotate_vector(sf::Vector2f vector_current, float fi)
 {
-    auto round_num = [](double num)
-    {
-        return std::round(num * 100.0f)/100.0f;
-    };
     sf::Vector2f vector_new;
-    vector_new.x = vector_current.x * round_num(cos(fi)) - vector_current.y * round_num(sin(fi));
-    vector_new.y = vector_current.x * round_num(sin(fi)) + vector_current.y * round_num(cos(fi));
+    vector_new.x = vector_current.x * cos(fi) - vector_current.y * sin(fi);
+    vector_new.y = vector_current.x * sin(fi) + vector_current.y * cos(fi);
     return vector_new;
 }
