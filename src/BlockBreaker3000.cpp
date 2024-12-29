@@ -1,5 +1,7 @@
 #include "game.hpp"
 #include <SFML/Graphics.hpp>
+#include <filesystem>
+#include <iostream>
 
 int main()
 {
@@ -7,8 +9,19 @@ int main()
     auto window = sf::RenderWindow{ { static_cast<unsigned int>(block_breaker_area.x_stop), static_cast<unsigned int>(block_breaker_area.y_stop) }, "BlockBreaker3000" };
     window.setFramerateLimit(144);
 
+    std::string path = std::filesystem::canonical("/proc/self/exe");
+    while (path.length() > 1)
+    {
+        char last_character = path.back();
+        if ('/' == last_character)
+        {
+            break;
+        }
+        path.erase(path.end() - 1);
+    }
+
     sf::Font font;
-    if (!font.loadFromFile("font/arial.ttf"))
+    if (!font.loadFromFile(path + "font/arial.ttf"))
     {
         window.close();
     }
