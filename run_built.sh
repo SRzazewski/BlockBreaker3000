@@ -18,5 +18,7 @@ command=./$exe_file
 if [ -f $exe_file ]; then
     $command
 else
-    echo "File $exe_file doesn't exist!"
+    make_command="make -C build"
+    $make_command
+    $command
 fi
