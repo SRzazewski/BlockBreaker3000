@@ -363,12 +363,8 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 {
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
 
-    if (ball_position.x < (block_breaker_area.x_start + ball_obj.get_ball().getRadius()))
+    auto set_surface_angle = [ball_velocity](float &surface_angle)
     {
-        ball_position.x = 2 * (block_breaker_area.x_start + ball_obj.get_ball().getRadius()) - ball_position.x;
-        float fi = atan2(ball_velocity.y, ball_velocity.x);
-        calculate_angle_of_incidence(fi);
-        float surface_angle = 0.0f;
         if(ball_velocity.y < 0)
         {
             surface_angle = std::numbers::pi_v<float>/2.0f;
@@ -377,38 +373,37 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         {
             surface_angle = 3.0f * std::numbers::pi_v<float>/2.0f;
         }
-        fi = 2.0f * (surface_angle - fi);
+    };
+
+    if (ball_position.x < (block_breaker_area.x_start + ball_obj.get_ball().getRadius()))
+    {
+        ball_position.x = 2 * (block_breaker_area.x_start + ball_obj.get_ball().getRadius()) - ball_position.x;
+        float surface_angle = 0.0f;
+        set_surface_angle(surface_angle);
+        float fi = 0.0f;
+        calculate_angle_of_incidence(fi, ball_velocity, surface_angle);
         ball_velocity = game::rotate_vector(ball_velocity, fi);
     }
     else if(ball_position.x > (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()))
     {
         ball_position.x = 2 * (block_breaker_area.x_stop - ball_obj.get_ball().getRadius()) - ball_position.x;
-        float fi = atan2(ball_velocity.y, ball_velocity.x);
-        calculate_angle_of_incidence(fi);
         float surface_angle = 0.0f;
-        if(ball_velocity.y < 0)
-        {
-            surface_angle = std::numbers::pi_v<float>/2.0f;
-        }
-        else if(ball_velocity.y > 0)
-        {
-            surface_angle = 3.0f * std::numbers::pi_v<float>/2.0f;
-        }
-        fi = 2.0f * (surface_angle - fi);
+        set_surface_angle(surface_angle);
+        float fi = 0.0f;
+        calculate_angle_of_incidence(fi, ball_velocity, surface_angle);
         ball_velocity = game::rotate_vector(ball_velocity, fi);
     }
 
     if (ball_position.y < (block_breaker_area.y_start + ball_obj.get_ball().getRadius()))
     {
         ball_position.y = 2 * (block_breaker_area.y_start + ball_obj.get_ball().getRadius()) - ball_position.y;
-        float fi = atan2(ball_velocity.y, ball_velocity.x);
-        calculate_angle_of_incidence(fi);
         float surface_angle = 0.0f;
         if(ball_velocity.x < 0)
         {
             surface_angle = 2.0f * std::numbers::pi_v<float>;
         }
-        fi = 2.0f * (surface_angle - fi);
+        float fi = 0.0f;
+        calculate_angle_of_incidence(fi, ball_velocity, surface_angle);
         ball_velocity = game::rotate_vector(ball_velocity, fi);
     }
     else if(ball_position.y > (block_breaker_area.y_stop + ball_obj.get_ball().getRadius()))
@@ -588,12 +583,14 @@ bool game::powerup_meets_edge(powerup &powerup_obj)
     return powerup_obj.get_position().y > (block_breaker_area.y_stop + powerup_obj.get_powerup().getRadius());
 }
 
-void game::calculate_angle_of_incidence(float &fi)
+void game::calculate_angle_of_incidence(float &fi, sf::Vector2f obj_velocity, float surface_angle)
 {
+    fi = atan2(obj_velocity.y, obj_velocity.x);
     if (fi < 0)
     {
         fi = 2 * std::numbers::pi_v<float> + fi ;
     }
+    fi = 2.0f * (surface_angle - fi);
 }
 
 sf::Vector2f game::rotate_vector(sf::Vector2f vector_current, float fi)
