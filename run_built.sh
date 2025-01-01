@@ -18,7 +18,9 @@ command=./$exe_file
 if [ -f $exe_file ]; then
     $command
 else
+    cmake_command="cmake -S . -B build"
     make_command="make -C build"
+    $cmake_command
     $make_command
     $command
 fi
