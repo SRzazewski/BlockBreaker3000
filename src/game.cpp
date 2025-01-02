@@ -425,7 +425,8 @@ bool game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
             && (ball_position.x) < (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.y = 2 * (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f - ball_obj.get_ball().getRadius() - block_obj.get_block().getOutlineThickness()) - ball_position.y;
-            ball_velocity.y *= -1.0;
+            float surface_angle = std::numbers::pi_v<float>;
+            ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
 
             ret_val = block_broke(block_obj);
         }
@@ -438,7 +439,8 @@ bool game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
             && (ball_position.x) < (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.y = 2 * (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + ball_obj.get_ball().getRadius() + block_obj.get_block().getOutlineThickness()) - ball_position.y;
-            ball_velocity.y *= -1.0;
+            float surface_angle = std::numbers::pi_v<float>;
+            ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
 
             ret_val = block_broke(block_obj);
         }
@@ -452,7 +454,8 @@ bool game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
             && (ball_position.y) < (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.x = 2 * (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f - ball_obj.get_ball().getRadius() - block_obj.get_block().getOutlineThickness()) - ball_position.x;
-            ball_velocity.x *= -1.0;
+            float surface_angle = std::numbers::pi_v<float>/2.0f;
+            ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
 
             ret_val = block_broke(block_obj);
         }
@@ -465,7 +468,8 @@ bool game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
             && (ball_position.y) < (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.x = 2 * (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f + ball_obj.get_ball().getRadius() + block_obj.get_block().getOutlineThickness()) - ball_position.x;
-            ball_velocity.x *= -1.0;
+            float surface_angle = std::numbers::pi_v<float>/2.0f;
+            ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
 
             ret_val = block_broke(block_obj);
         }
