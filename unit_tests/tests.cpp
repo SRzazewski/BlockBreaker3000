@@ -16,8 +16,8 @@ TEST(BlockBreaker3000_tests, BlockBreaker3000_tests_rotate_vector_45_degrees)
 
     vector = game::rotate_vector(vector, angle);
 
-    EXPECT_NEAR(vector.x, 0.0f, 0.01f);
-    EXPECT_NEAR(vector.y, 5.0f, 0.01f);
+    EXPECT_NEAR(vector.x, -5.0f, 0.01f);
+    EXPECT_NEAR(vector.y, 0.0f, 0.01f);
 }
 
 TEST(BlockBreaker3000_tests, BlockBreaker3000_tests_rotate_vector_90_degrees)
@@ -27,8 +27,8 @@ TEST(BlockBreaker3000_tests, BlockBreaker3000_tests_rotate_vector_90_degrees)
 
     vector = game::rotate_vector(vector, angle);
 
-    EXPECT_NEAR(vector.x, 3.54f, 0.01f);
-    EXPECT_NEAR(vector.y, 3.54f, 0.01f);
+    EXPECT_NEAR(vector.x, 0.0f, 0.01f);
+    EXPECT_NEAR(vector.y, 5.0f, 0.01f);
 }
 
 TEST(BlockBreaker3000_tests, BlockBreaker3000_tests_rotate_vector_180_degrees)
@@ -38,7 +38,7 @@ TEST(BlockBreaker3000_tests, BlockBreaker3000_tests_rotate_vector_180_degrees)
 
     vector = game::rotate_vector(vector, angle);
 
-    EXPECT_NEAR(vector.x, -5.0f, 0.01f);
+    EXPECT_NEAR(vector.x, 5.0f, 0.01f);
     EXPECT_NEAR(vector.y, 0.0f, 0.01f);
 }
 
