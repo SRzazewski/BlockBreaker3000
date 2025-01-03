@@ -59,10 +59,15 @@ public:
         : block_breaker_area(area)
         , mt(std::random_device()())
     {
-        game_area_field.setSize(sf::Vector2f(block_breaker_area.x_stop - block_breaker_area.x_start, 
-                                            block_breaker_area.y_stop - block_breaker_area.y_start));
+        game_area_field.setSize(sf::Vector2f(
+                                    block_breaker_area.x_stop
+                                        - block_breaker_area.x_start, 
+                                    block_breaker_area.y_stop 
+                                        - block_breaker_area.y_start));
         game_area_field.setFillColor(sf::Color::Black);
-        game_area_field.setPosition(sf::Vector2f(block_breaker_area.x_start, block_breaker_area.y_start));
+        game_area_field.setPosition(sf::Vector2f(
+                                        block_breaker_area.x_start, 
+                                        block_breaker_area.y_start));
         text_obj.setFont(font);
         text_obj.setString("BlockBreaker3000");
         text_obj.setCharacterSize(24);
@@ -78,7 +83,8 @@ public:
     void serve_events(const sf::Event event);
     void update(sf::RenderWindow &window, sf::Time delta);
     void draw(sf::RenderWindow &window);
-    static sf::Vector2f rotate_vector(sf::Vector2f vector_current, float surface_angle);
+    static sf::Vector2f rotate_vector(sf::Vector2f vector_current,
+                                        float surface_angle);
 
 private:
     game_area block_breaker_area;
@@ -96,8 +102,10 @@ private:
     std::mt19937 mt;
     int score = 0;
     int score_level = 0;
-    const float position_paddle_x_min = block_breaker_area.x_start + paddle_size.x/2.0f;
-    const float position_paddle_x_max = block_breaker_area.x_stop - paddle_size.x/2.0f;
+    const float position_paddle_x_min = block_breaker_area.x_start
+                                        + paddle_size.x/2.0f;
+    const float position_paddle_x_max = block_breaker_area.x_stop
+                                        - paddle_size.x/2.0f;
 
     std::array<game_states_st, 6> game_levels_var
     {{
@@ -131,7 +139,8 @@ private:
     bool powerup_meets_paddle(powerup &powerup_obj);
     bool powerup_meets_edge(powerup &powerup_obj);
     bool block_broke(block &block_obj);
-    bool ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_position);
+    bool ball_meets_block(ball &ball_obj, block &block_obj, 
+                            sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
 };
 #endif

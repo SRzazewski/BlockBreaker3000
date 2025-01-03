@@ -6,7 +6,14 @@
 int main()
 {
     const game_area block_breaker_area = {0.0f, 800.0f, 60.0f, 600.0f};
-    auto window = sf::RenderWindow{ { static_cast<unsigned int>(block_breaker_area.x_stop), static_cast<unsigned int>(block_breaker_area.y_stop) }, "BlockBreaker3000" };
+    auto window = sf::RenderWindow
+        {
+            {
+                static_cast<unsigned int>(block_breaker_area.x_stop),
+                static_cast<unsigned int>(block_breaker_area.y_stop)
+            }, 
+            "BlockBreaker3000" 
+        };
     window.setFramerateLimit(144);
 
     std::string path = std::filesystem::canonical("/proc/self/exe");

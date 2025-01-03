@@ -27,7 +27,8 @@ public:
     int get_points();
 
 private:
-    sf::CircleShape powerup_shape = sf::CircleShape(powerup_radius, powerup_triangle);
+    sf::CircleShape powerup_shape = sf::CircleShape(powerup_radius, 
+                                                        powerup_triangle);
     sf::Vector2f velocity_vector = sf::Vector2f(0.0f, 100.0f);
     int points = 50;
 };
