@@ -484,21 +484,24 @@ bool game::ball_meets_block(ball &ball_obj, block &block_obj, sf::Vector2f ball_
 void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
 {
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
-    
-    if (ball_velocity.y > 0 
-        && (ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()))
-        && (ball_position.y < (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f)))
+
+    if (ball_velocity.y > 0)
     {
-        if((ball_position.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
-            && (ball_position.x) < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f))
+        if ((ball_position.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
+            && (ball_position.x < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f)))
         {
-            ball_position.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - ball_position.y;
-            float surface_angle = ((ball_position.x - paddle_obj.get_position().x)/(paddle_obj.get_paddle().getSize().x/2.0f))*(std::numbers::pi_v<float>/24);
-            ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
+            if ((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()))
+                && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
+            {
+                ball_position.y = 2 * (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f - ball_obj.get_ball().getRadius()) - ball_position.y;
+                //There is ball_position.x - paddle_obj.get_position().x because y-axis is reversed
+                float surface_angle = ((ball_position.x - paddle_obj.get_position().x)/(paddle_obj.get_paddle().getSize().x/2.0f))*(std::numbers::pi_v<float>/24);
+                ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
+            }
         }
-        else if (ball_velocity.x > 0 
-            && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
-            && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
+        else if (ball_velocity.x > 0
+            && (ball_position.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()))
+            && (ball_position.x < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f)))
         {
             if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
                 && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
@@ -508,9 +511,9 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                 ball_velocity = game::rotate_vector(ball_velocity, surface_angle);
             }
         }
-        else if (ball_velocity.x < 0 
-            && (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f - ball_obj.get_ball().getRadius()) < ball_position.x
-            && (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius()) > ball_position.x)
+        else if (ball_velocity.x < 0
+            && (ball_position.x > (paddle_obj.get_position().x - paddle_obj.get_paddle().getSize().x/2.0f))
+            && (ball_position.x < (paddle_obj.get_position().x + paddle_obj.get_paddle().getSize().x/2.0f + ball_obj.get_ball().getRadius())))
         {
             if((ball_position.y > (paddle_obj.get_position().y - paddle_obj.get_paddle().getSize().y/2.0f))
                 && (ball_position.y) < (paddle_obj.get_position().y + paddle_obj.get_paddle().getSize().y/2.0f))
