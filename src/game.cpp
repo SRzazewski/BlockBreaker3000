@@ -575,7 +575,7 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
                                     - ball_obj.get_ball().getRadius())
                                     - ball_position.y;
                 /* There is ball_position.x - paddle_obj.get_position().x, 
-                 *   because y-axis is reversed */
+                 * because y-axis is reversed */
                 float surface_angle = (
                     (ball_position.x - paddle_obj.get_position().x)
                     / (paddle_obj.get_paddle().getSize().x/2.0f))
