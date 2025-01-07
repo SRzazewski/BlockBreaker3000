@@ -12,7 +12,7 @@ class powerup : public moving_object
 public:
     powerup(sf::Vector2f start_position)
     {
-        powerup_shape.setOrigin(powerup_radius, powerup_radius);
+        powerup_shape.setOrigin({powerup_radius, powerup_radius});
         powerup_shape.setFillColor(sf::Color(255, 0, 50));
         powerup_shape.setPosition(start_position);
     }

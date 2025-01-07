@@ -5,15 +5,14 @@
 
 int main()
 {
-    const game_area block_breaker_area = {0.0f, 800.0f, 60.0f, 600.0f};
-    auto window = sf::RenderWindow
-        {
-            {
-                static_cast<unsigned int>(block_breaker_area.x_stop),
-                static_cast<unsigned int>(block_breaker_area.y_stop)
-            }, 
-            "BlockBreaker3000" 
-        };
+    const game_area block_breaker_area = {0, 800, 60, 600};
+    auto window = sf::RenderWindow(
+            sf::VideoMode(
+                {
+                    block_breaker_area.x_stop, 
+                    block_breaker_area.y_stop
+                }), 
+            "BlockBreaker3000");
     window.setFramerateLimit(144);
 
     std::string path = std::filesystem::canonical("/proc/self/exe");
@@ -28,7 +27,7 @@ int main()
     }
 
     sf::Font font;
-    if (!font.loadFromFile(path + "font/arial.ttf"))
+    if (!font.openFromFile(path + "font/arial.ttf"))
     {
         window.close();
     }
@@ -39,9 +38,9 @@ int main()
 
     while (window.isOpen())
     {
-        for (auto event = sf::Event{}; window.pollEvent(event);)
+        while (const std::optional<sf::Event> event = window.pollEvent())
         {
-            if(event.type == sf::Event::Closed)
+            if(event->is<sf::Event::Closed>())
             {
                 window.close();
             }

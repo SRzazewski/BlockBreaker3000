@@ -11,7 +11,7 @@ class ball : public moving_object
 public:
     ball(sf::Vector2f start_position = sf::Vector2f(385.0f, 500.0f))
     {
-        ball_shape.setOrigin(ball_radius, ball_radius);
+        ball_shape.setOrigin({ball_radius, ball_radius});
         ball_shape.setFillColor(sf::Color(255, 0, 0));
         ball_shape.setPosition(start_position);
     }

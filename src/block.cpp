@@ -4,7 +4,7 @@ block::block(const sf::Vector2f start_position, const int hits_to_break)
 {
     block_obj = sf::RectangleShape();
     block_obj.setSize(block_size);
-    block_obj.setOrigin(block_size.x/2.0f, block_size.y/2.0f);
+    block_obj.setOrigin({block_size.x/2.0f, block_size.y/2.0f});
     block_obj.setOutlineThickness(block_outline_thickness);
     block_obj.setPosition(start_position);
     this->hits_to_break = block_types[hits_to_break].hits_to_break;

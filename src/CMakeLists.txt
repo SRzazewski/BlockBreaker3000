@@ -27,7 +27,7 @@ target_include_directories(BlockBreaker3000_core
 # add_executable(SFML_TEST src/main.cpp)
 target_link_libraries(BlockBreaker3000_core 
     PUBLIC 
-        sfml-graphics)
+        SFML::Graphics)
         
 target_compile_features(BlockBreaker3000_core PUBLIC cxx_std_20)
 

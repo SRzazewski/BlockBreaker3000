@@ -40,10 +40,10 @@ struct game_states_st
 
 struct game_area
 {
-    float x_start;
-    float x_stop;
-    float y_start;
-    float y_stop;
+    unsigned int x_start;
+    unsigned int x_stop;
+    unsigned int y_start;
+    unsigned int y_stop;
 };
 
 const sf::Vector2f ball_start_position_shift = sf::Vector2f(-10.0f, -40.f);
@@ -57,6 +57,8 @@ class game
 public:
     game(sf::Font &font, game_area area)
         : block_breaker_area(area)
+        , text_obj{font}
+        , text_score{font}
         , mt(std::random_device()())
     {
         game_area_field.setSize(sf::Vector2f(
@@ -68,19 +70,17 @@ public:
         game_area_field.setPosition(sf::Vector2f(
                                         block_breaker_area.x_start, 
                                         block_breaker_area.y_start));
-        text_obj.setFont(font);
         text_obj.setString("BlockBreaker3000");
         text_obj.setCharacterSize(24);
         text_obj.setFillColor(sf::Color::Red);
         text_obj.setStyle(sf::Text::Bold);
-        text_score.setFont(font);
         text_score.setString("Score: " + std::to_string(score + score_level));
         text_score.setCharacterSize(24);
         text_score.setFillColor(sf::Color::Red);
         text_score.setStyle(sf::Text::Bold);
-        text_score.setPosition(0.0f, 30.0f);
+        text_score.setPosition({0.0f, 30.0f});
     }
-    void serve_events(const sf::Event event);
+    void serve_events(const std::optional<sf::Event> event);
     void update(sf::RenderWindow &window, sf::Time delta);
     void draw(sf::RenderWindow &window);
     static sf::Vector2f rotate_vector(sf::Vector2f vector_current,
@@ -117,10 +117,10 @@ private:
         {game_levels::level_5, 5, &game::game_state_level_5_prepare}
     }};
 
-    void serve_events_level_init(const sf::Event event);
-    void serve_events_level(const sf::Event event);
-    void serve_events_level_won(const sf::Event event);
-    void serve_events_level_lost(const sf::Event event);
+    void serve_events_level_init(const std::optional<sf::Event> event);
+    void serve_events_level(const std::optional<sf::Event> event);
+    void serve_events_level_won(const std::optional<sf::Event> event);
+    void serve_events_level_lost(const std::optional<sf::Event> event);
 
     void game_state_update(sf::RenderWindow &window);
     void obj_reset();

@@ -4,8 +4,9 @@
 #include <numbers>
 #include <numeric>
 #include <string>
+#include <algorithm>
 
-void game::serve_events(const sf::Event event)
+void game::serve_events(const std::optional<sf::Event> event)
 {
     if(game_state == game_states::game_init_level)
     {
@@ -25,56 +26,49 @@ void game::serve_events(const sf::Event event)
     }
 }
 
-void game::serve_events_level_init(const sf::Event event)
+void game::serve_events_level_init(const std::optional<sf::Event> event)
 {
-    switch (event.type)
+    if (const auto* key_pressed = event->getIf<sf::Event::KeyPressed>())
     {
-    case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::S)
+        if (key_pressed->scancode == sf::Keyboard::Scancode::S)
         {
             game_state_requested = game_states::game_playing;
         }
-    default:
-        break;
     }
 }
 
-void game::serve_events_level(const sf::Event event)
+void game::serve_events_level(const std::optional<sf::Event> event)
 {
-switch (event.type)
+    if (const auto* key_pressed = event->getIf<sf::Event::KeyPressed>())
     {
-    case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::Left)
+        if (key_pressed->scancode == sf::Keyboard::Scancode::Left)
         {
             paddle_obj.set_velocity_vector(
                 sf::Vector2f(-paddle_velocity, 0.0f));
         }
-        else if (event.key.code == sf::Keyboard::Right)
+        else if (key_pressed->scancode == sf::Keyboard::Scancode::Right)
         {
             paddle_obj.set_velocity_vector(sf::Vector2f(paddle_velocity, 0.0f));
         }
-        break;
-    case sf::Event::KeyReleased:
-        if (event.key.code == sf::Keyboard::Left)
+    }
+    else if (const auto* key_pressed = event->getIf<sf::Event::KeyReleased>())
+    {
+        if (key_pressed->scancode == sf::Keyboard::Scancode::Left)
         {
             paddle_obj.set_velocity_vector(sf::Vector2f({}));
         }
-        else if (event.key.code == sf::Keyboard::Right)
+        else if (key_pressed->scancode == sf::Keyboard::Scancode::Right)
         {
             paddle_obj.set_velocity_vector(sf::Vector2f({}));
         }
-        break;
-    default:
-        break;
     }
 }
 
-void game::serve_events_level_won(const sf::Event event)
+void game::serve_events_level_won(const std::optional<sf::Event> event)
 {
-    switch (event.type)
+    if (const auto* key_pressed = event->getIf<sf::Event::KeyPressed>())
     {
-    case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::N)
+        if (key_pressed->scancode == sf::Keyboard::Scancode::N)
         {
             if(game_level < 5)
             {
@@ -82,24 +76,17 @@ void game::serve_events_level_won(const sf::Event event)
             }
             game_state_requested = game_states::game_init_level;
         }
-    default:
-        break;
     }
 }
 
-void game::serve_events_level_lost(const sf::Event event)
+void game::serve_events_level_lost(const std::optional<sf::Event> event)
 {
-
-    switch (event.type)
+    if (const auto* key_pressed = event->getIf<sf::Event::KeyPressed>())
     {
-    case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::R)
+        if (key_pressed->scancode == sf::Keyboard::Scancode::R)
         {
             game_state_requested = game_states::game_init_level;
         }
-        break;
-    default:
-        break;
     }
 }
 
@@ -441,7 +428,7 @@ bool game::ball_meets_block(ball &ball_obj,
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
     bool ret_val = false;
 
-    if (ball_velocity.y > 0 
+    if (ball_velocity.y > 0
         && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f
             - block_obj.get_block().getOutlineThickness()
             - ball_obj.get_ball().getRadius()) < ball_position.y
