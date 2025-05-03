@@ -1,1 +1,6 @@
 /build
+/_deps
+/CMakeFiles
+*.cmake
+CMakeCache.txt
+build.ninja
