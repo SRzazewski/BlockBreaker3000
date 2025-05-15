@@ -7,10 +7,8 @@ import os
 game_file_execution = "build/bin/BlockBreaker3000"
 game_file_execution_tests = "build/bin/BlockBreaker3000_tests"
 
-flags = [
-    ["test",     "",     False],
-    ["--clean",  "-C",   False] # clean files before build
-    ]
+flags = [["test",     "",     False],
+    ["--clean",  "-C",   False]] # clean files before build
 
 argument_list = sys.argv[1:]
 
