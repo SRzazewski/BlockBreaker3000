@@ -103,3 +103,9 @@ make
 ```
 ./bin/BlockBreaker3000_tests
 ```
+
+***
+
+## Documentation
+
+[Documentation](Documentation/BlockBreaker3000_documentation.md) work in progress...
