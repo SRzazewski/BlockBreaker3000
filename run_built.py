@@ -15,15 +15,15 @@ flags = [
 argument_list = sys.argv[1:]
 
 if argument_list:
-    for flag in argument_list:
+    for arg in argument_list:
         command_found = False
-        for j in flags:
-            if j[0] == flag or j[1] == flag:
-                j[2] = True
+        for flag in flags:
+            if flag[0] == arg or flag[1] == arg:
+                flag[2] = True
                 command_found = True
                 break
         if not command_found:
-            sys.exit(print("Flag ", flag," unrecognized!"))
+            sys.exit(print("Argument ", arg," unrecognized!"))
 
 if flags[0][2]:
     exe_file = game_file_execution_tests

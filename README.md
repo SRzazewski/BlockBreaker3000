@@ -32,7 +32,34 @@ make
 ./bin/BlockBreaker3000_tests
 ```
 
+#### Scripts
+Instead of points from 3 to 6 you can use Bash or Python scripts for build and run programs automatically:
+- Bash
 
+Run game
+```
+./run_built.sh
+```
+Run tests
+```
+./run_built.sh test
+```
+- Python
+
+Run game
+```
+./run_built.py
+```
+Run tests
+```
+./run_built.py test
+```
+There is able _--clean_ flag for Python script, that removes build files before next build.
+
+Example
+```
+./run_built.py --clean
+```
 
 ### For Windows
 1. Download the project
