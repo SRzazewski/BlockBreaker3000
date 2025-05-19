@@ -74,13 +74,12 @@ Run game
 ```
 Run tests
 ```
-./run_built.py test
+./run_built.py --test
 ```
-There is able _--clean_ flag for Python script, that removes build files before next build.
+There are able more flags for Python script. For know them use flag _--help_.
 
-Example
 ```
-./run_built.py --clean
+./run_built.py --help
 ```
 
 ### For Windows
