@@ -35,6 +35,9 @@ def display_help():
             flag[flags_const.get("flag")][2])
     print("\n")
 
+def get_flag_value(flag_name):
+    return flags[flags_dictionary.get(flag_name)][flags_const.get("value")]
+
 argument_list = sys.argv[1:]
 
 if argument_list:
@@ -49,21 +52,21 @@ if argument_list:
         if not command_found:
             sys.exit(print("Argument \"", arg,"\" unrecognized!"))
 
-if True == flags[flags_dictionary.get("help")][flags_const.get("value")]:
+if get_flag_value("help"):
     sys.exit(display_help())
 
-if True == flags[flags_dictionary.get("build")][flags_const.get("value")]:
-    if True == flags[flags_dictionary.get("clean")][flags_const.get("value")]:
+if get_flag_value("build"):
+    if get_flag_value("clean"):
         subprocess.run(["make -C build clean"], shell = True, executable="/usr/bin/bash")
     subprocess.run(["cmake -S . -B build"], shell = True, executable="/usr/bin/bash")
     subprocess.run(["make -C build"], shell = True, executable="/usr/bin/bash")
     sys.exit()
 
-if True == flags[flags_dictionary.get("clean")][flags_const.get("value")]:
+if get_flag_value("clean"):
     subprocess.run(["make -C build clean"], shell = True, executable="/usr/bin/bash")
     sys.exit()
 
-if flags[flags_dictionary.get("test")][flags_const.get("value")]:
+if get_flag_value("test"):
     exe_file = game_file_execution_tests
 else:
     exe_file = game_file_execution
