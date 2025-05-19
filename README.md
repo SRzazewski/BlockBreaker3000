@@ -16,6 +16,10 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 ***
 
+## About BlockBreaker3000
+
+The main reason for creating this project is to learn C++ and other things related to programming.
+
 ## External libraries
 This project uses SFML(Simple and Fast Multimedia Library). More information https://www.sfml-dev.org/
 
