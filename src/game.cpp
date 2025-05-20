@@ -51,13 +51,10 @@ void game::serve_events_level(const std::optional<sf::Event> event)
             paddle_obj.set_velocity_vector(sf::Vector2f(paddle_velocity, 0.0f));
         }
     }
-    else if (const auto* key_pressed = event->getIf<sf::Event::KeyReleased>())
+    else if (const auto* key_released = event->getIf<sf::Event::KeyReleased>())
     {
-        if (key_pressed->scancode == sf::Keyboard::Scancode::Left)
-        {
-            paddle_obj.set_velocity_vector(sf::Vector2f({}));
-        }
-        else if (key_pressed->scancode == sf::Keyboard::Scancode::Right)
+        if ((key_released->scancode == sf::Keyboard::Scancode::Left)
+            || (key_released->scancode == sf::Keyboard::Scancode::Right))
         {
             paddle_obj.set_velocity_vector(sf::Vector2f({}));
         }
@@ -591,9 +588,11 @@ bool game::ball_overlaps_obj(ball const &ball_obj,
                 + ball_obj.get_ball().getRadius()))
             && (ball_position.x > (rect_shape.get_position().x
                 - rect_shape.get_size().x/2.0f
-                - rect_shape.get_shape().getOutlineThickness()))
+                - rect_shape.get_shape().getOutlineThickness()
+                - ball_obj.get_ball().getRadius()))
             && (ball_position.x < (rect_shape.get_position().x
                 + rect_shape.get_size().x/2.0f 
-                + rect_shape.get_shape().getOutlineThickness())));
+                + rect_shape.get_shape().getOutlineThickness()
+                + ball_obj.get_ball().getRadius())));
 
 }
