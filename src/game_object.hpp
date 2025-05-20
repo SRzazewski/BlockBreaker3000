@@ -24,6 +24,7 @@ class rectangle_object : public game_object
 {
 public:
     virtual ~rectangle_object() = default;
+    virtual sf::RectangleShape get_shape() const = 0;
     virtual sf::Vector2f get_size() const = 0;
 };
 

@@ -25,7 +25,7 @@ sf::Vector2f paddle::get_velocity_vector() const
     return velocity_vector;
 }
 
-sf::RectangleShape paddle::get_paddle() const
+sf::RectangleShape paddle::get_shape() const
 {
     return player_paddle;
 }

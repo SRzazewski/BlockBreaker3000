@@ -429,109 +429,57 @@ bool game::ball_meets_block(ball &ball_obj,
     bool ret_val = false;
 
     if (ball_velocity.y > 0
-        && (block_obj.get_position().y - block_obj.get_size().y/2.0f
-            - block_obj.get_block().getOutlineThickness()
-            - ball_obj.get_ball().getRadius()) < ball_position.y
-        && (block_obj.get_position().y + block_obj.get_size().y/2.0f
-            + block_obj.get_block().getOutlineThickness()
-            + ball_obj.get_ball().getRadius()) > ball_position.y)
+        && ball_overlaps_obj(ball_obj, ball_position, block_obj))
     {
-        if((ball_position.x > (block_obj.get_position().x
-                - block_obj.get_size().x/2.0f
-                - block_obj.get_block().getOutlineThickness()))
-            && (ball_position.x) < (block_obj.get_position().x
-                + block_obj.get_size().x/2.0f 
-                + block_obj.get_block().getOutlineThickness()))
-        {
-            ball_position.y = 2 * (block_obj.get_position().y
-                                - block_obj.get_size().y/2.0f
-                                - ball_obj.get_ball().getRadius()
-                                - block_obj.get_block().getOutlineThickness()) 
-                                - ball_position.y;
-            float surface_angle = std::numbers::pi_v<float>;
-            ball_velocity = rotate_vector(ball_velocity, surface_angle);
+        ball_position.y = 2 * (block_obj.get_position().y
+                            - block_obj.get_size().y/2.0f
+                            - ball_obj.get_ball().getRadius()
+                            - block_obj.get_shape().getOutlineThickness()) 
+                            - ball_position.y;
+        float surface_angle = std::numbers::pi_v<float>;
+        ball_velocity = rotate_vector(ball_velocity, surface_angle);
 
-            ret_val = block_broke(block_obj);
-        }
+        ret_val = block_broke(block_obj);
     }
     else if (ball_velocity.y < 0
-        && (block_obj.get_position().y + block_obj.get_size().y/2.0f
-            + block_obj.get_block().getOutlineThickness()
-            + ball_obj.get_ball().getRadius()) > ball_position.y
-        && (block_obj.get_position().y - block_obj.get_size().y/2.0f
-            - block_obj.get_block().getOutlineThickness()
-            - ball_obj.get_ball().getRadius()) < ball_position.y)
+        && ball_overlaps_obj(ball_obj, ball_position, block_obj))
     {
-        if((ball_position.x > (block_obj.get_position().x
-                - block_obj.get_size().x/2.0f 
-                - block_obj.get_block().getOutlineThickness()))
-            && (ball_position.x) < (block_obj.get_position().x
-                + block_obj.get_size().x/2.0f
-                + block_obj.get_block().getOutlineThickness()))
-        {
-            ball_position.y = 2 * (block_obj.get_position().y
-                                + block_obj.get_size().y/2.0f
-                                + ball_obj.get_ball().getRadius()
-                                + block_obj.get_block().getOutlineThickness())
-                                - ball_position.y;
-            float surface_angle = std::numbers::pi_v<float>;
-            ball_velocity = rotate_vector(ball_velocity, surface_angle);
+        ball_position.y = 2 * (block_obj.get_position().y
+                            + block_obj.get_size().y/2.0f
+                            + ball_obj.get_ball().getRadius()
+                            + block_obj.get_shape().getOutlineThickness())
+                            - ball_position.y;
+        float surface_angle = std::numbers::pi_v<float>;
+        ball_velocity = rotate_vector(ball_velocity, surface_angle);
 
-            ret_val = block_broke(block_obj);
-        }
+        ret_val = block_broke(block_obj);
     }
 
-    if (ball_velocity.x > 0 
-        && (block_obj.get_position().x - block_obj.get_size().x/2.0f
-            - block_obj.get_block().getOutlineThickness()
-            - ball_obj.get_ball().getRadius()) < ball_position.x
-        && (block_obj.get_position().x + block_obj.get_size().x/2.0f
-            + block_obj.get_block().getOutlineThickness()
-            + ball_obj.get_ball().getRadius()) > ball_position.x)
+    if (ball_velocity.x > 0
+        && ball_overlaps_obj(ball_obj, ball_position, block_obj))
     {
-        if((ball_position.y > (block_obj.get_position().y
-                - block_obj.get_size().y/2.0f
-                - block_obj.get_block().getOutlineThickness()))
-            && (ball_position.y) < (block_obj.get_position().y
-                + block_obj.get_size().y/2.0f
-                + block_obj.get_block().getOutlineThickness()))
-        {
-            ball_position.x = 2 * (block_obj.get_position().x
-                                - block_obj.get_size().x/2.0f
-                                - ball_obj.get_ball().getRadius() 
-                                - block_obj.get_block().getOutlineThickness()) 
-                                - ball_position.x;
-            float surface_angle = std::numbers::pi_v<float>/2.0f;
-            ball_velocity = rotate_vector(ball_velocity, surface_angle);
+        ball_position.x = 2 * (block_obj.get_position().x
+                            - block_obj.get_size().x/2.0f
+                            - ball_obj.get_ball().getRadius() 
+                            - block_obj.get_shape().getOutlineThickness()) 
+                            - ball_position.x;
+        float surface_angle = std::numbers::pi_v<float>/2.0f;
+        ball_velocity = rotate_vector(ball_velocity, surface_angle);
 
-            ret_val = block_broke(block_obj);
-        }
+        ret_val = block_broke(block_obj);
     }
     else if (ball_velocity.x < 0
-        && (block_obj.get_position().x + block_obj.get_size().x/2.0f
-            + block_obj.get_block().getOutlineThickness()
-            + ball_obj.get_ball().getRadius()) > ball_position.x
-        && (block_obj.get_position().x - block_obj.get_size().x/2.0f
-            - block_obj.get_block().getOutlineThickness()
-            - ball_obj.get_ball().getRadius()) < ball_position.x)
+        && ball_overlaps_obj(ball_obj, ball_position, block_obj))
     {
-        if((ball_position.y > (block_obj.get_position().y
-                - block_obj.get_size().y/2.0f
-                - block_obj.get_block().getOutlineThickness()))
-            && (ball_position.y) < (block_obj.get_position().y
-                + block_obj.get_size().y/2.0f
-                + block_obj.get_block().getOutlineThickness()))
-        {
-            ball_position.x = 2 * (block_obj.get_position().x
-                                + block_obj.get_size().x/2.0f
-                                + ball_obj.get_ball().getRadius() 
-                                + block_obj.get_block().getOutlineThickness()) 
-                                - ball_position.x;
-            float surface_angle = std::numbers::pi_v<float>/2.0f;
-            ball_velocity = rotate_vector(ball_velocity, surface_angle);
+        ball_position.x = 2 * (block_obj.get_position().x
+                            + block_obj.get_size().x/2.0f
+                            + ball_obj.get_ball().getRadius() 
+                            + block_obj.get_shape().getOutlineThickness()) 
+                            - ball_position.x;
+        float surface_angle = std::numbers::pi_v<float>/2.0f;
+        ball_velocity = rotate_vector(ball_velocity, surface_angle);
 
-            ret_val = block_broke(block_obj);
-        }
+        ret_val = block_broke(block_obj);
     }
 
     ball_obj.set_velocity_vector(ball_velocity);
@@ -546,68 +494,39 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
 
     if (ball_velocity.y > 0)
     {
-        if ((ball_position.x > (paddle_obj.get_position().x
-                - paddle_obj.get_size().x/2.0f))
-            && (ball_position.x < (paddle_obj.get_position().x
-                + paddle_obj.get_size().x/2.0f)))
+        if (ball_overlaps_obj(ball_obj, ball_position, paddle_obj))
         {
-            if ((ball_position.y > (paddle_obj.get_position().y
-                    - paddle_obj.get_size().y/2.0f
-                    - ball_obj.get_ball().getRadius()))
-                && (ball_position.y) < (paddle_obj.get_position().y
-                    + paddle_obj.get_size().y/2.0f))
-            {
-                ball_position.y = 2 * (paddle_obj.get_position().y
-                                    - paddle_obj.get_size().y/2.0f
-                                    - ball_obj.get_ball().getRadius())
-                                    - ball_position.y;
-                /* There is ball_position.x - paddle_obj.get_position().x, 
-                 * because y-axis is reversed */
-                float surface_angle = (
-                    (ball_position.x - paddle_obj.get_position().x)
-                    / (paddle_obj.get_size().x/2.0f))
-                    * (std::numbers::pi_v<float>/24);
-                ball_velocity = rotate_vector(ball_velocity, surface_angle);
-            }
+            ball_position.y = 2 * (paddle_obj.get_position().y
+                                - paddle_obj.get_size().y/2.0f
+                                - ball_obj.get_ball().getRadius())
+                                - ball_position.y;
+            /* There is ball_position.x - paddle_obj.get_position().x, 
+                * because y-axis is reversed */
+            float surface_angle = (
+                (ball_position.x - paddle_obj.get_position().x)
+                / (paddle_obj.get_size().x/2.0f))
+                * (std::numbers::pi_v<float>/24);
+            ball_velocity = rotate_vector(ball_velocity, surface_angle);
         }
-        else if (ball_velocity.x > 0
-            && (ball_position.x > (paddle_obj.get_position().x
-                - paddle_obj.get_size().x/2.0f
-                - ball_obj.get_ball().getRadius()))
-            && (ball_position.x < (paddle_obj.get_position().x
-                + paddle_obj.get_size().x/2.0f)))
+        
+        if (ball_velocity.x > 0
+            && (ball_overlaps_obj(ball_obj, ball_position, paddle_obj)))
         {
-            if((ball_position.y > (paddle_obj.get_position().y
-                    - paddle_obj.get_size().y/2.0f))
-                && (ball_position.y) < (paddle_obj.get_position().y
-                    + paddle_obj.get_size().y/2.0f))
-            {
-                ball_position.x = 2 * (paddle_obj.get_position().x
-                    - paddle_obj.get_size().x/2.0f 
-                    - ball_obj.get_ball().getRadius()) - ball_position.x;
-                float surface_angle = std::numbers::pi_v<float>/2.0f;
-                ball_velocity = rotate_vector(ball_velocity, surface_angle);
-            }
+            ball_position.x = 2 * (paddle_obj.get_position().x
+                - paddle_obj.get_size().x/2.0f 
+                - ball_obj.get_ball().getRadius()) - ball_position.x;
+            float surface_angle = std::numbers::pi_v<float>/2.0f;
+            ball_velocity = rotate_vector(ball_velocity, surface_angle);
         }
         else if (ball_velocity.x < 0
-            && (ball_position.x > (paddle_obj.get_position().x
-                - paddle_obj.get_size().x/2.0f))
-            && (ball_position.x < (paddle_obj.get_position().x 
-                + paddle_obj.get_size().x/2.0f 
-                + ball_obj.get_ball().getRadius())))
+            && (ball_overlaps_obj(ball_obj, ball_position, paddle_obj)))
         {
-            if((ball_position.y > (paddle_obj.get_position().y
-                    - paddle_obj.get_size().y/2.0f))
-                && (ball_position.y) < (paddle_obj.get_position().y
-                    + paddle_obj.get_size().y/2.0f))
-            {
-                ball_position.x = 2 * (paddle_obj.get_position().x
-                    + paddle_obj.get_size().x/2.0f 
-                    + ball_obj.get_ball().getRadius()) 
-                    - ball_position.x;
-                float surface_angle = std::numbers::pi_v<float>/2.0f;
-                ball_velocity = rotate_vector(ball_velocity, surface_angle);
-            }
+            ball_position.x = 2 * (paddle_obj.get_position().x
+                + paddle_obj.get_size().x/2.0f 
+                + ball_obj.get_ball().getRadius()) 
+                - ball_position.x;
+            float surface_angle = std::numbers::pi_v<float>/2.0f;
+            ball_velocity = rotate_vector(ball_velocity, surface_angle);
         }
     }
 
@@ -656,4 +575,25 @@ sf::Vector2f game::rotate_vector(sf::Vector2f vector_current,
     vector_new.x = vector_current.x * cos(fi) - vector_current.y * sin(fi);
     vector_new.y = vector_current.x * sin(fi) + vector_current.y * cos(fi);
     return vector_new;
+}
+
+bool game::ball_overlaps_obj(ball const &ball_obj, 
+                            sf::Vector2f const ball_position,
+                            rectangle_object const &rect_shape) const
+{
+    return ((ball_position.y > (rect_shape.get_position().y 
+                - rect_shape.get_size().y/2.0f
+                - rect_shape.get_shape().getOutlineThickness()
+                - ball_obj.get_ball().getRadius()))
+            && (ball_position.y < (rect_shape.get_position().y 
+                + rect_shape.get_size().y/2.0f
+                + rect_shape.get_shape().getOutlineThickness()
+                + ball_obj.get_ball().getRadius()))
+            && (ball_position.x > (rect_shape.get_position().x
+                - rect_shape.get_size().x/2.0f
+                - rect_shape.get_shape().getOutlineThickness()))
+            && (ball_position.x < (rect_shape.get_position().x
+                + rect_shape.get_size().x/2.0f 
+                + rect_shape.get_shape().getOutlineThickness())));
+
 }

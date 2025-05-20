@@ -22,7 +22,7 @@ sf::Vector2f block::get_position() const
     return block_obj.getPosition();
 }
 
-sf::RectangleShape block::get_block() const
+sf::RectangleShape block::get_shape() const
 {
     return block_obj;
 }

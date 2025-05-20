@@ -37,7 +37,7 @@ public:
     void set_position(sf::Vector2f position) override;
     sf::Vector2f get_position() const override;
     void draw(sf::RenderWindow &window) override;
-    sf::RectangleShape get_block() const;
+    sf::RectangleShape get_shape() const override;
     sf::Vector2f get_size() const override;
     int hit_obj();
     bool is_broken();

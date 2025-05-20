@@ -142,5 +142,8 @@ private:
     bool ball_meets_block(ball &ball_obj, block &block_obj, 
                             sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
+    bool ball_overlaps_obj(ball const &ball_obj, 
+                            sf::Vector2f const ball_position,
+                            rectangle_object const &rect_shape) const;
 };
 #endif
