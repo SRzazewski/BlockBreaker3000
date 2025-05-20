@@ -26,6 +26,11 @@ sf::RectangleShape block::get_block() const
 {
     return block_obj;
 }
+    
+sf::Vector2f block::get_size() const
+{
+    return block_obj.getSize();
+}
 
 int block::hit_obj()
 {

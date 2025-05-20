@@ -429,22 +429,22 @@ bool game::ball_meets_block(ball &ball_obj,
     bool ret_val = false;
 
     if (ball_velocity.y > 0
-        && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f
+        && (block_obj.get_position().y - block_obj.get_size().y/2.0f
             - block_obj.get_block().getOutlineThickness()
             - ball_obj.get_ball().getRadius()) < ball_position.y
-        && (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f
+        && (block_obj.get_position().y + block_obj.get_size().y/2.0f
             + block_obj.get_block().getOutlineThickness()
             + ball_obj.get_ball().getRadius()) > ball_position.y)
     {
         if((ball_position.x > (block_obj.get_position().x
-                - block_obj.get_block().getSize().x/2.0f
+                - block_obj.get_size().x/2.0f
                 - block_obj.get_block().getOutlineThickness()))
             && (ball_position.x) < (block_obj.get_position().x
-                + block_obj.get_block().getSize().x/2.0f 
+                + block_obj.get_size().x/2.0f 
                 + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.y = 2 * (block_obj.get_position().y
-                                - block_obj.get_block().getSize().y/2.0f
+                                - block_obj.get_size().y/2.0f
                                 - ball_obj.get_ball().getRadius()
                                 - block_obj.get_block().getOutlineThickness()) 
                                 - ball_position.y;
@@ -455,22 +455,22 @@ bool game::ball_meets_block(ball &ball_obj,
         }
     }
     else if (ball_velocity.y < 0
-        && (block_obj.get_position().y + block_obj.get_block().getSize().y/2.0f
+        && (block_obj.get_position().y + block_obj.get_size().y/2.0f
             + block_obj.get_block().getOutlineThickness()
             + ball_obj.get_ball().getRadius()) > ball_position.y
-        && (block_obj.get_position().y - block_obj.get_block().getSize().y/2.0f
+        && (block_obj.get_position().y - block_obj.get_size().y/2.0f
             - block_obj.get_block().getOutlineThickness()
             - ball_obj.get_ball().getRadius()) < ball_position.y)
     {
         if((ball_position.x > (block_obj.get_position().x
-                - block_obj.get_block().getSize().x/2.0f 
+                - block_obj.get_size().x/2.0f 
                 - block_obj.get_block().getOutlineThickness()))
             && (ball_position.x) < (block_obj.get_position().x
-                + block_obj.get_block().getSize().x/2.0f
+                + block_obj.get_size().x/2.0f
                 + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.y = 2 * (block_obj.get_position().y
-                                + block_obj.get_block().getSize().y/2.0f
+                                + block_obj.get_size().y/2.0f
                                 + ball_obj.get_ball().getRadius()
                                 + block_obj.get_block().getOutlineThickness())
                                 - ball_position.y;
@@ -482,22 +482,22 @@ bool game::ball_meets_block(ball &ball_obj,
     }
 
     if (ball_velocity.x > 0 
-        && (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f
+        && (block_obj.get_position().x - block_obj.get_size().x/2.0f
             - block_obj.get_block().getOutlineThickness()
             - ball_obj.get_ball().getRadius()) < ball_position.x
-        && (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f
+        && (block_obj.get_position().x + block_obj.get_size().x/2.0f
             + block_obj.get_block().getOutlineThickness()
             + ball_obj.get_ball().getRadius()) > ball_position.x)
     {
         if((ball_position.y > (block_obj.get_position().y
-                - block_obj.get_block().getSize().y/2.0f
+                - block_obj.get_size().y/2.0f
                 - block_obj.get_block().getOutlineThickness()))
             && (ball_position.y) < (block_obj.get_position().y
-                + block_obj.get_block().getSize().y/2.0f
+                + block_obj.get_size().y/2.0f
                 + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.x = 2 * (block_obj.get_position().x
-                                - block_obj.get_block().getSize().x/2.0f
+                                - block_obj.get_size().x/2.0f
                                 - ball_obj.get_ball().getRadius() 
                                 - block_obj.get_block().getOutlineThickness()) 
                                 - ball_position.x;
@@ -508,22 +508,22 @@ bool game::ball_meets_block(ball &ball_obj,
         }
     }
     else if (ball_velocity.x < 0
-        && (block_obj.get_position().x + block_obj.get_block().getSize().x/2.0f
+        && (block_obj.get_position().x + block_obj.get_size().x/2.0f
             + block_obj.get_block().getOutlineThickness()
             + ball_obj.get_ball().getRadius()) > ball_position.x
-        && (block_obj.get_position().x - block_obj.get_block().getSize().x/2.0f
+        && (block_obj.get_position().x - block_obj.get_size().x/2.0f
             - block_obj.get_block().getOutlineThickness()
             - ball_obj.get_ball().getRadius()) < ball_position.x)
     {
         if((ball_position.y > (block_obj.get_position().y
-                - block_obj.get_block().getSize().y/2.0f
+                - block_obj.get_size().y/2.0f
                 - block_obj.get_block().getOutlineThickness()))
             && (ball_position.y) < (block_obj.get_position().y
-                + block_obj.get_block().getSize().y/2.0f
+                + block_obj.get_size().y/2.0f
                 + block_obj.get_block().getOutlineThickness()))
         {
             ball_position.x = 2 * (block_obj.get_position().x
-                                + block_obj.get_block().getSize().x/2.0f
+                                + block_obj.get_size().x/2.0f
                                 + ball_obj.get_ball().getRadius() 
                                 + block_obj.get_block().getOutlineThickness()) 
                                 - ball_position.x;
@@ -547,43 +547,43 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
     if (ball_velocity.y > 0)
     {
         if ((ball_position.x > (paddle_obj.get_position().x
-                - paddle_obj.get_paddle().getSize().x/2.0f))
+                - paddle_obj.get_size().x/2.0f))
             && (ball_position.x < (paddle_obj.get_position().x
-                + paddle_obj.get_paddle().getSize().x/2.0f)))
+                + paddle_obj.get_size().x/2.0f)))
         {
             if ((ball_position.y > (paddle_obj.get_position().y
-                    - paddle_obj.get_paddle().getSize().y/2.0f
+                    - paddle_obj.get_size().y/2.0f
                     - ball_obj.get_ball().getRadius()))
                 && (ball_position.y) < (paddle_obj.get_position().y
-                    + paddle_obj.get_paddle().getSize().y/2.0f))
+                    + paddle_obj.get_size().y/2.0f))
             {
                 ball_position.y = 2 * (paddle_obj.get_position().y
-                                    - paddle_obj.get_paddle().getSize().y/2.0f
+                                    - paddle_obj.get_size().y/2.0f
                                     - ball_obj.get_ball().getRadius())
                                     - ball_position.y;
                 /* There is ball_position.x - paddle_obj.get_position().x, 
                  * because y-axis is reversed */
                 float surface_angle = (
                     (ball_position.x - paddle_obj.get_position().x)
-                    / (paddle_obj.get_paddle().getSize().x/2.0f))
+                    / (paddle_obj.get_size().x/2.0f))
                     * (std::numbers::pi_v<float>/24);
                 ball_velocity = rotate_vector(ball_velocity, surface_angle);
             }
         }
         else if (ball_velocity.x > 0
             && (ball_position.x > (paddle_obj.get_position().x
-                - paddle_obj.get_paddle().getSize().x/2.0f
+                - paddle_obj.get_size().x/2.0f
                 - ball_obj.get_ball().getRadius()))
             && (ball_position.x < (paddle_obj.get_position().x
-                + paddle_obj.get_paddle().getSize().x/2.0f)))
+                + paddle_obj.get_size().x/2.0f)))
         {
             if((ball_position.y > (paddle_obj.get_position().y
-                    - paddle_obj.get_paddle().getSize().y/2.0f))
+                    - paddle_obj.get_size().y/2.0f))
                 && (ball_position.y) < (paddle_obj.get_position().y
-                    + paddle_obj.get_paddle().getSize().y/2.0f))
+                    + paddle_obj.get_size().y/2.0f))
             {
                 ball_position.x = 2 * (paddle_obj.get_position().x
-                    - paddle_obj.get_paddle().getSize().x/2.0f 
+                    - paddle_obj.get_size().x/2.0f 
                     - ball_obj.get_ball().getRadius()) - ball_position.x;
                 float surface_angle = std::numbers::pi_v<float>/2.0f;
                 ball_velocity = rotate_vector(ball_velocity, surface_angle);
@@ -591,18 +591,18 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
         }
         else if (ball_velocity.x < 0
             && (ball_position.x > (paddle_obj.get_position().x
-                - paddle_obj.get_paddle().getSize().x/2.0f))
+                - paddle_obj.get_size().x/2.0f))
             && (ball_position.x < (paddle_obj.get_position().x 
-                + paddle_obj.get_paddle().getSize().x/2.0f 
+                + paddle_obj.get_size().x/2.0f 
                 + ball_obj.get_ball().getRadius())))
         {
             if((ball_position.y > (paddle_obj.get_position().y
-                    - paddle_obj.get_paddle().getSize().y/2.0f))
+                    - paddle_obj.get_size().y/2.0f))
                 && (ball_position.y) < (paddle_obj.get_position().y
-                    + paddle_obj.get_paddle().getSize().y/2.0f))
+                    + paddle_obj.get_size().y/2.0f))
             {
                 ball_position.x = 2 * (paddle_obj.get_position().x
-                    + paddle_obj.get_paddle().getSize().x/2.0f 
+                    + paddle_obj.get_size().x/2.0f 
                     + ball_obj.get_ball().getRadius()) 
                     - ball_position.x;
                 float surface_angle = std::numbers::pi_v<float>/2.0f;
@@ -618,13 +618,13 @@ void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)
 bool game::powerup_meets_paddle(powerup &powerup_obj)
 {
     if((powerup_obj.get_position().x > (paddle_obj.get_position().x
-            - paddle_obj.get_paddle().getSize().x/2.0f))
+            - paddle_obj.get_size().x/2.0f))
         && (powerup_obj.get_position().x < (paddle_obj.get_position().x
-            + paddle_obj.get_paddle().getSize().x/2.0f))
+            + paddle_obj.get_size().x/2.0f))
         && (powerup_obj.get_position().y > (paddle_obj.get_position().y
-            - paddle_obj.get_paddle().getSize().y/2.0f))
+            - paddle_obj.get_size().y/2.0f))
         && (powerup_obj.get_position().y < (paddle_obj.get_position().y
-            + paddle_obj.get_paddle().getSize().y/2.0f)))
+            + paddle_obj.get_size().y/2.0f)))
     {
         balls.push_back(ball(sf::Vector2f(paddle_obj.get_position().x 
             + ball_start_position_shift.x, 

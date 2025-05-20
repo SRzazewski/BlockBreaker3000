@@ -30,6 +30,11 @@ sf::RectangleShape paddle::get_paddle() const
     return player_paddle;
 }
 
+sf::Vector2f paddle::get_size() const
+{
+    return player_paddle.getSize();
+}
+
 sf::Vector2f paddle::get_position() const
 {
     return player_paddle.getPosition();

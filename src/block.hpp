@@ -30,7 +30,7 @@ constexpr int block_brown = 4;
 const sf::Vector2f block_size = sf::Vector2f(90.0f, 20.0f);
 constexpr float block_outline_thickness = 5.0f;
 
-class block : public game_object
+class block : public rectangle_object
 {
 public:
     block(const sf::Vector2f start_position, const int hits_to_break);
@@ -38,6 +38,7 @@ public:
     sf::Vector2f get_position() const override;
     void draw(sf::RenderWindow &window) override;
     sf::RectangleShape get_block() const;
+    sf::Vector2f get_size() const override;
     int hit_obj();
     bool is_broken();
     void update_color();

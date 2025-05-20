@@ -15,8 +15,16 @@ public:
 class moving_object : public game_object
 {
 public:
+    virtual ~moving_object() = default;
     virtual void set_velocity_vector(sf::Vector2f vector) = 0;
     virtual sf::Vector2f get_velocity_vector() const = 0;
+};
+
+class rectangle_object : public game_object
+{
+public:
+    virtual ~rectangle_object() = default;
+    virtual sf::Vector2f get_size() const = 0;
 };
 
 #endif
