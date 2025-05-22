@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "block.hpp"
+#include "states.hpp"
 #include <cmath>
 #include <numbers>
 #include <numeric>
@@ -8,21 +9,21 @@
 
 void game::serve_events(const std::optional<sf::Event> event)
 {
-    if(game_state == game_states::game_init_level)
+    if (nullptr != states_instance)
     {
-        serve_events_level_init(event);
+        states_instance->serve_events_level(event);
     }
-    else if(game_state == game_states::game_playing)
+}
+
+void game::transition_to_state(states *state)
+{
+    if (nullptr != state)
     {
-        serve_events_level(event);
-    }
-    else if(game_state == game_states::game_won)
-    {
-        serve_events_level_won(event);
-    }
-    else if(game_state == game_states::game_lost)
-    {
-        serve_events_level_lost(event);
+        if (nullptr != states_instance)
+        {
+            delete states_instance;
+        }
+        states_instance = state;
     }
 }
 
@@ -32,7 +33,7 @@ void game::serve_events_level_init(const std::optional<sf::Event> event)
     {
         if (key_pressed->scancode == sf::Keyboard::Scancode::S)
         {
-            game_state_requested = game_states::game_playing;
+            transition_to_state(new state_game_playing(this));
         }
     }
 }
@@ -71,7 +72,7 @@ void game::serve_events_level_won(const std::optional<sf::Event> event)
             {
                 ++game_level;
             }
-            game_state_requested = game_states::game_init_level;
+            transition_to_state(new state_game_init(this));
         }
     }
 }
@@ -82,18 +83,13 @@ void game::serve_events_level_lost(const std::optional<sf::Event> event)
     {
         if (key_pressed->scancode == sf::Keyboard::Scancode::R)
         {
-            game_state_requested = game_states::game_init_level;
+            transition_to_state(new state_game_init(this));
         }
     }
 }
 
-void game::update(sf::RenderWindow &window, sf::Time time_delta)
+void game::update(sf::Time time_delta)
 {
-    if (game_state_requested != game_state)
-    {
-        game_state_update(window);
-    }
-
     if(game_state == game_states::game_playing)
     {   
         for (auto i = 0ul; i < balls.size(); ++i)
@@ -105,7 +101,7 @@ void game::update(sf::RenderWindow &window, sf::Time time_delta)
 
                 if(balls.empty())
                 {
-                    game_state_requested = game_states::game_lost;
+                    transition_to_state(new state_game_lost(this));
                 }
             }
         }
@@ -231,42 +227,49 @@ void game::game_state_level_5_prepare()
     powerup_from_blocks = rand_powerups(8);
 }
 
-void game::game_state_update(sf::RenderWindow &window)
+void game::enter_init_level_state()
 {
-    if (game_state_requested == game_states::game_init_level)
+    auto init_fun = game_levels_var[game_level].init_function;
+    if (init_fun != nullptr)
     {
-        auto init_fun = game_levels_var[game_level].init_function;
-        if (init_fun != nullptr)
-        {
-            (this->*init_fun)();
-        }
-        text_obj.setString("BlockBreaker3000 - Press S to start level "
-            + std::to_string(game_level));
-        window.setTitle("BlockBreaker3000 - Level "
-            + std::to_string(game_level));
+        (this->*init_fun)();
     }
-    else if (game_state_requested == game_states::game_playing)
-    {
-        text_obj.setString("BlockBreaker3000 - level "
-            + std::to_string(game_level));
-    }
-    else if (game_state_requested == game_states::game_lost)
-    {
-        text_obj.setString(
-            "BlockBreaker3000 - You lost :( Press R to reset level");
-    }
-    else if (game_state_requested == game_states::game_won)
-    {
-        text_obj.setString(
-            "BlockBreaker3000 - You won :) Press N to next level");
-        score_level += static_cast<int>(balls.size()) * points_for_ball;
-        score += score_level;
-        text_score.setString("Score: " + std::to_string(score));
-    }
-    game_state = game_state_requested;
+    text_obj.setString("BlockBreaker3000 - Press S to start level "
+        + std::to_string(game_level));
+    window.setTitle("BlockBreaker3000 - Level "
+        + std::to_string(game_level));
+
+    game_state = game_states::game_init_level;
 }
 
-void game::draw(sf::RenderWindow &window)
+void game::enter_playing_game_state()
+{
+    text_obj.setString("BlockBreaker3000 - level "
+        + std::to_string(game_level));
+
+    game_state = game_states::game_playing;
+}
+
+void game::enter_won_game_state()
+{
+    text_obj.setString(
+        "BlockBreaker3000 - You won :) Press N to next level");
+    score_level += static_cast<int>(balls.size()) * points_for_ball;
+    score += score_level;
+    text_score.setString("Score: " + std::to_string(score));
+
+    game_state = game_states::game_won;
+}
+
+void game::enter_lost_game_state()
+{
+    text_obj.setString(
+        "BlockBreaker3000 - You lost :( Press R to reset level");
+
+    game_state = game_states::game_lost;
+}
+
+void game::draw()
 {
     window.draw(game_area_field);
 
@@ -291,7 +294,10 @@ void game::draw(sf::RenderWindow &window)
     }
     else
     {
-        game_state_requested = game_states::game_won;
+        if (game_states::game_won != game_state)
+        {
+            transition_to_state(new state_game_won(this));
+        }
     }
 
     window.draw(text_obj);

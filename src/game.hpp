@@ -5,10 +5,10 @@
 #include "ball.hpp"
 #include "block.hpp"
 #include "powerup.hpp"
-// #include "states.hpp"
+#include "states.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
-#include <random>
+#include <random>  
 
 enum class game_states
 {
@@ -55,8 +55,9 @@ constexpr int blocks_in_row = 8;
 class game
 {
 public:
-    game(sf::Font &font, game_area area)
-        : block_breaker_area(area)
+    game(sf::RenderWindow &win, sf::Font &font, game_area area)
+        : window(win)
+        , block_breaker_area(area)
         , text_obj{font}
         , text_score{font}
         , mt(std::random_device()())
@@ -80,13 +81,31 @@ public:
         text_score.setStyle(sf::Text::Bold);
         text_score.setPosition({0.0f, 30.0f});
     }
+    ~game()
+    {
+        if (nullptr != states_instance)
+        {
+            delete states_instance;
+        }
+    }
     void serve_events(const std::optional<sf::Event> event);
-    void update(sf::RenderWindow &window, sf::Time delta);
-    void draw(sf::RenderWindow &window);
+    void update(sf::Time delta);
+    void draw();
     static sf::Vector2f rotate_vector(sf::Vector2f vector_current,
                                         float surface_angle);
+    
+    void transition_to_state(states *state);
+    void enter_init_level_state();
+    void enter_playing_game_state();
+    void enter_won_game_state();
+    void enter_lost_game_state(); 
+    void serve_events_level_init(const std::optional<sf::Event> event);
+    void serve_events_level(const std::optional<sf::Event> event);
+    void serve_events_level_won(const std::optional<sf::Event> event);
+    void serve_events_level_lost(const std::optional<sf::Event> event);
 
 private:
+    sf::RenderWindow &window;
     game_area block_breaker_area;
     sf::RectangleShape game_area_field;
     game_states game_state = game_states::game_init;
@@ -106,6 +125,7 @@ private:
                                         + paddle_size.x/2.0f;
     const float position_paddle_x_max = block_breaker_area.x_stop
                                         - paddle_size.x/2.0f;
+    states *states_instance = nullptr;
 
     std::array<game_states_st, 6> game_levels_var
     {{
@@ -117,12 +137,7 @@ private:
         {game_levels::level_5, 5, &game::game_state_level_5_prepare}
     }};
 
-    void serve_events_level_init(const std::optional<sf::Event> event);
-    void serve_events_level(const std::optional<sf::Event> event);
-    void serve_events_level_won(const std::optional<sf::Event> event);
-    void serve_events_level_lost(const std::optional<sf::Event> event);
-
-    void game_state_update(sf::RenderWindow &window);
+    void game_state_update();
     void obj_reset();
     std::vector<int> rand_powerups(int powerup_number);
     void put_blocks(int block_type, int rows_number);

@@ -15,8 +15,8 @@ target_sources(BlockBreaker3000_core
         paddle.hpp
         powerup.cpp
         powerup.hpp
-        # states.cpp
-        # states.hpp
+        states.cpp
+        states.hpp
     )
 
 target_include_directories(BlockBreaker3000_core 

@@ -1,3 +1,4 @@
+#include "states.hpp"
 #include "game.hpp"
 #include <SFML/Graphics.hpp>
 #include <filesystem>
@@ -32,7 +33,8 @@ int main()
         window.close();
     }
 
-    game game_obj = game(font, block_breaker_area);
+    game game_obj = game(window, font, block_breaker_area);
+    game_obj.transition_to_state(new state_game_init(&game_obj));
 
     sf::Clock clock_obj = sf::Clock();
 
@@ -51,8 +53,8 @@ int main()
         }
 
         window.clear(sf::Color(166u, 166u, 166u));
-        game_obj.update(window, clock_obj.restart());
-        game_obj.draw(window);
+        game_obj.update(clock_obj.restart());
+        game_obj.draw();
         window.display();
     }
 }
