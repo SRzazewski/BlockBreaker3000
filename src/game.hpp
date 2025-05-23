@@ -5,7 +5,7 @@
 #include "ball.hpp"
 #include "block.hpp"
 #include "powerup.hpp"
-#include "states.hpp"
+#include "mode.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
 #include <random>  
@@ -94,7 +94,7 @@ public:
     static sf::Vector2f rotate_vector(sf::Vector2f vector_current,
                                         float surface_angle);
     
-    void transition_to_state(states *state);
+    void transition_to_state(Mode *state);
     void enter_init_level_state();
     void enter_playing_game_state();
     void enter_won_game_state();
@@ -125,7 +125,7 @@ private:
                                         + paddle_size.x/2.0f;
     const float position_paddle_x_max = block_breaker_area.x_stop
                                         - paddle_size.x/2.0f;
-    states *states_instance = nullptr;
+    Mode *states_instance = nullptr;
 
     std::array<game_states_st, 6> game_levels_var
     {{

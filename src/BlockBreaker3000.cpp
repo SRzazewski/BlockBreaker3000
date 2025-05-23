@@ -1,4 +1,4 @@
-#include "states.hpp"
+#include "mode.hpp"
 #include "game.hpp"
 #include <SFML/Graphics.hpp>
 #include <filesystem>
@@ -34,7 +34,7 @@ int main()
     }
 
     game game_obj = game(window, font, block_breaker_area);
-    game_obj.transition_to_state(new state_game_init(&game_obj));
+    game_obj.transition_to_state(new Mode_init(&game_obj));
 
     sf::Clock clock_obj = sf::Clock();
 

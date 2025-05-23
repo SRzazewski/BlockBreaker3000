@@ -1,50 +1,50 @@
-#ifndef STATES
-#define STATES
+#ifndef MODE
+#define MODE
 
 #include <SFML/Window/Event.hpp>
 #include <vector>
 #include <optional>
 
-class game; //the states class needs a declaration of the game class
+class game; //the Mode class needs a declaration of the game class
 
-class states
+class Mode
 {
 public:
-    states(game *game_inst = nullptr)
+    Mode(game *game_inst = nullptr)
     :game_instance(game_inst)
     {}
-    virtual ~states() = default;
+    virtual ~Mode() = default;
     virtual void serve_events_level(std::optional<sf::Event> event) = 0;
     void set_game_instance(game *game_inst);
 protected:
     game *game_instance;
 };
 
-class state_game_init : public states
+class Mode_init : public Mode
 {
 public:
-    state_game_init(game *game_inst);
+    Mode_init(game *game_inst);
     void serve_events_level(std::optional<sf::Event> event) override;
 };
 
-class state_game_playing : public states
+class Mode_play : public Mode
 {
 public:
-    state_game_playing(game *game_inst);
+    Mode_play(game *game_inst);
     void serve_events_level(std::optional<sf::Event> event) override;
 };
 
-class state_game_won : public states
+class Mode_won : public Mode
 {
 public:
-    state_game_won(game *game_inst);
+    Mode_won(game *game_inst);
     void serve_events_level(std::optional<sf::Event> event) override;
 };
 
-class state_game_lost : public states
+class Mode_lost : public Mode
 {
 public:
-    state_game_lost(game *game_inst);
+    Mode_lost(game *game_inst);
     void serve_events_level(std::optional<sf::Event> event) override;
 };
 

@@ -1,6 +1,6 @@
 #include "game.hpp"
 #include "block.hpp"
-#include "states.hpp"
+#include "mode.hpp"
 #include <cmath>
 #include <numbers>
 #include <numeric>
@@ -15,7 +15,7 @@ void game::serve_events(const std::optional<sf::Event> event)
     }
 }
 
-void game::transition_to_state(states *state)
+void game::transition_to_state(Mode *state)
 {
     if (nullptr != state)
     {
@@ -33,7 +33,7 @@ void game::serve_events_level_init(const std::optional<sf::Event> event)
     {
         if (key_pressed->scancode == sf::Keyboard::Scancode::S)
         {
-            transition_to_state(new state_game_playing(this));
+            transition_to_state(new Mode_play(this));
         }
     }
 }
@@ -72,7 +72,7 @@ void game::serve_events_level_won(const std::optional<sf::Event> event)
             {
                 ++game_level;
             }
-            transition_to_state(new state_game_init(this));
+            transition_to_state(new Mode_init(this));
         }
     }
 }
@@ -83,7 +83,7 @@ void game::serve_events_level_lost(const std::optional<sf::Event> event)
     {
         if (key_pressed->scancode == sf::Keyboard::Scancode::R)
         {
-            transition_to_state(new state_game_init(this));
+            transition_to_state(new Mode_init(this));
         }
     }
 }
@@ -101,7 +101,7 @@ void game::update(sf::Time time_delta)
 
                 if(balls.empty())
                 {
-                    transition_to_state(new state_game_lost(this));
+                    transition_to_state(new Mode_lost(this));
                 }
             }
         }
@@ -296,7 +296,7 @@ void game::draw()
     {
         if (game_states::game_won != game_state)
         {
-            transition_to_state(new state_game_won(this));
+            transition_to_state(new Mode_won(this));
         }
     }
 
