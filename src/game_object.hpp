@@ -18,6 +18,7 @@ public:
     virtual ~moving_object() = default;
     virtual void set_velocity_vector(sf::Vector2f vector) = 0;
     virtual sf::Vector2f get_velocity_vector() const = 0;
+    virtual void move(sf::Time time_delta) = 0;
 };
 
 class rectangle_object : public game_object

@@ -30,3 +30,7 @@ void ball::draw(sf::RenderWindow &window)
 {
     window.draw(ball_shape);
 }
+void ball::move(sf::Time time_delta)
+{
+    
+}

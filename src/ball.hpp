@@ -21,6 +21,7 @@ public:
     void set_velocity_vector(sf::Vector2f vector) override;
     sf::Vector2f get_velocity_vector() const override;
     void draw(sf::RenderWindow &window) override;
+    void move(sf::Time time_delta) override;
 
 
 private:

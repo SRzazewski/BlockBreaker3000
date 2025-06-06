@@ -6,6 +6,7 @@
 #include "block.hpp"
 #include "powerup.hpp"
 #include "mode.hpp"
+#include "common.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
 #include <random>  
@@ -36,14 +37,6 @@ struct game_states_st
     game_levels state_name;
     int level_number;
     void (game:: *init_function)();
-};
-
-struct game_area
-{
-    unsigned int x_start;
-    unsigned int x_stop;
-    unsigned int y_start;
-    unsigned int y_stop;
 };
 
 const sf::Vector2f ball_start_position_shift = sf::Vector2f(-10.0f, -40.f);
@@ -121,10 +114,6 @@ private:
     std::mt19937 mt;
     int score = 0;
     int score_level = 0;
-    const float position_paddle_x_min = block_breaker_area.x_start
-                                        + paddle_size.x/2.0f;
-    const float position_paddle_x_max = block_breaker_area.x_stop
-                                        - paddle_size.x/2.0f;
     Mode *states_instance = nullptr;
 
     std::array<game_states_st, 6> game_levels_var
@@ -147,7 +136,6 @@ private:
     void game_state_level_4_prepare();
     void game_state_level_5_prepare();
     
-    void move_paddle(sf::Time time_delta);
     bool move_ball(ball &ball_obj, sf::Time time_delta);
     bool move_powerup(powerup &powerup_obj, sf::Time time_delta);
     bool ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);

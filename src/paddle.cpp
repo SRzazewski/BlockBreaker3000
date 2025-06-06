@@ -1,8 +1,11 @@
 #include "paddle.hpp"
+#include "move.hpp"
+#include "common.hpp"
 #include <SFML/Graphics.hpp>
 
 paddle::paddle()
 {
+    move_ptr = std::make_unique<Move_paddle>();
     player_paddle = sf::RectangleShape();
     player_paddle.setSize(sf::Vector2f(paddle_size.x, paddle_size.y));
     player_paddle.setOrigin({paddle_size.x/2.0f, paddle_size.y/2.0f});
@@ -43,6 +46,11 @@ sf::Vector2f paddle::get_position() const
 void paddle::draw(sf::RenderWindow &window)
 {
     window.draw(player_paddle);
+}
+
+void paddle::move(sf::Time time_delta)
+{
+    move_ptr->move(time_delta, *this);
 }
 
 void paddle::reset()

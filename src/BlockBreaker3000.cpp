@@ -1,12 +1,12 @@
 #include "mode.hpp"
 #include "game.hpp"
+#include "common.hpp"
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <iostream>
 
 int main()
 {
-    const game_area block_breaker_area = {0, 800, 60, 600};
     auto window = sf::RenderWindow(
             sf::VideoMode(
                 {

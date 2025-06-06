@@ -2,10 +2,9 @@
 #define PADDLE_HPP
 
 #include "game_object.hpp"
+#include "move.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
-
-const sf::Vector2f paddle_size = sf::Vector2f(120.0f, 20.0f);
 
 class paddle : public moving_object, public rectangle_object
 {
@@ -20,10 +19,12 @@ public:
     sf::Vector2f get_position() const override;
     sf::Time count_delta_time(sf::Clock &clock);
     void draw(sf::RenderWindow &window) override;
+    void move(sf::Time time_delta) override;
     void reset();
 
 
 private:
+    std::unique_ptr<Move_paddle> move_ptr;
     sf::RectangleShape player_paddle;
     sf::Vector2f velocity_vector;
 };

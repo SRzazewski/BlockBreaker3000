@@ -31,6 +31,11 @@ void powerup::draw(sf::RenderWindow &window)
     window.draw(powerup_shape);
 }
 
+void powerup::move(sf::Time time_delta)
+{
+    
+}
+
 int powerup::get_points()
 {
     return points;

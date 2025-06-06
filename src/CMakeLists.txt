@@ -17,6 +17,11 @@ target_sources(BlockBreaker3000_core
         powerup.hpp
         mode.cpp
         mode.hpp
+        common.hpp
+        move.cpp
+        move.hpp
+        # level.cpp
+        # level.hpp
     )
 
 target_include_directories(BlockBreaker3000_core 

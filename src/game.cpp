@@ -106,7 +106,7 @@ void game::update(sf::Time time_delta)
             }
         }
 
-        move_paddle(time_delta);
+        paddle_obj.move(time_delta);
 
         for (auto i = 0ul; i < powerups.size(); ++i)
         {
@@ -302,29 +302,6 @@ void game::draw()
 
     window.draw(text_obj);
     window.draw(text_score);
-}
-
-void game::move_paddle(sf::Time time_delta)
-{
-    sf::Vector2f paddle_position = paddle_obj.get_position();
-    paddle_position.x += paddle_obj.get_velocity_vector().x 
-                            * time_delta.asSeconds();
-
-    if (paddle_position.x < position_paddle_x_min)
-    {
-        paddle_obj.set_position(
-                        sf::Vector2f(position_paddle_x_min, paddle_position.y));
-    }
-    else if (paddle_position.x > position_paddle_x_max)
-    {
-        paddle_obj.set_position(
-                        sf::Vector2f(position_paddle_x_max, paddle_position.y));
-    }
-    else
-    {
-        paddle_obj.set_position(
-                        sf::Vector2f(paddle_position.x, paddle_position.y));
-    }
 }
 
 bool game::move_ball(ball &ball_obj, sf::Time time_delta)

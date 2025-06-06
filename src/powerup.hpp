@@ -23,6 +23,7 @@ public:
     sf::Vector2f get_velocity_vector() const override;
     sf::Time count_delta_time(sf::Clock &clock);
     void draw(sf::RenderWindow &window) override;
+    void move(sf::Time time_delta) override;
     bool get_visible();
     int get_points();
 
