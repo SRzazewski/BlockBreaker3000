@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "block.hpp"
 #include "mode.hpp"
+#include "ball.hpp"
 #include <cmath>
 #include <numbers>
 #include <numeric>
@@ -94,7 +95,7 @@ void game::update(sf::Time time_delta)
     {   
         for (auto i = 0ul; i < balls.size(); ++i)
         {
-            move_ball(balls[i], time_delta);
+            balls[i].move(time_delta);
             if(is_ball_out(balls[i]))
             {
                 balls.erase(balls.begin() + i);
@@ -168,7 +169,7 @@ void game::game_state_level_1_prepare()
 {
     obj_reset();
 
-    balls.push_back(ball());
+    balls.push_back(ball(this));
 
     put_blocks(block_blue, 2);
 
@@ -179,7 +180,7 @@ void game::game_state_level_2_prepare()
 {
     obj_reset();
 
-    balls.push_back(ball());
+    balls.push_back(ball(this));
 
     put_blocks(block_yellow, 1);
     put_blocks(block_blue, 2);
@@ -191,7 +192,7 @@ void game::game_state_level_3_prepare()
 {
     obj_reset();
 
-    balls.push_back(ball());
+    balls.push_back(ball(this));
 
     put_blocks(block_orange, 1);
     put_blocks(block_yellow, 1);
@@ -204,7 +205,7 @@ void game::game_state_level_4_prepare()
 {
     obj_reset();
 
-    balls.push_back(ball());
+    balls.push_back(ball(this));
 
     put_blocks(block_brown, 1);
     put_blocks(block_orange, 1);
@@ -218,7 +219,7 @@ void game::game_state_level_5_prepare()
 {
     obj_reset();
 
-    balls.push_back(ball());
+    balls.push_back(ball(this));
 
     put_blocks(block_brown, 2);
     put_blocks(block_orange, 1);
@@ -303,20 +304,6 @@ void game::draw()
 
     window.draw(text_obj);
     window.draw(text_score);
-}
-
-void game::move_ball(ball &ball_obj, sf::Time time_delta)
-{
-    sf::Vector2f ball_position_new = ball_obj.get_position();
-    sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
-    
-    ball_position_new += (ball_velocity * time_delta.asSeconds());
-    
-    ball_meets_paddle(ball_obj, ball_position_new);
-    ball_position_new = ball_obj.get_position();
-    ball_meets_block(ball_obj, ball_position_new);
-    ball_position_new = ball_obj.get_position();
-    ball_meets_edge(ball_obj, ball_position_new);
 }
 
 bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
@@ -536,9 +523,11 @@ bool game::powerup_meets_paddle(powerup &powerup_obj)
         && (powerup_obj.get_position().y < (paddle_obj.get_position().y
             + paddle_obj.get_size().y/2.0f)))
     {
-        balls.push_back(ball(sf::Vector2f(paddle_obj.get_position().x 
-            + ball_start_position_shift.x, 
-        paddle_obj.get_position().y + ball_start_position_shift.y)));
+        balls.push_back(ball(this,
+                        sf::Vector2f(paddle_obj.get_position().x 
+                                + ball_start_position_shift.x, 
+                            paddle_obj.get_position().y 
+                                + ball_start_position_shift.y)));
         score_level += powerup_obj.get_points();
         text_score.setString("Score: " + std::to_string(score + score_level));
         return true;

@@ -1,9 +1,11 @@
 #include "ball.hpp"
+#include "game.hpp"
 #include <SFML/Graphics.hpp>
 
-ball::ball(sf::Vector2f start_position)
+ball::ball(game *game_inst, sf::Vector2f start_position)
 {
     move_ptr = std::make_unique<Move_ball>();
+    move_ptr->set_game_instance(game_inst);
     ball_shape.setOrigin({ball_radius, ball_radius});
     ball_shape.setFillColor(sf::Color(255, 0, 0));
     ball_shape.setPosition(start_position);

@@ -5,12 +5,15 @@
 #include "move.hpp"
 #include <SFML/Graphics.hpp>
 
+class game;
+
 constexpr float ball_radius = 10.0f;
 
 class ball : public moving_object
 {
 public:
-    ball(sf::Vector2f start_position = sf::Vector2f(385.0f, 500.0f));
+    ball(game *game_inst, 
+        sf::Vector2f start_position = sf::Vector2f(385.0f, 500.0f));
     void set_position(sf::Vector2f position) override;
     sf::Vector2f get_position() const override;
     sf::CircleShape get_ball() const;
