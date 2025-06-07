@@ -94,7 +94,8 @@ void game::update(sf::Time time_delta)
     {   
         for (auto i = 0ul; i < balls.size(); ++i)
         {
-            if(!move_ball(balls[i], time_delta))
+            move_ball(balls[i], time_delta);
+            if(is_ball_out(balls[i]))
             {
                 balls.erase(balls.begin() + i);
                 --i;
@@ -304,7 +305,7 @@ void game::draw()
     window.draw(text_score);
 }
 
-bool game::move_ball(ball &ball_obj, sf::Time time_delta)
+void game::move_ball(ball &ball_obj, sf::Time time_delta)
 {
     sf::Vector2f ball_position_new = ball_obj.get_position();
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
@@ -312,15 +313,10 @@ bool game::move_ball(ball &ball_obj, sf::Time time_delta)
     ball_position_new += (ball_velocity * time_delta.asSeconds());
     
     ball_meets_paddle(ball_obj, ball_position_new);
-    for (auto i = 0ul; i < blocks.size(); ++i)
-    {
-        if(ball_meets_block(ball_obj, blocks[i], ball_position_new))
-        {
-            blocks.erase(blocks.begin() + i);
-            --i;
-        }
-    }
-    return !ball_meets_edge(ball_obj, ball_position_new);
+    ball_position_new = ball_obj.get_position();
+    ball_meets_block(ball_obj, ball_position_new);
+    ball_position_new = ball_obj.get_position();
+    ball_meets_edge(ball_obj, ball_position_new);
 }
 
 bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
@@ -341,7 +337,7 @@ bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
     return false;
 }
 
-bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
+void game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
 {
     sf::Vector2f ball_velocity = ball_obj.get_velocity_vector();
 
@@ -370,15 +366,18 @@ bool game::ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position)
         float surface_angle = std::numbers::pi_v<float>;
         ball_velocity = rotate_vector(ball_velocity, surface_angle);
     }
-    else if(ball_position.y > (block_breaker_area.y_stop
+
+    ball_obj.set_velocity_vector(ball_velocity);
+    ball_obj.set_position(ball_position);
+}
+
+bool game::is_ball_out(ball &ball_obj)
+{
+    if(ball_obj.get_position().y > (block_breaker_area.y_stop
                                 + ball_obj.get_ball().getRadius()))
     {
         return true;
     }
-
-    ball_obj.set_velocity_vector(ball_velocity);
-    ball_obj.set_position(ball_position);
-
     return false;
 }
 
@@ -401,7 +400,7 @@ bool game::block_broke(block &block_obj)
     return false;
 }
 
-bool game::ball_meets_block(ball &ball_obj, 
+bool game::is_ball_meet_block(ball &ball_obj, 
                             block &block_obj, 
                             sf::Vector2f ball_position)
 {
@@ -466,6 +465,18 @@ bool game::ball_meets_block(ball &ball_obj,
     ball_obj.set_position(ball_position);
 
     return ret_val;
+}
+
+void game::ball_meets_block(ball &ball_obj, sf::Vector2f ball_position)
+{
+    for (auto i = 0ul; i < blocks.size(); ++i)
+    {
+        if(is_ball_meet_block(ball_obj, blocks[i], ball_position))
+        {
+            blocks.erase(blocks.begin() + i);
+            --i;
+        }
+    }
 }
 
 void game::ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position)

@@ -1,6 +1,14 @@
 #include "ball.hpp"
 #include <SFML/Graphics.hpp>
 
+ball::ball(sf::Vector2f start_position)
+{
+    move_ptr = std::make_unique<Move_ball>();
+    ball_shape.setOrigin({ball_radius, ball_radius});
+    ball_shape.setFillColor(sf::Color(255, 0, 0));
+    ball_shape.setPosition(start_position);
+}
+
 void ball::set_position(sf::Vector2f new_position)
 {
     ball_shape.setPosition(new_position);
@@ -32,5 +40,5 @@ void ball::draw(sf::RenderWindow &window)
 }
 void ball::move(sf::Time time_delta)
 {
-    
+    move_ptr->move(time_delta, *this);
 }

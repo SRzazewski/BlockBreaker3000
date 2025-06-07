@@ -136,14 +136,16 @@ private:
     void game_state_level_4_prepare();
     void game_state_level_5_prepare();
     
-    bool move_ball(ball &ball_obj, sf::Time time_delta);
+    void move_ball(ball &ball_obj, sf::Time time_delta);
     bool move_powerup(powerup &powerup_obj, sf::Time time_delta);
-    bool ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
+    void ball_meets_edge(ball &ball_obj, sf::Vector2f ball_position);
+    bool is_ball_out(ball &ball_obj);
     bool powerup_meets_paddle(powerup &powerup_obj);
     bool powerup_meets_edge(powerup &powerup_obj);
     bool block_broke(block &block_obj);
-    bool ball_meets_block(ball &ball_obj, block &block_obj, 
+    bool is_ball_meet_block(ball &ball_obj, block &block_obj, 
                             sf::Vector2f ball_position);
+    void ball_meets_block(ball &ball_obj, sf::Vector2f ball_position);
     void ball_meets_paddle(ball &ball_obj, sf::Vector2f ball_position);
     bool ball_overlaps_obj(ball const &ball_obj, 
                             sf::Vector2f const ball_position,
