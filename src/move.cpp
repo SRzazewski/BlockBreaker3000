@@ -4,6 +4,11 @@
 #include "common.hpp"
 #include <SFML/System/Time.hpp>
 
+void Move::set_game_instance(game *game_inst)
+{
+    game_instance = game_inst;
+}
+
 void Move_paddle::move(sf::Time time_delta, moving_object &obj)
 {
     sf::Vector2f paddle_position = obj.get_position();
@@ -26,11 +31,6 @@ void Move_paddle::move(sf::Time time_delta, moving_object &obj)
     }
 }
 
-void Move_paddle::set_game_instance(game *game_inst)
-{
-
-}
-
 void Move_ball::move(sf::Time time_delta, moving_object &obj)
 {
     sf::Vector2f ball_position_new = obj.get_position();
@@ -48,7 +48,15 @@ void Move_ball::move(sf::Time time_delta, moving_object &obj)
                                     ball_position_new);
 }
 
-void Move_ball::set_game_instance(game *game_inst)
+void Move_powerup::move(sf::Time time_delta, moving_object &obj)
 {
-    game_instance = game_inst;
+    sf::Vector2f powerup_position_new = obj.get_position();
+    sf::Vector2f powerup_velocity = obj.get_velocity_vector();
+    
+    powerup_position_new.x = powerup_position_new.x
+                                + (powerup_velocity.x * time_delta.asSeconds());
+    powerup_position_new.y = powerup_position_new.y
+                                + (powerup_velocity.y * time_delta.asSeconds());
+
+    obj.set_position(powerup_position_new);
 }

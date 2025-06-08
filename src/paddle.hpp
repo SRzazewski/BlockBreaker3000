@@ -22,7 +22,6 @@ public:
     void move(sf::Time time_delta) override;
     void reset();
 
-
 private:
     std::unique_ptr<Move_paddle> move_ptr;
     sf::RectangleShape player_paddle;

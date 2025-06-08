@@ -139,7 +139,7 @@ private:
     void game_state_level_4_prepare();
     void game_state_level_5_prepare();
     
-    bool move_powerup(powerup &powerup_obj, sf::Time time_delta);
+    bool powerup_meet_obj(powerup &powerup_obj);
     bool is_ball_out(ball &ball_obj);
     bool powerup_meets_paddle(powerup &powerup_obj);
     bool powerup_meets_edge(powerup &powerup_obj);

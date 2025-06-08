@@ -112,7 +112,8 @@ void game::update(sf::Time time_delta)
 
         for (auto i = 0ul; i < powerups.size(); ++i)
         {
-            if(!move_powerup(powerups[i], time_delta))
+            powerups[i].move(time_delta);
+            if(!powerup_meet_obj(powerups[i]))
             {
                 powerups.erase(powerups.begin() + i);
                 --i;
@@ -282,7 +283,7 @@ void game::draw()
         ball.draw(window);
     }
 
-    for(auto powerup : powerups)
+    for(auto &powerup : powerups)
     {
         powerup.draw(window);
     }
@@ -306,19 +307,10 @@ void game::draw()
     window.draw(text_score);
 }
 
-bool game::move_powerup(powerup &powerup_obj, sf::Time time_delta)
+bool game::powerup_meet_obj(powerup &powerup_obj)
 {
-    sf::Vector2f powerup_position_new = powerup_obj.get_position();
-    sf::Vector2f powerup_velocity = powerup_obj.get_velocity_vector();
-    
-    powerup_position_new.x = powerup_position_new.x
-                                + (powerup_velocity.x * time_delta.asSeconds());
-    powerup_position_new.y = powerup_position_new.y
-                                + (powerup_velocity.y * time_delta.asSeconds());
-
     if(!powerup_meets_paddle(powerup_obj) && !powerup_meets_edge(powerup_obj))
     {
-        powerup_obj.set_position(powerup_position_new);
         return true;
     }
     return false;

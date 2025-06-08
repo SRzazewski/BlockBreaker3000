@@ -1,5 +1,14 @@
 #include "powerup.hpp"
+#include "move.hpp"
 #include <SFML/Graphics.hpp>
+
+powerup::powerup(sf::Vector2f start_position)
+{
+    move_ptr = std::make_unique<Move_powerup>();
+    powerup_shape.setOrigin({powerup_radius, powerup_radius});
+    powerup_shape.setFillColor(sf::Color(255, 0, 50));
+    powerup_shape.setPosition(start_position);
+}
 
 void powerup::set_position(sf::Vector2f new_position)
 {
@@ -33,7 +42,7 @@ void powerup::draw(sf::RenderWindow &window)
 
 void powerup::move(sf::Time time_delta)
 {
-    
+    move_ptr->move(time_delta, *this);
 }
 
 int powerup::get_points()
